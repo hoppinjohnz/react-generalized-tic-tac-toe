@@ -95,6 +95,16 @@ class Game extends React.Component {
         const sqrs = hstr[hstr.length - 1].squares;
         const w = calculateWinner(sqrs);
 
+        // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
+        const moves = this.state.history.map((step, index) => {
+            const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
+            return (
+                <li key={index}>
+                    <button onClick={() => this.johnTo(index)}>{dscrptn}</button>
+                </li>
+            );
+        });
+
         let stts;
         if (w) {
             stts = 'Winner is ' + w;
@@ -112,7 +122,7 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{stts}</div>
-                    <ol>{/* TODO */}</ol>
+                    <ol>{moves}</ol>
                 </div>
             </div>
         );
