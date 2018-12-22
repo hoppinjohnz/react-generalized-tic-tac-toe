@@ -4,7 +4,7 @@ import './index.css';
 
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick} >
+        <button className="square" onClick={props.onClick}>
             {props.value}
         </button>
     );
@@ -43,27 +43,6 @@ class Board extends React.Component {
     }
 }
 
-function calculateWinner(sqrs) {
-    const wnrs = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    for (let i = 0; i < wnrs.length; i++) {
-        const [a, b, c] = wnrs[i];
-        const v = sqrs[a];
-        if (v && v === sqrs[b] && v === sqrs[c]) {
-            return v;
-        }
-    }
-    return null;
-}
-
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -71,40 +50,61 @@ class Game extends React.Component {
             history: [{
                 squares: Array(9).fill(null),
             }],
+            moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
         };
     }
 
     handleClick(i) {
-        const hstr = this.state.history;
+        const mvN = this.state.moveNumber + 1;
+        // very important: make a copy of history only for elements so far; this automatically shorten the history correctly when going back in time 
+        const hstr = this.state.history.slice(0, mvN);
+
+        // the current board squares right before updating
         const sqrs = hstr[hstr.length - 1].squares.slice();
+
+        // return and no updating if already won or moving into an occupied square
         if (calculateWinner(sqrs) || sqrs[i]) {
             return;
         }
+
+        // add the current move
         sqrs[i] = this.state.xIsNext ? 'X' : 'O';
+
+        // update the state to result in the updated UI with the current new move
         this.setState({
             history: hstr.concat([{
                 squares: sqrs,
             }]),
+            moveNumber: mvN,
             xIsNext: !this.state.xIsNext,
         });
     }
 
-    render() {
-        const hstr = this.state.history;
-        const sqrs = hstr[hstr.length - 1].squares;
-        const w = calculateWinner(sqrs);
+    jumpTo(mv) {
+        this.setState({
+            moveNumber: mv,
+            xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+        });
+    }
 
+    render() {
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
-        const moves = this.state.history.map((step, index) => {
+        // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
+        //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        const moves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
+            // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
-                    <button onClick={() => this.johnTo(index)}>{dscrptn}</button>
+                    <button onClick={() => this.jumpTo(index)}>{dscrptn}</button>
                 </li>
             );
         });
 
+        const sqrs = this.state.history[this.state.moveNumber].squares;
+
+        const w = calculateWinner(sqrs);
         let stts;
         if (w) {
             stts = 'Winner is ' + w;
@@ -127,6 +127,27 @@ class Game extends React.Component {
             </div>
         );
     }
+}
+
+function calculateWinner(sqrs) {
+    const wnrs = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    for (let i = 0; i < wnrs.length; i++) {
+        const [a, b, c] = wnrs[i];
+        const v = sqrs[a];
+        if (v && v === sqrs[b] && v === sqrs[c]) {
+            return v;
+        }
+    }
+    return null;
 }
 
 // ============================================
