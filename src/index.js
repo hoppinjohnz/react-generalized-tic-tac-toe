@@ -49,6 +49,7 @@ class Game extends React.Component {
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
+                cell: null,
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
@@ -75,6 +76,7 @@ class Game extends React.Component {
         this.setState({
             history: hstr.concat([{
                 squares: sqrs,
+                cell: i,
             }]),
             moveNumber: mvN,
             xIsNext: !this.state.xIsNext,
@@ -97,7 +99,7 @@ class Game extends React.Component {
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
-                    <button onClick={() => this.jumpTo(index)}>{dscrptn}</button>
+                    <button onClick={() => this.jumpTo(index)}>{dscrptn}</button> {currValue.cell}
                 </li>
             );
         });
