@@ -96,10 +96,12 @@ class Game extends React.Component {
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const moves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
+            const c = currValue.cell;
+            const lctn = index ? '(' + row(c) + ', ' + col(c) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
-                    <button onClick={() => this.jumpTo(index)}>{dscrptn}</button> {currValue.cell}
+                    <button onClick={() => this.jumpTo(index)}>{dscrptn}</button> {lctn}
                 </li>
             );
         });
@@ -150,6 +152,52 @@ function calculateWinner(sqrs) {
         }
     }
     return null;
+}
+
+function row(c) {
+    let r = null;
+    switch (c) {
+        case 0:
+        case 1:
+        case 2:
+            r = 1;
+            break;
+        case 3:
+        case 4:
+        case 5:
+            r = 2;
+            break;
+        case 6:
+        case 7:
+        case 8:
+            r = 3;
+            break;
+        default:
+    }
+    return r;
+}
+
+function col(c) {
+    let cl = null;
+    switch (c) {
+        case 0:
+        case 3:
+        case 6:
+            cl = 1;
+            break;
+        case 1:
+        case 4:
+        case 7:
+            cl = 2;
+            break;
+        case 2:
+        case 5:
+        case 8:
+            cl = 3;
+            break;
+        default:
+    }
+    return cl;
 }
 
 // ============================================
