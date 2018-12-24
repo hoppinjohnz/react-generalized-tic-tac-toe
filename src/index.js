@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-var DIM = 3;
+var DIM = 5;
 
 function Square(props) {
     return (
@@ -60,7 +60,7 @@ class Game extends React.Component {
         super(props);
         this.state = {
             history: [{
-                squares: Array(9).fill(null),
+                squares: Array(DIM * DIM).fill(null),
                 cell: null,
             }],
             moveNumber: 0, // the displayed move number on UI
@@ -146,71 +146,84 @@ class Game extends React.Component {
     }
 }
 
-function calculateWinner(sqrs) {
-    const wnrs = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    for (let i = 0; i < wnrs.length; i++) {
-        const [a, b, c] = wnrs[i];
-        const v = sqrs[a];
-        if (v && v === sqrs[b] && v === sqrs[c]) {
-            return v;
+function isWon(sqrs, plyr) {
+    var c = 0;
+    // won in rows
+    for (let i = 0; i < DIM; i++) {
+        c = 0;
+        for (let j = 0; j < DIM; j++) {
+            if (sqrs[i * DIM + j] === plyr) {
+                c++;
+            } else {
+                break;
+            }
+        }
+        if (c === DIM) {
+            return true;
         }
     }
-    return null;
+
+    // won in columns
+    for (let j = 0; j < DIM; j++) {
+        c = 0;
+        for (let i = 0; i < DIM; i++) {
+            if (sqrs[i * DIM + j] === plyr) {
+                c++;
+            } else {
+                break;
+            }
+        }
+        if (c === DIM) {
+            return true;
+        }
+    }
+
+    // diagonal left top to right bottom
+    c = 0;
+    for (let i = 0; i < DIM; i++) {
+        if (sqrs[i * (DIM + 1)] === plyr) {
+            c++;
+        } else {
+            break;
+        }
+        if (c === DIM) {
+            return true;
+        }
+    }
+
+    // diagonal right top to left bottom
+    c = 0;
+    const m = DIM - 1;
+    for (let i = 1; i <= DIM; i++) {
+        if (sqrs[i * m] === plyr) {
+            c++;
+        } else {
+            break;
+        }
+        if (c === DIM) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function calculateWinner(sqrs) {
+    if (isWon(sqrs, 'X')) {
+        return 'X';
+    } else if (isWon(sqrs, 'O')) {
+        return 'O';
+    } else {
+        return null;
+    }
 }
 
 function row(c) {
-    let r = null;
-    switch (c) {
-        case 0:
-        case 1:
-        case 2:
-            r = 1;
-            break;
-        case 3:
-        case 4:
-        case 5:
-            r = 2;
-            break;
-        case 6:
-        case 7:
-        case 8:
-            r = 3;
-            break;
-        default:
-    }
-    return r;
+    return Math.floor(c / DIM) + 1;
 }
 
 function col(c) {
-    let cl = null;
-    switch (c) {
-        case 0:
-        case 3:
-        case 6:
-            cl = 1;
-            break;
-        case 1:
-        case 4:
-        case 7:
-            cl = 2;
-            break;
-        case 2:
-        case 5:
-        case 8:
-            cl = 3;
-            break;
-        default:
-    }
-    return cl;
+    return (c % DIM) + 1;
 }
 
 // ============================================
