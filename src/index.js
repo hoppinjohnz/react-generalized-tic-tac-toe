@@ -122,13 +122,7 @@ class Game extends React.Component {
         const sqrs = this.state.history[this.state.moveNumber].squares;
 
         const w = calculateWinner(sqrs);
-        let stts;
-        if (w) {
-            stts = 'Winner is ' + w;
-        } else {
-            stts = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        }
-
+        let stts = w ? 'Winner is ' + w : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         return (
             <div className="game">
                 <div className="game-board">
