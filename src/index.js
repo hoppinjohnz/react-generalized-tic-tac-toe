@@ -65,7 +65,15 @@ class Game extends React.Component {
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
+            isSortOn: false,
         };
+        this.handleSortToggle = this.handleSortToggle.bind(this);
+    }
+
+    handleSortToggle() {
+        this.setState({
+            isSortOn: !this.state.isSortOn,
+        });
     }
 
     handleClick(i) {
@@ -133,6 +141,9 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{stts}</div>
+                    <button type="button" onClick={this.handleSortToggle}>
+                        {this.state.isSortOn ? 'Un Sort' : 'Sort'}
+                    </button>
                     <ol>{moves}</ol>
                 </div>
             </div>
