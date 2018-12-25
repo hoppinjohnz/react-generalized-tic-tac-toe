@@ -70,29 +70,26 @@ class Game extends React.Component {
         this.handleSortToggle = this.handleSortToggle.bind(this);
     }
 
-    handleSortToggle() {
-        this.setState({
-            isSortOn: !this.state.isSortOn,
-        });
-    }
-
     handleClick(i) {
+        // increament the move number
         const mvN = this.state.moveNumber + 1;
-        // very important: make a copy of history only for elements so far; this automatically shorten the history correctly when going back in time 
+
+        // very important: get the history only for moves so far to shorten the history correctly even when going back in time
         const hstr = this.state.history.slice(0, mvN);
 
-        // the current board squares right before updating
+        // the board squares right before the new move
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
         // return and no updating if already won or moving into an occupied square
+        // TODO highlight the winning cells here
         if (calculateWinner(sqrs) || sqrs[i]) {
             return;
         }
 
-        // add the current move
+        // add the new move in
         sqrs[i] = this.state.xIsNext ? 'X' : 'O';
 
-        // update the state to result in the updated UI with the current new move
+        // update the state to re-render the UI to reflect all UI changes caused by the new move
         this.setState({
             history: hstr.concat([{
                 squares: sqrs,
@@ -107,6 +104,12 @@ class Game extends React.Component {
         this.setState({
             moveNumber: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+        });
+    }
+
+    handleSortToggle() {
+        this.setState({
+            isSortOn: !this.state.isSortOn,
         });
     }
 
