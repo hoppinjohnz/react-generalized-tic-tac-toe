@@ -132,7 +132,13 @@ class Game extends React.Component {
 
         const sqrs = this.state.history[this.state.moveNumber].squares;
         const w = calculateWinner(sqrs);
-        let stts = w ? 'Winner is ' + w : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        let status;
+        if (w === 'D') {
+            status = 'It\'s a draw.';
+        } else {
+            status = w ? 'Winner is ' + w : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        }
+
         return (
             <div className="game">
                 <div className="game-board">
@@ -142,7 +148,7 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game-info">
-                    <div>{stts}</div>
+                    <div>{status}</div>
                     <button type="button" onClick={this.handleSortToggle}>
                         {this.state.isSortOn ? 'Un Sort' : 'Sort'}
                     </button>
@@ -221,7 +227,12 @@ function calculateWinner(sqrs) {
     } else if (isWon(sqrs, 'O')) {
         return 'O';
     } else {
-        return null;
+        for (let i = 0; i < sqrs.length; i++) {
+            if (sqrs[i] === null) {
+                return null;
+            }
+        }
+        return 'D';
     }
 }
 
