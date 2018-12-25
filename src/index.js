@@ -6,7 +6,7 @@ var DIM = 3;
 
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}}>
             {props.value}
         </button>
     );
@@ -18,6 +18,7 @@ class Board extends React.Component {
             <Square key={i}
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
+                bgc={this.props.bgColors[i]}
             />
         );
     }
@@ -66,6 +67,7 @@ class Game extends React.Component {
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
             isSortOn: false,
+            bgColors: Array(DIM * DIM).fill('white'),
         };
         this.handleSortToggle = this.handleSortToggle.bind(this);
     }
@@ -81,10 +83,8 @@ class Game extends React.Component {
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
         // return and no updating if already won or moving into an occupied square
-        // TODO highlight the winning cells here
-        if (calculateWinner(sqrs) || sqrs[i]) {
-            return;
-        }
+        // TODO highlight the winning cells here 
+        if (sqrs[i] || calculateWinner(sqrs)) return;
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? 'X' : 'O';
@@ -98,6 +98,16 @@ class Game extends React.Component {
             moveNumber: mvN,
             xIsNext: !this.state.xIsNext,
         });
+
+        const w = calculateWinner(sqrs);
+        if (w) {
+            const clrs = this.state.bgColors.slice();
+            for (let i = 1; i <= DIM; i++) clrs[w[i]] = 'lightblue';
+
+            this.setState({
+                bgColors: clrs,
+            });
+        }
     }
 
     jumpTo(mv) {
@@ -139,7 +149,7 @@ class Game extends React.Component {
         if (w === 'D') {
             status = 'It\'s a draw.';
         } else {
-            status = w ? 'Winner is ' + w : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+            status = w ? 'Winner is ' + w[0] : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
         return (
@@ -148,6 +158,7 @@ class Game extends React.Component {
                     <Board
                         squares={sqrs}
                         onClick={(i) => this.handleClick(i)}
+                        bgColors={this.state.bgColors}
                     />
                 </div>
                 <div className="game-info">
@@ -163,19 +174,22 @@ class Game extends React.Component {
 }
 
 function isWon(sqrs, plyr) {
-    var c = 0;
+    var c = 0, a = Array(DIM).fill(null);
+
     // won in rows
     for (let i = 0; i < DIM; i++) {
         c = 0;
         for (let j = 0; j < DIM; j++) {
-            if (sqrs[i * DIM + j] === plyr) {
+            let mv = i * DIM + j;
+            if (sqrs[mv] === plyr) {
+                a[j] = mv;
                 c++;
             } else {
                 break;
             }
         }
         if (c === DIM) {
-            return true;
+            return [plyr, a].flat();
         }
     }
 
@@ -183,27 +197,31 @@ function isWon(sqrs, plyr) {
     for (let j = 0; j < DIM; j++) {
         c = 0;
         for (let i = 0; i < DIM; i++) {
-            if (sqrs[i * DIM + j] === plyr) {
+            let mv = i * DIM + j;
+            if (sqrs[mv] === plyr) {
+                a[i] = mv;
                 c++;
             } else {
                 break;
             }
         }
         if (c === DIM) {
-            return true;
+            return [plyr, a].flat();
         }
     }
 
     // diagonal left top to right bottom
     c = 0;
     for (let i = 0; i < DIM; i++) {
-        if (sqrs[i * (DIM + 1)] === plyr) {
+        let mv = i * (DIM + 1);
+        if (sqrs[mv] === plyr) {
+            a[i] = mv;
             c++;
         } else {
             break;
         }
         if (c === DIM) {
-            return true;
+            return [plyr, a].flat();
         }
     }
 
@@ -211,13 +229,15 @@ function isWon(sqrs, plyr) {
     c = 0;
     const m = DIM - 1;
     for (let i = 1; i <= DIM; i++) {
-        if (sqrs[i * m] === plyr) {
+        let mv = i * m;
+        if (sqrs[mv] === plyr) {
+            a[i - 1] = mv;  // since i started from 1 not 0
             c++;
         } else {
             break;
         }
         if (c === DIM) {
-            return true;
+            return [plyr, a].flat();
         }
     }
 
@@ -225,18 +245,23 @@ function isWon(sqrs, plyr) {
 }
 
 function calculateWinner(sqrs) {
-    if (isWon(sqrs, 'X')) {
-        return 'X';
-    } else if (isWon(sqrs, 'O')) {
-        return 'O';
-    } else {
-        for (let i = 0; i < sqrs.length; i++) {
-            if (sqrs[i] === null) {
-                return null;
-            }
+    // x wins
+    let a = isWon(sqrs, 'X');
+    if (a) return a;
+
+    // o wins
+    a = isWon(sqrs, 'O');
+    if (a) return a;
+
+    // game continues
+    for (let i = 0; i < sqrs.length; i++) {
+        if (sqrs[i] === null) {
+            return null;
         }
-        return 'D';
     }
+
+    // draw
+    return 'D';
 }
 
 function row(c) {
