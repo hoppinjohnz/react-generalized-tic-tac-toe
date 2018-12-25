@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-var DIM = 5;
+var DIM = 3;
 
 function Square(props) {
     return (
@@ -114,7 +114,7 @@ class Game extends React.Component {
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        const moves = this.state.history.map((currValue, index) => {
+        const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const c = currValue.cell;
@@ -127,8 +127,10 @@ class Game extends React.Component {
             );
         });
 
-        const sqrs = this.state.history[this.state.moveNumber].squares;
+        // to support sort toggle: no change to the history, just the on-screen presentation is sorted or not
+        const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
+        const sqrs = this.state.history[this.state.moveNumber].squares;
         const w = calculateWinner(sqrs);
         let stts = w ? 'Winner is ' + w : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         return (
@@ -144,7 +146,7 @@ class Game extends React.Component {
                     <button type="button" onClick={this.handleSortToggle}>
                         {this.state.isSortOn ? 'Un Sort' : 'Sort'}
                     </button>
-                    <ol>{moves}</ol>
+                    <ol>{sortedMoves}</ol>
                 </div>
             </div>
         );
