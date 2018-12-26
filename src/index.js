@@ -18,7 +18,7 @@ class Board extends React.Component {
             <Square key={i}
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
-                bgc={this.props.bgColors[i]}
+                bgc={this.props.bgClrs[i]}
             />
         );
     }
@@ -99,6 +99,7 @@ class Game extends React.Component {
             xIsNext: !this.state.xIsNext,
         });
 
+        // now, it's time to check for winner to highlight the winning line
         const w = calculateWinner(sqrs);
         if (w) {
             const clrs = this.state.bgColors.slice();
@@ -114,6 +115,7 @@ class Game extends React.Component {
         this.setState({
             moveNumber: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+            bgColors: Array(DIM * DIM).fill('white'),
         });
     }
 
@@ -140,7 +142,7 @@ class Game extends React.Component {
             );
         });
 
-        // to support sort toggle: no change to the history, just the on-screen presentation is sorted or not
+        // to support sort toggle: no change to the history at all, just sort the on-screen presentation or not
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         const sqrs = this.state.history[this.state.moveNumber].squares;
@@ -158,7 +160,7 @@ class Game extends React.Component {
                     <Board
                         squares={sqrs}
                         onClick={(i) => this.handleClick(i)}
-                        bgColors={this.state.bgColors}
+                        bgClrs={this.state.bgColors}
                     />
                 </div>
                 <div className="game-info">
