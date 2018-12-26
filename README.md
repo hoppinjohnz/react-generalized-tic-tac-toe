@@ -20,3 +20,11 @@ npm start
 ```
 
 Hit [localhost:3000](http://localhost:3000/) to play the game if your browser didn't open the game for you.
+
+## Change Dimension
+
+Modify line 5 of src/index.js
+```
+var DIM = 3;
+```
+to your target dimension.

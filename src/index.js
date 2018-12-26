@@ -73,27 +73,10 @@ class Game extends React.Component {
             xIsNext: true,
             isSortOn: false,
             bgColors: Array(DIM * DIM).fill('white'),
-            dimension: 3,
         };
         this.handleSortToggle = this.handleSortToggle.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-
-
-      handleChange(event) {
-        this.setState({dimension: event.target.value});
-      }
-    
-      handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.dimension);
-        event.preventDefault();
-      }
-    
-
-
-    
     handleClick(i) {
         // increament the move number
         const mvN = this.state.moveNumber + 1;
@@ -178,16 +161,6 @@ class Game extends React.Component {
 
         return (
             <div className="game">
-                <div>
-                    <form onSubmit={this.handleSubmit}>
-                        <label>
-                            Dimension:
-                            <input type="text" value={this.state.dimension} onChange={this.handleChange} onKeyPress={this.handleChange}/>
-                        </label>
-                        <input type="submit" value="Submit" />
-                    </form>
-                </div>
-
                 <div className="game-board">
                     <Board
                         squares={sqrs}
