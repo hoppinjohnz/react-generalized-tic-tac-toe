@@ -12,6 +12,11 @@ function Square(props) {
     );
 }
 
+/**
+ * board consists of squares numbered as / 1 2 3 \ for 3x3
+ *                                       | 4 5 6 |
+ *                                       \ 7 8 9 /
+ */
 class Board extends React.Component {
     renderSquare(i) {
         return (
@@ -62,7 +67,7 @@ class Game extends React.Component {
         this.state = {
             history: [{
                 squares: Array(DIM * DIM).fill(null),
-                cell: null,
+                squrNum: null,
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
@@ -93,7 +98,7 @@ class Game extends React.Component {
         this.setState({
             history: hstr.concat([{
                 squares: sqrs,
-                cell: i,
+                squrNum: i,
             }]),
             moveNumber: mvN,
             xIsNext: !this.state.xIsNext,
@@ -132,7 +137,7 @@ class Game extends React.Component {
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
-            const c = currValue.cell;
+            const c = currValue.squrNum;
             const lctn = index ? '(' + row(c) + ', ' + col(c) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
