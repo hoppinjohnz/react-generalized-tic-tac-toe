@@ -199,21 +199,18 @@ class Game extends React.Component {
                     />
                 </div>
 
-                <div>
-                  <div class="left" id="bigger"></div>
-                </div>
+                <div class="left" id="bigger"></div>
 
-                <div className="game-info">
+                <div className="left">
                     <div>{status}</div>
+                    <div class="left" id="bigger"></div>
                     <button type="button" onClick={this.handleSortToggle}>
                         {this.state.isSortOn ? 'Un Sort' : 'Sort'}
                     </button>
                     <ol>{sortedMoves}</ol>
                 </div>
 
-                <div>
-                  <div class="left" id="bigger"></div>
-                </div>
+                <div class="left" id="bigger"></div>
 
                 <form>
                     Enter dimension:
