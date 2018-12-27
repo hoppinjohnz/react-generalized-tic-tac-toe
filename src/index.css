@@ -53,7 +53,6 @@ ol, ul {
 left {
     width: 20%;
     float: left;
-    border: 1px solid #444;
     min-height: 30px;
     margin-right: 10px;
 }

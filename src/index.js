@@ -2,8 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-var LEN = 10000;
+// a few global constants
+var MINDIM = 1;
+var MAXDIM = 25;
+var ARRLEN = 10000;
 
+// A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
     return (
         <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}}>
@@ -24,7 +28,6 @@ class Board extends React.Component {
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
                 bgc={this.props.bgClrs[i]}
-                dmnsn={this.props.dmnsn}
             />
         );
     }
@@ -40,18 +43,18 @@ class Board extends React.Component {
 
     fullBoard() {
         const d = this.props.dmnsn;
-        const a = Array(d).fill(null);
+        const twoDemBoard = Array(d).fill(null);
         for (let i = 0; i < d; i++) {
-            const b = Array(d).fill(null);
+            const rowArr = Array(d).fill(null);
             for (let j = 0; j < d; j++) {
-                b[j] = i * d + j;
+                rowArr[j] = i * d + j;
             }
-            a[i] = b;
+            twoDemBoard[i] = rowArr;
         }
-        // a = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
+        // twoDemBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
         return (
             <div>
-                {a.map((e) => this.boardRow(e))}
+                {twoDemBoard.map((e) => this.boardRow(e))}
             </div>
         );
     }
@@ -71,22 +74,23 @@ class Game extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
     
-    getInitialState = () => {
+    getInitialState() {
+        // mahe the initial state immutable to support state reset
         const initialState = {
             history: [{
-                squares: Array(LEN).fill(null),
+                squares: Array(ARRLEN).fill(null),
                 squrNum: null,
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
             isSortOn: false,
-            bgColors: Array(LEN).fill('white'),
+            bgColors: Array(ARRLEN).fill('white'),
             dimension: 3,
         };
         return initialState;
     }
   
-    resetState = () => {
+    resetState() {
        this.setState(this.getInitialState());
     }
 
@@ -94,20 +98,19 @@ class Game extends React.Component {
         // increment the move number
         const mvN = this.state.moveNumber + 1;
 
-        // very important: get the history only for moves so far to shorten the history correctly even when going back in time
+        // get the history only for moves so far; this is important for maintaining the history correctly even when going back in time
         const hstr = this.state.history.slice(0, mvN);
 
         // the board squares right before the new move
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
         // return and no updating if already won or moving into an occupied square
-        // TODO highlight the winning cells here 
-        if (sqrs[i] || calculateWinner(sqrs, this.state.dimension)) return;
+        if (sqrs[i] || winnerAndWinningLineOrDraw(sqrs, this.state.dimension)) return;
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? 'X' : 'O';
 
-        // update the state to re-render the UI to reflect all UI changes caused by the new move
+        // then, update the state to re-render the UI to reflect all changes caused by the new move
         this.setState({
             history: hstr.concat([{
                 squares: sqrs,
@@ -117,8 +120,8 @@ class Game extends React.Component {
             xIsNext: !this.state.xIsNext,
         });
 
-        // now, it's time to check for winner to highlight the winning line
-        const w = calculateWinner(sqrs, this.state.dimension);
+        // now, it's time to set up the winning line highlighting if the new move wins
+        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension);
         if (w) {
             const clrs = this.state.bgColors.slice();
             for (let i = 1; i <= this.state.dimension; i++) clrs[w[i]] = 'lightblue';
@@ -129,11 +132,12 @@ class Game extends React.Component {
         }
     }
 
+    // not sure why this one doesn't need binding
     jumpTo(mv) {
         this.setState({
             moveNumber: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
-            bgColors: Array(LEN).fill('white'),
+            bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
         });
     }
 
@@ -145,8 +149,8 @@ class Game extends React.Component {
 
     handleChange(event) {
         const v = parseInt(event.target.value);
-        if (v < 1 || v > 12) {
-            alert('Dimension entered is not valid. Enter a value greater than 0 but less than 13.');
+        if (v < MINDIM || v > MAXDIM) {
+            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + MAXDIM + '.');
             return;
         }
         this.resetState();
@@ -162,8 +166,8 @@ class Game extends React.Component {
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
-            const c = currValue.squrNum;
-            const lctn = index ? '(' + row(c, this.state.dimension) + ', ' + col(c, this.state.dimension) + ')' : null;
+            const sn = currValue.squrNum;
+            const lctn = index ? '(' + row(sn, this.state.dimension) + ', ' + col(sn, this.state.dimension) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -171,12 +175,12 @@ class Game extends React.Component {
                 </li>
             );
         });
-
-        // to support sort toggle: no change to the history at all, just sort the on-screen presentation or not
+        // to support sort toggle: no change to the history at all, only change the on-screen presentation of the history
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
+        // set the status accordingly right before rendering
         const sqrs = this.state.history[this.state.moveNumber].squares;
-        const w = calculateWinner(sqrs, this.state.dimension);
+        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -194,6 +198,11 @@ class Game extends React.Component {
                         dmnsn={this.state.dimension}
                     />
                 </div>
+
+                <div>
+                  <div class="left" id="bigger"></div>
+                </div>
+
                 <div className="game-info">
                     <div>{status}</div>
                     <button type="button" onClick={this.handleSortToggle}>
@@ -207,18 +216,15 @@ class Game extends React.Component {
                 </div>
 
                 <form>
-                    <label>
-                        Enter dimension:
-                        <input type="text" value={this.state.dimension} onChange={this.handleChange} />
-                    </label>
-                    <input />
+                    Enter dimension:
+                    <input type="text" value={this.state.dimension} onChange={this.handleChange} />
                 </form>
             </div>
         );
     }
 }
 
-function isWon(sqrs, plyr, d) {
+function isPlayerWon(sqrs, plyr, d) {
     var c = 0, a = Array(d).fill(null);
 
     // won in rows
@@ -289,13 +295,13 @@ function isWon(sqrs, plyr, d) {
     return false;
 }
 
-function calculateWinner(sqrs, d) {
+function winnerAndWinningLineOrDraw(sqrs, d) {
     // x wins
-    let a = isWon(sqrs, 'X', d);
+    let a = isPlayerWon(sqrs, 'X', d);
     if (a) return a;
 
     // o wins
-    a = isWon(sqrs, 'O', d);
+    a = isPlayerWon(sqrs, 'O', d);
     if (a) return a;
 
     // game continues
@@ -309,12 +315,12 @@ function calculateWinner(sqrs, d) {
     return 'D';
 }
 
-function row(c, d) {
-    return Math.floor(c / d) + 1;
+function row(squareNum, d) {
+    return Math.floor(squareNum / d) + 1;
 }
 
-function col(c, d) {
-    return (c % d) + 1;
+function col(squareNum, d) {
+    return (squareNum % d) + 1;
 }
 
 // ============================================
