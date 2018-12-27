@@ -21,7 +21,7 @@ npm start
 
 Hit [localhost:3000](http://localhost:3000/) to play the game if your browser didn't open the game for you.
 
-## Change Dimension
+## Change Dimensions
 
 Enter your favorite dimension at the end of the page.
 
