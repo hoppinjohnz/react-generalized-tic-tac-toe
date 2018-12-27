@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-var DIM = 3;
+var LEN = 10000;
 
 function Square(props) {
     return (
@@ -24,6 +24,7 @@ class Board extends React.Component {
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
                 bgc={this.props.bgClrs[i]}
+                dmnsn={this.props.dmnsn}
             />
         );
     }
@@ -38,11 +39,12 @@ class Board extends React.Component {
     }
 
     fullBoard() {
-        const a = Array(DIM).fill(null);
-        for (let i = 0; i < DIM; i++) {
-            const b = Array(DIM).fill(null);
-            for (let j = 0; j < DIM; j++) {
-                b[j] = i * DIM + j;
+        const d = this.props.dmnsn;
+        const a = Array(d).fill(null);
+        for (let i = 0; i < d; i++) {
+            const b = Array(d).fill(null);
+            for (let j = 0; j < d; j++) {
+                b[j] = i * d + j;
             }
             a[i] = b;
         }
@@ -66,19 +68,21 @@ class Game extends React.Component {
         super(props);
         this.state = {
             history: [{
-                squares: Array(DIM * DIM).fill(null),
+                squares: Array(LEN).fill(null),
                 squrNum: null,
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
             isSortOn: false,
-            bgColors: Array(DIM * DIM).fill('white'),
+            bgColors: Array(LEN).fill('white'),
+            dimension: 3,
         };
         this.handleSortToggle = this.handleSortToggle.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
-
+    
     handleClick(i) {
-        // increament the move number
+        // increment the move number
         const mvN = this.state.moveNumber + 1;
 
         // very important: get the history only for moves so far to shorten the history correctly even when going back in time
@@ -89,7 +93,7 @@ class Game extends React.Component {
 
         // return and no updating if already won or moving into an occupied square
         // TODO highlight the winning cells here 
-        if (sqrs[i] || calculateWinner(sqrs)) return;
+        if (sqrs[i] || calculateWinner(sqrs, this.state.dimension)) return;
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? 'X' : 'O';
@@ -105,10 +109,10 @@ class Game extends React.Component {
         });
 
         // now, it's time to check for winner to highlight the winning line
-        const w = calculateWinner(sqrs);
+        const w = calculateWinner(sqrs, this.state.dimension);
         if (w) {
             const clrs = this.state.bgColors.slice();
-            for (let i = 1; i <= DIM; i++) clrs[w[i]] = 'lightblue';
+            for (let i = 1; i <= this.state.dimension; i++) clrs[w[i]] = 'lightblue';
 
             this.setState({
                 bgColors: clrs,
@@ -120,13 +124,19 @@ class Game extends React.Component {
         this.setState({
             moveNumber: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
-            bgColors: Array(DIM * DIM).fill('white'),
+            bgColors: Array(LEN).fill('white'),
         });
     }
 
     handleSortToggle() {
         this.setState({
             isSortOn: !this.state.isSortOn,
+        });
+    }
+
+    handleChange(event) {
+        this.setState({
+            dimension: parseInt(event.target.value, 10),
         });
     }
 
@@ -138,7 +148,7 @@ class Game extends React.Component {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const c = currValue.squrNum;
-            const lctn = index ? '(' + row(c) + ', ' + col(c) + ')' : null;
+            const lctn = index ? '(' + row(c, this.state.dimension) + ', ' + col(c, this.state.dimension) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -151,7 +161,7 @@ class Game extends React.Component {
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         const sqrs = this.state.history[this.state.moveNumber].squares;
-        const w = calculateWinner(sqrs);
+        const w = calculateWinner(sqrs, this.state.dimension);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -161,11 +171,22 @@ class Game extends React.Component {
 
         return (
             <div className="game">
+                <div>
+                    <form>
+                        <label>
+                            Dimension:
+                            <input type="text" value={this.state.dimension} onChange={this.handleChange} onKeyPress={this.handleChange}/>
+                        </label>
+                        <input type="submit" value="Submit" />
+                    </form>
+                </div>
+
                 <div className="game-board">
                     <Board
                         squares={sqrs}
                         onClick={(i) => this.handleClick(i)}
                         bgClrs={this.state.bgColors}
+                        dmnsn={this.state.dimension}
                     />
                 </div>
                 <div className="game-info">
@@ -180,14 +201,14 @@ class Game extends React.Component {
     }
 }
 
-function isWon(sqrs, plyr) {
-    var c = 0, a = Array(DIM).fill(null);
+function isWon(sqrs, plyr, d) {
+    var c = 0, a = Array(d).fill(null);
 
     // won in rows
-    for (let i = 0; i < DIM; i++) {
+    for (let i = 0; i < d; i++) {
         c = 0;
-        for (let j = 0; j < DIM; j++) {
-            let mv = i * DIM + j;
+        for (let j = 0; j < d; j++) {
+            let mv = i * d + j;
             if (sqrs[mv] === plyr) {
                 a[j] = mv;
                 c++;
@@ -195,16 +216,16 @@ function isWon(sqrs, plyr) {
                 break;
             }
         }
-        if (c === DIM) {
+        if (c === d) {
             return [plyr, a].flat();
         }
     }
 
     // won in columns
-    for (let j = 0; j < DIM; j++) {
+    for (let j = 0; j < d; j++) {
         c = 0;
-        for (let i = 0; i < DIM; i++) {
-            let mv = i * DIM + j;
+        for (let i = 0; i < d; i++) {
+            let mv = i * d + j;
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
@@ -212,30 +233,30 @@ function isWon(sqrs, plyr) {
                 break;
             }
         }
-        if (c === DIM) {
+        if (c === d) {
             return [plyr, a].flat();
         }
     }
 
     // diagonal left top to right bottom
     c = 0;
-    for (let i = 0; i < DIM; i++) {
-        let mv = i * (DIM + 1);
+    for (let i = 0; i < d; i++) {
+        let mv = i * (d + 1);
         if (sqrs[mv] === plyr) {
             a[i] = mv;
             c++;
         } else {
             break;
         }
-        if (c === DIM) {
+        if (c === d) {
             return [plyr, a].flat();
         }
     }
 
     // diagonal right top to left bottom
     c = 0;
-    const m = DIM - 1;
-    for (let i = 1; i <= DIM; i++) {
+    const m = d - 1;
+    for (let i = 1; i <= d; i++) {
         let mv = i * m;
         if (sqrs[mv] === plyr) {
             a[i - 1] = mv;  // since i started from 1 not 0
@@ -243,7 +264,7 @@ function isWon(sqrs, plyr) {
         } else {
             break;
         }
-        if (c === DIM) {
+        if (c === d) {
             return [plyr, a].flat();
         }
     }
@@ -251,13 +272,13 @@ function isWon(sqrs, plyr) {
     return false;
 }
 
-function calculateWinner(sqrs) {
+function calculateWinner(sqrs, d) {
     // x wins
-    let a = isWon(sqrs, 'X');
+    let a = isWon(sqrs, 'X', d);
     if (a) return a;
 
     // o wins
-    a = isWon(sqrs, 'O');
+    a = isWon(sqrs, 'O', d);
     if (a) return a;
 
     // game continues
@@ -271,12 +292,12 @@ function calculateWinner(sqrs) {
     return 'D';
 }
 
-function row(c) {
-    return Math.floor(c / DIM) + 1;
+function row(c, d) {
+    return Math.floor(c / d) + 1;
 }
 
-function col(c) {
-    return (c % DIM) + 1;
+function col(c, d) {
+    return (c % d) + 1;
 }
 
 // ============================================
