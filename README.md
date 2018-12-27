@@ -23,8 +23,9 @@ Hit [localhost:3000](http://localhost:3000/) to play the game if your browser di
 
 ## Change Dimension
 
-Modify line 5 of src/index.js
-```
-var DIM = 3;
-```
-to your target dimension.
+Enter your favorite dimension at the end of the page.
+
+## Future Enhancements
+
+1. To generalize winning to less than the dimension. 
+2. To mark the win as well when time travelling to win.
