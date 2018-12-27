@@ -299,7 +299,7 @@ function calculateWinner(sqrs, d) {
     if (a) return a;
 
     // game continues
-    for (let i = 0; i < sqrs.length; i++) {
+    for (let i = 0; i < d * d; i++) {
         if (sqrs[i] === null) {
             return null;
         }
