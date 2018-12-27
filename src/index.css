@@ -49,3 +49,15 @@ ol, ul {
     margin-left: 20px;
     width: 250px;
 }
+
+left {
+    width: 20%;
+    float: left;
+    border: 1px solid #444;
+    min-height: 30px;
+    margin-right: 10px;
+}
+
+#bigger {
+    height: 45px;
+}

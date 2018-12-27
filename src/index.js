@@ -135,8 +135,13 @@ class Game extends React.Component {
     }
 
     handleChange(event) {
+        const v = parseInt(event.target.value);
+        if (v < 1 || v > 12) {
+            alert('Dimension entered is not valid. Enter a value greater than 0 but less than 13.');
+            return;
+        }
         this.setState({
-            dimension: parseInt(event.target.value, 10),
+            dimension: v,
         });
     }
 
@@ -170,17 +175,7 @@ class Game extends React.Component {
         }
 
         return (
-            <div className="game">
-                <div>
-                    <form>
-                        <label>
-                            Dimension:
-                            <input type="text" value={this.state.dimension} onChange={this.handleChange} onKeyPress={this.handleChange}/>
-                        </label>
-                        <input type="submit" value="Submit" />
-                    </form>
-                </div>
-
+            <div>
                 <div className="game-board">
                     <Board
                         squares={sqrs}
@@ -196,6 +191,18 @@ class Game extends React.Component {
                     </button>
                     <ol>{sortedMoves}</ol>
                 </div>
+
+                <div>
+                  <div class="left" id="bigger"></div>
+                </div>
+
+                <form>
+                    <label>
+                        Enter dimension:
+                        <input type="text" value={this.state.dimension} onChange={this.handleChange} />
+                    </label>
+                    <input />
+                </form>
             </div>
         );
     }
