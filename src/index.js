@@ -66,7 +66,13 @@ class Board extends React.Component {
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.getInitialState();
+        this.handleSortToggle = this.handleSortToggle.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    
+    getInitialState = () => {
+        const initialState = {
             history: [{
                 squares: Array(LEN).fill(null),
                 squrNum: null,
@@ -77,10 +83,13 @@ class Game extends React.Component {
             bgColors: Array(LEN).fill('white'),
             dimension: 3,
         };
-        this.handleSortToggle = this.handleSortToggle.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        return initialState;
     }
-    
+  
+    resetState = () => {
+       this.setState(this.getInitialState());
+    }
+
     handleClick(i) {
         // increment the move number
         const mvN = this.state.moveNumber + 1;
@@ -140,6 +149,7 @@ class Game extends React.Component {
             alert('Dimension entered is not valid. Enter a value greater than 0 but less than 13.');
             return;
         }
+        this.resetState();
         this.setState({
             dimension: v,
         });
