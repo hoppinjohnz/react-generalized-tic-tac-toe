@@ -8,10 +8,10 @@ var MAXDIM = 25;
 var ARRLEN = 10000;
 
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
-function Square(props) {
+function Square({ value, bgc, onClick }) {
     return (
-        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}}>
-            {props.value}
+        <button className="square" onClick={onClick} style={{ backgroundColor: bgc }}>
+            {value}
         </button>
     );
 }
@@ -21,11 +21,63 @@ function Square(props) {
  *                                       | 4 5 6 |
  *                                       \ 7 8 9 /
  */
+
+
+// this component does nothing except render stuff, so using a regular function is simpler
+const FunctionalBoard = ({ dmnsn, squares, bgClrs, onClick }) => {
+    const dimensionArray = [...Array(dmnsn).keys()];  // [ 0, 1, ... dmnsn-1 ];
+    const boardMatrix = dimensionArray.map((v, index) => {
+        const startVal = dmnsn * index;
+
+        return dimensionArray.map(value => startVal + value);
+    });
+
+    return (
+        <div>
+            {
+                boardMatrix.map((row, rowIndex) =>
+                    <div className="board-row" key={rowIndex}>
+                        {
+                            row.map(value =>
+                                <Square
+                                    key={value}
+                                    value={squares[value]}
+                                    onClick={() => onClick(value)}
+                                    bgc={bgClrs[value]}
+                                />
+                            )
+                        }
+                    </div>)
+            }
+        </div>
+    );
+
+    // this commented stuff does the same thing as everything inside the return statement above, it is just factored differently
+    // const renderSquare = value =>
+    //     <Square
+    //         key={value}
+    //         value={squares[value]}
+    //         onClick={() => onClick(value)}
+    //         bgc={bgClrs[value]}
+    //     />;
+    // const renderRow = (row, rowIndex) =>
+    //     <div className="board-row" key={rowIndex}>
+    //         {
+    //             row.map(renderSquare)
+    //         }
+    //     </div>;
+    // const elBoard = boardMatrix.map(renderRow);
+
+    // return <div>{elBoard}</div>;
+};
+
+
+
 class Board extends React.Component {
     renderSquare(i) {
         return (
             <Square key={i}
-                value={this.props.squares[i]} 
+                value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
                 bgc={this.props.bgClrs[i]}
             />
@@ -73,7 +125,7 @@ class Game extends React.Component {
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
-    
+
     getInitialState() {
         // mahe the initial state immutable to support state reset
         const initialState = {
@@ -89,9 +141,9 @@ class Game extends React.Component {
         };
         return initialState;
     }
-  
+
     resetState() {
-       this.setState(this.getInitialState());
+        this.setState(this.getInitialState());
     }
 
     handleClick(i) {
@@ -165,7 +217,7 @@ class Game extends React.Component {
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
-            const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
+            const crrtMv = (index === this.state.moveNumber) ? (<span style={{ fontWeight: 900 }}>{dscrptn}</span>) : dscrptn;
             const sn = currValue.squrNum;
             const lctn = index ? '(' + row(sn, this.state.dimension) + ', ' + col(sn, this.state.dimension) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
@@ -176,7 +228,7 @@ class Game extends React.Component {
             );
         });
         // to support sort toggle: no change to the history at all, only change the on-screen presentation of the history
-        const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
+        const sortedMoves = this.state.isSortOn ? historicalMoves.sort((a, b) => { return (b.key - a.key) }) : historicalMoves;
 
         // set the status accordingly right before rendering
         const sqrs = this.state.history[this.state.moveNumber].squares;
@@ -192,6 +244,13 @@ class Game extends React.Component {
             <div>
                 <div className="game-board">
                     <Board
+                        squares={sqrs}
+                        onClick={(i) => this.handleClick(i)}
+                        bgClrs={this.state.bgColors}
+                        dmnsn={this.state.dimension}
+                    />
+                    <br />
+                    <FunctionalBoard
                         squares={sqrs}
                         onClick={(i) => this.handleClick(i)}
                         bgClrs={this.state.bgColors}
