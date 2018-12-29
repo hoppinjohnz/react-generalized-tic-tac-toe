@@ -4,11 +4,11 @@ import './index.css';
 
 // a few global constants
 var WL = 5;
-var DEFDIM = 10;
+var DEFDIM = 20;
 
 var MINDIM = 1;
 var MAXDIM = 25;
-var ARRLEN = 10000;
+var ARRLEN = MAXDIM * MAXDIM;
 
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
@@ -193,32 +193,32 @@ class Game extends React.Component {
 
         return (
             <div>
-                <div className="game-board">
-                    <Board
-                        squares={sqrs}
-                        onClick={(i) => this.handleClick(i)}
-                        bgClrs={this.state.bgColors}
-                        dmnsn={this.state.dimension}
-                    />
-                </div>
-
-                <div class="left" id="bigger"></div>
-
-                <div className="left">
-                    <div>{status}</div>
-                    <div class="left" id="bigger"></div>
-                    <button type="button" onClick={this.handleSortToggle}>
-                        {this.state.isSortOn ? 'Un Sort' : 'Sort'}
-                    </button>
-                    <ol>{sortedMoves}</ol>
-                </div>
-
-                <div class="left" id="bigger"></div>
-
                 <form>
                     Enter dimension:
                     <input type="text" value={this.state.dimension} onChange={this.handleChange} />
                 </form>
+
+                <div class="left" id="bigger"></div>
+
+                <div className="game">
+                    <div className="game-board">
+                        <Board
+                            squares={sqrs}
+                            onClick={(i) => this.handleClick(i)}
+                            bgClrs={this.state.bgColors}
+                            dmnsn={this.state.dimension}
+                        />
+                    </div>
+
+                    <div className="game-info">
+                        <div>{status}</div>
+                        <div class="left" id="bigger"></div>
+                        <button type="button" onClick={this.handleSortToggle}>
+                            {this.state.isSortOn ? 'Un Sort' : 'Sort'}
+                        </button>
+                        <ol>{sortedMoves}</ol>
+                    </div>
+                </div>
             </div>
         );
     }
