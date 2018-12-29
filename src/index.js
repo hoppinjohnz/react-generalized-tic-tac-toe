@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 // a few global constants
+var WL = 5;
+var DEFDIM = 10;
+
 var MINDIM = 1;
 var MAXDIM = 25;
 var ARRLEN = 10000;
@@ -85,7 +88,7 @@ class Game extends React.Component {
             xIsNext: true,
             isSortOn: false,
             bgColors: Array(ARRLEN).fill('white'),
-            dimension: 3,
+            dimension: DEFDIM,
         };
         return initialState;
     }
@@ -222,7 +225,7 @@ class Game extends React.Component {
 }
 
 function isPlayerWon(sqrs, plyr, d) {
-    var c = 0, a = Array(d).fill(null);
+    var c = 0, a = Array(ARRLEN).fill(null);
 
     // won in rows
     for (let i = 0; i < d; i++) {
@@ -232,12 +235,11 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[j] = mv;
                 c++;
+                if (c === WL) return [plyr, a].flat();
             } else {
-                break;
+                c = 0;
+                a = [];
             }
-        }
-        if (c === d) {
-            return [plyr, a].flat();
         }
     }
 
@@ -249,43 +251,77 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
+                if (c === WL) return [plyr, a].flat();
             } else {
-                break;
+                c = 0;
+                a = [];
             }
         }
-        if (c === d) {
-            return [plyr, a].flat();
+    }
+
+    // diagonal left top to right bottom and its upper diagonal lines
+    for (let k = 0; k < d; k++) {
+        c = 0;
+        for (let i = 0; i < d; i++) {
+            let mv = i * (d + 1) + k;
+            if (sqrs[mv] === plyr) {
+                a[i] = mv;
+                c++;
+                if (c === WL) return [plyr, a].flat();
+            } else {
+                c = 0;
+                a = [];
+            }
         }
     }
 
-    // diagonal left top to right bottom
-    c = 0;
-    for (let i = 0; i < d; i++) {
-        let mv = i * (d + 1);
-        if (sqrs[mv] === plyr) {
-            a[i] = mv;
-            c++;
-        } else {
-            break;
-        }
-        if (c === d) {
-            return [plyr, a].flat();
+    // its lower sub diagonal lines
+    for (let k = 1; k < d; k++) { // no k = 0 to skip main diagonal
+        c = 0;
+        for (let i = 0; i < d; i++) {
+            let mv = i * (d + 1) + k * d;
+            if (sqrs[mv] === plyr) {
+                a[i] = mv;
+                c++;
+                if (c === WL) return [plyr, a].flat();
+            } else {
+                c = 0;
+                a = [];
+            }
         }
     }
 
-    // diagonal right top to left bottom
-    c = 0;
-    const m = d - 1;
-    for (let i = 1; i <= d; i++) {
-        let mv = i * m;
-        if (sqrs[mv] === plyr) {
-            a[i - 1] = mv;  // since i started from 1 not 0
-            c++;
-        } else {
-            break;
+    // diagonal right top to left bottom and its upper lines
+    for (let k = 0; k < d; k++) {
+        c = 0;
+        const m = d - 1;
+        for (let i = 1; i <= d; i++) {
+            let mv = i * m - k;
+            if (sqrs[mv] === plyr) {
+                a[i - 1] = mv;  // since i started from 1 not 0
+                c++;
+                if (c === WL) return [plyr, a].flat();
+            } else {
+                c = 0;
+                a = [];
+            }
         }
-        if (c === d) {
-            return [plyr, a].flat();
+    }
+
+    // its lower sub diagonal lines
+    for (let k = 1; k < d; k++) { // no main diagonal
+        c = 0;
+        const m = d - 1;
+        for (let i = 1; i <= d; i++) {
+            let mv = i * m + k * d;
+            if (sqrs[mv] === plyr) {
+                a[i - 1] = mv;  // since i started from 1 not 0
+                c++;
+                if (c === WL) return [plyr, a].flat();
+            } else {
+                c = 0;
+                a = [];
+            }
         }
     }
 
