@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 // a few global constants
-var WL = 5;
+var WINLEN = 5;
 var DEFDIM = 20;
 
 var MINDIM = 1;
@@ -235,7 +235,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[j] = mv;
                 c++;
-                if (c === WL) return [plyr, a].flat();
+                if (c === WINLEN) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -251,7 +251,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
-                if (c === WL) return [plyr, a].flat();
+                if (c === WINLEN) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -267,7 +267,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
-                if (c === WL) return [plyr, a].flat();
+                if (c === WINLEN) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -283,7 +283,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
-                if (c === WL) return [plyr, a].flat();
+                if (c === WINLEN) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -300,7 +300,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
-                if (c === WL) return [plyr, a].flat();
+                if (c === WINLEN) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -317,7 +317,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
-                if (c === WL) return [plyr, a].flat();
+                if (c === WINLEN) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
