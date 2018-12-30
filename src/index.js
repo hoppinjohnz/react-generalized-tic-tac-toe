@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 // a few global constants
-var WINLEN = 5;
-var DEFDIM = 20;
+const WINLEN = 5;
+const DEFDIM = 20;
 
-var MINDIM = 1;
-var MAXDIM = 25;
-var ARRLEN = MAXDIM * MAXDIM;
+const MINDIM = 1;
+const MAXDIM = 25;
+const ARRLEN = MAXDIM * MAXDIM; // TODO possible to use dimension length instead to be more efficient
 
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
@@ -75,6 +75,7 @@ class Game extends React.Component {
         this.state = this.getInitialState();
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleWinLength = this.handleWinLength.bind(this);
     }
     
     getInitialState() {
@@ -89,6 +90,7 @@ class Game extends React.Component {
             isSortOn: false,
             bgColors: Array(ARRLEN).fill('white'),
             dimension: DEFDIM,
+            winlngth: WINLEN,
         };
         return initialState;
     }
@@ -108,7 +110,7 @@ class Game extends React.Component {
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
         // return and no updating if already won or moving into an occupied square
-        if (sqrs[i] || winnerAndWinningLineOrDraw(sqrs, this.state.dimension)) return;
+        if (sqrs[i] || winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth)) return;
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? 'X' : 'O';
@@ -124,7 +126,7 @@ class Game extends React.Component {
         });
 
         // now, it's time to set up the winning line highlighting if the new move wins
-        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension);
+        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth);
         if (w) {
             const clrs = this.state.bgColors.slice();
             for (let i = 1; i <= this.state.dimension; i++) clrs[w[i]] = 'lightblue';
@@ -162,6 +164,18 @@ class Game extends React.Component {
         });
     }
 
+    handleWinLength(event) {
+        const v = parseInt(event.target.value);
+        if (v < MINDIM || v > this.state.dimension) {
+            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + this.state.dimension + '.');
+            return;
+        }
+        this.resetState();
+        this.setState({
+            winlngth: v,
+        });
+    }
+
     render() {
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
@@ -183,7 +197,7 @@ class Game extends React.Component {
 
         // set the status accordingly right before rendering
         const sqrs = this.state.history[this.state.moveNumber].squares;
-        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension);
+        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -194,8 +208,13 @@ class Game extends React.Component {
         return (
             <div>
                 <form>
-                    Enter dimension:
+                    Enter Board Dimension:
                     <input type="text" value={this.state.dimension} onChange={this.handleChange} />
+                </form>
+
+                <form>
+                    Enter Winning Line Length:
+                    <input type="text" value={this.state.winlngth} onChange={this.handleWinLength} />
                 </form>
 
                 <div class="left" id="bigger"></div>
@@ -224,7 +243,7 @@ class Game extends React.Component {
     }
 }
 
-function isPlayerWon(sqrs, plyr, d) {
+function isPlayerWon(sqrs, plyr, d, wl) {
     var c = 0, a = Array(ARRLEN).fill(null);
 
     // won in rows
@@ -235,7 +254,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[j] = mv;
                 c++;
-                if (c === WINLEN) return [plyr, a].flat();
+                if (c === wl) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -251,7 +270,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
-                if (c === WINLEN) return [plyr, a].flat();
+                if (c === wl) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -267,7 +286,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
-                if (c === WINLEN) return [plyr, a].flat();
+                if (c === wl) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -283,7 +302,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
-                if (c === WINLEN) return [plyr, a].flat();
+                if (c === wl) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -300,7 +319,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
-                if (c === WINLEN) return [plyr, a].flat();
+                if (c === wl) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -317,7 +336,7 @@ function isPlayerWon(sqrs, plyr, d) {
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
-                if (c === WINLEN) return [plyr, a].flat();
+                if (c === wl) return [plyr, a].flat();
             } else {
                 c = 0;
                 a = [];
@@ -328,13 +347,13 @@ function isPlayerWon(sqrs, plyr, d) {
     return false;
 }
 
-function winnerAndWinningLineOrDraw(sqrs, d) {
+function winnerAndWinningLineOrDraw(sqrs, d, wl) {
     // x wins
-    let a = isPlayerWon(sqrs, 'X', d);
+    let a = isPlayerWon(sqrs, 'X', d, wl);
     if (a) return a;
 
     // o wins
-    a = isPlayerWon(sqrs, 'O', d);
+    a = isPlayerWon(sqrs, 'O', d, wl);
     if (a) return a;
 
     // game continues
