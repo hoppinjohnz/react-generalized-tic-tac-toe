@@ -4,7 +4,7 @@ import './index.css';
 
 // a few global constants
 const DEFDIM = 3;
-const WINLEN = 2;
+const WINLEN = 3;
 
 const MINDIM = 1;
 const MAXDIM = 25;
@@ -223,6 +223,20 @@ class Game extends React.Component {
 
         return (
             <div>
+                <h1>
+                    Tic-Tac-Toe Generalized
+                </h1>
+
+                <p>
+                This is a traditional tic-tac-toe game by default.  In addition, it can be played with any board dimension and any win length.  Try to change board dimension to 11 and win length to 5.  It will become a challenging and enjoyable game of 5-in-a-roll.
+                </p>
+
+                <p>
+                    The play history allows to time travel back into history. You can go back to re-play or do-it-over play from any point in the past. Try it.
+                </p>
+
+                <div class="left" id="bigger"></div>
+
                 <form onKeyPress={this.onKeyPress}>
                     Enter Board Dimension:
                     <input type="text" value={this.state.dimension} onChange={this.handleChange} />
