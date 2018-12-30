@@ -47,9 +47,11 @@ class Board extends React.Component {
     fullBoard() {
         const d = this.props.dmnsn;
         const twoDemBoard = Array(d).fill(null);
-        for (let i = 0; i < d; i++) {
+        let i;
+        for (i = 0; i < d; i++) {
             const rowArr = Array(d).fill(null);
-            for (let j = 0; j < d; j++) {
+            let j;
+            for (j = 0; j < d; j++) {
                 rowArr[j] = i * d + j;
             }
             twoDemBoard[i] = rowArr;
@@ -129,7 +131,8 @@ class Game extends React.Component {
         const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth);
         if (w) {
             const clrs = this.state.bgColors.slice();
-            for (let i = 1; i <= this.state.dimension; i++) clrs[w[i]] = 'lightblue';
+            let i;
+            for (i = 1; i <= this.state.dimension; i++) clrs[w[i]] = 'lightblue';
 
             this.setState({
                 bgColors: clrs,
@@ -256,13 +259,14 @@ class Game extends React.Component {
 }
 
 function isPlayerWon(sqrs, plyr, d, wl) {
-    var c = 0, a = Array(ARRLEN).fill(null);
+    let c = 0, a = Array(ARRLEN).fill(null);
+    let i, j, k, mv;
 
     // won in rows
-    for (let i = 0; i < d; i++) {
+    for (i = 0; i < d; i++) {
         c = 0;
-        for (let j = 0; j < d; j++) {
-            let mv = i * d + j;
+        for (j = 0; j < d; j++) {
+            mv = i * d + j;
             if (sqrs[mv] === plyr) {
                 a[j] = mv;
                 c++;
@@ -272,13 +276,14 @@ function isPlayerWon(sqrs, plyr, d, wl) {
                 a = [];
             }
         }
+        a = [];
     }
 
     // won in columns
-    for (let j = 0; j < d; j++) {
+    for (j = 0; j < d; j++) {
         c = 0;
-        for (let i = 0; i < d; i++) {
-            let mv = i * d + j;
+        for (i = 0; i < d; i++) {
+            mv = i * d + j;
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
@@ -288,13 +293,14 @@ function isPlayerWon(sqrs, plyr, d, wl) {
                 a = [];
             }
         }
+        a = [];
     }
 
     // diagonal left top to right bottom and its upper diagonal lines
-    for (let k = 0; k < d; k++) {
+    for (k = 0; k < wl; k++) {
         c = 0;
-        for (let i = 0; i < d; i++) {
-            let mv = i * (d + 1) + k;
+        for (i = 0; i < d - k; i++) {
+            mv = i * (d + 1) + k;
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
@@ -304,13 +310,14 @@ function isPlayerWon(sqrs, plyr, d, wl) {
                 a = [];
             }
         }
+        a = [];
     }
 
     // its lower sub diagonal lines
-    for (let k = 1; k < d; k++) { // no k = 0 to skip main diagonal
+    for (k = 1; k < wl; k++) { // no k = 0 to skip main diagonal
         c = 0;
-        for (let i = 0; i < d; i++) {
-            let mv = i * (d + 1) + k * d;
+        for (i = 0; i < d - k; i++) {
+            mv = i * (d + 1) + k * d;
             if (sqrs[mv] === plyr) {
                 a[i] = mv;
                 c++;
@@ -320,14 +327,15 @@ function isPlayerWon(sqrs, plyr, d, wl) {
                 a = [];
             }
         }
+        a = [];
     }
 
     // diagonal right top to left bottom and its upper lines
-    for (var k = 0; k < d; k++) {
+    for (k = 0; k < wl; k++) {
         c = 0;
         const m = d - 1;
-        for (var i = 1; i <= d; i++) {
-            var mv = i * m - k;
+        for (i = 1; i <= d - k; i++) {
+            mv = i * m - k;
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
@@ -337,14 +345,15 @@ function isPlayerWon(sqrs, plyr, d, wl) {
                 a = [];
             }
         }
+        a = [];
     }
 
     // its lower sub diagonal lines
-    for (let k = 1; k < d; k++) { // no main diagonal
+    for (k = 1; k < wl; k++) { // no main diagonal
         c = 0;
         const m = d - 1;
-        for (let i = 1; i <= d; i++) {
-            let mv = i * m + k * d;
+        for (i = 1; i <= d - k; i++) {
+            mv = i * m + k * d;
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
@@ -354,6 +363,7 @@ function isPlayerWon(sqrs, plyr, d, wl) {
                 a = [];
             }
         }
+        a = [];
     }
 
     return false;
@@ -369,7 +379,8 @@ function winnerAndWinningLineOrDraw(sqrs, d, wl) {
     if (a) return a;
 
     // game continues
-    for (let i = 0; i < d * d; i++) {
+    let i;
+    for (i = 0; i < d * d; i++) {
         if (sqrs[i] === null) {
             return null;
         }
