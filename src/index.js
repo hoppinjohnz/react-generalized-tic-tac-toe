@@ -10,6 +10,9 @@ const MINDIM = 1;
 const MAXDIM = 25;
 const ARRLEN = MAXDIM * MAXDIM; // TODO possible to use dimension length instead to be more efficient
 
+const XTOKEN = 'X';
+const OTOKEN = 'O';
+
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
     return (
@@ -115,7 +118,7 @@ class Game extends React.Component {
         if (sqrs[i] || winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth)) return;
 
         // add the new move in
-        sqrs[i] = this.state.xIsNext ? 'X' : 'O';
+        sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
 
         // then, update the state to re-render the UI to reflect all changes caused by the new move
         this.setState({
@@ -215,7 +218,7 @@ class Game extends React.Component {
         if (w === 'D') {
             status = 'It\'s a draw.';
         } else {
-            status = w ? 'Winner is ' + w[0] : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+            status = w ? 'Winner is ' + w[0] : 'Next player: ' + (this.state.xIsNext ? XTOKEN : OTOKEN);
         }
 
         return (
@@ -246,7 +249,7 @@ class Game extends React.Component {
 
                     <div className="game-info">
                         <div>{status}</div>
-                        <div class="left" id="bigger"></div>
+                        <div class="left" id="big"></div>
                         <button type="button" onClick={this.handleSortToggle}>
                             {this.state.isSortOn ? 'Un Sort' : 'Sort'}
                         </button>
@@ -371,11 +374,11 @@ function isPlayerWon(sqrs, plyr, d, wl) {
 
 function winnerAndWinningLineOrDraw(sqrs, d, wl) {
     // x wins
-    let a = isPlayerWon(sqrs, 'X', d, wl);
+    let a = isPlayerWon(sqrs, XTOKEN, d, wl);
     if (a) return a;
 
     // o wins
-    a = isPlayerWon(sqrs, 'O', d, wl);
+    a = isPlayerWon(sqrs, OTOKEN, d, wl);
     if (a) return a;
 
     // game continues
