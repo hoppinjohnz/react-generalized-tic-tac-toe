@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 // a few global constants
-const WINLEN = 5;
-const DEFDIM = 20;
+const DEFDIM = 3;
+const WINLEN = 2;
 
 const MINDIM = 1;
 const MAXDIM = 25;
@@ -191,7 +191,7 @@ class Game extends React.Component {
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const historicalMoves = this.state.history.map((currValue, index) => {
-            const dscrptn = index ? 'Go to move # ' + index : 'Go to game start';
+            const dscrptn = index ? 'Go to move ' : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const sn = currValue.squrNum;
             const lctn = index ? '(' + row(sn, this.state.dimension) + ', ' + col(sn, this.state.dimension) + ')' : null;
@@ -323,11 +323,11 @@ function isPlayerWon(sqrs, plyr, d, wl) {
     }
 
     // diagonal right top to left bottom and its upper lines
-    for (let k = 0; k < d; k++) {
+    for (var k = 0; k < d; k++) {
         c = 0;
         const m = d - 1;
-        for (let i = 1; i <= d; i++) {
-            let mv = i * m - k;
+        for (var i = 1; i <= d; i++) {
+            var mv = i * m - k;
             if (sqrs[mv] === plyr) {
                 a[i - 1] = mv;  // since i started from 1 not 0
                 c++;
