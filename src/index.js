@@ -154,6 +154,7 @@ class Game extends React.Component {
 
     handleChange(event) {
         const v = parseInt(event.target.value);
+        const w = this.state.winlngth;
         if (v < MINDIM || v > MAXDIM) {
             alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + MAXDIM + '.');
             return;
@@ -161,19 +162,28 @@ class Game extends React.Component {
         this.resetState();
         this.setState({
             dimension: v,
+            winlngth: w,
         });
     }
 
     handleWinLength(event) {
         const v = parseInt(event.target.value);
+        const d = this.state.dimension;
         if (v < MINDIM || v > this.state.dimension) {
             alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + this.state.dimension + '.');
             return;
         }
         this.resetState();
         this.setState({
+            dimension: d,
             winlngth: v,
         });
+    }
+
+    onKeyPress(event) {
+        if (event.which === 13 /* Enter */) {
+          event.preventDefault();
+        }
     }
 
     render() {
@@ -207,13 +217,15 @@ class Game extends React.Component {
 
         return (
             <div>
-                <form>
+                <form onKeyPress={this.onKeyPress}>
                     Enter Board Dimension:
                     <input type="text" value={this.state.dimension} onChange={this.handleChange} />
                 </form>
 
-                <form>
-                    Enter Winning Line Length:
+                <div class="left" id="big"></div>
+
+                <form onKeyPress={this.onKeyPress}>
+                    Enter Winning Length:
                     <input type="text" value={this.state.winlngth} onChange={this.handleWinLength} />
                 </form>
 
