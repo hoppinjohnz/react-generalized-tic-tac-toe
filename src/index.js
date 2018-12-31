@@ -200,7 +200,7 @@ class Game extends React.Component {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const sn = currValue.squrNum;
-            const lctn = index ? '(' + row(sn, this.state.dimension) + ', ' + col(sn, this.state.dimension) + ')' : null;
+            const lctn = index ? '(' + rowNum(sn, this.state.dimension) + ', ' + colNum(sn, this.state.dimension) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -223,17 +223,11 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h1>
-                    Tic-Tac-Toe Generalized
-                </h1>
+                <h1> Tic-Tac-Toe Generalized </h1>
 
-                <p>
-                This is a traditional tic-tac-toe game by default.  In addition, it can be played with any board dimension and any win length.  Try to change board dimension to 11 and win length to 5.  It will become a challenging and enjoyable game of 5-in-a-roll.
-                </p>
+                <p> This is a traditional tic-tac-toe game by default.  In addition, it can be played with any board dimension and any win length.  Try to change board dimension to 11 and win length to 5.  It will become a challenging and enjoyable game of 5-in-a-roll. </p>
 
-                <p>
-                    The play history allows to time travel back into history. You can go back to re-play or do-it-over play from any point in the past. Try it.
-                </p>
+                <p> The play history allows to time travel back into history. You can go back to re-play or do-it-over play from any point in the past. Try it. </p>
 
                 <div class="left" id="bigger"></div>
 
@@ -265,7 +259,7 @@ class Game extends React.Component {
                         <div>{status}</div>
                         <div class="left" id="big"></div>
                         <button type="button" onClick={this.handleSortToggle}>
-                            {this.state.isSortOn ? 'Un Sort' : 'Sort'}
+                            {this.state.isSortOn ? 'Un Sort History' : 'Sort History'}
                         </button>
                         <ol>{sortedMoves}</ol>
                     </div>
@@ -407,11 +401,11 @@ function winnerAndWinningLineOrDraw(sqrs, d, wl) {
     return 'D';
 }
 
-function row(squareNum, d) {
+function rowNum(squareNum, d) {
     return Math.floor(squareNum / d) + 1;
 }
 
-function col(squareNum, d) {
+function colNum(squareNum, d) {
     return (squareNum % d) + 1;
 }
 
