@@ -276,7 +276,7 @@ function fullRow(mv, d) {
     return a;
 }
 
-function isPlayerWon(sn, sqrs, plyr, d, wl) {
+function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     let c = 0, a = Array(ARRLEN).fill(null);
     let i, j, k, mv;
 
@@ -329,7 +329,7 @@ function isPlayerWon(sn, sqrs, plyr, d, wl) {
     }
 
     // diagonal left top to right bottom and its upper diagonal lines
-    for (k = 0; k < wl; k++) {
+    for (k = 0; k < d; k++) {
         c = 0;
         for (i = 0; i < d - k; i++) {
             mv = i * (d + 1) + k;
@@ -346,7 +346,7 @@ function isPlayerWon(sn, sqrs, plyr, d, wl) {
     }
 
     // its lower sub diagonal lines
-    for (k = 1; k < wl; k++) { // no k = 0 to skip main diagonal
+    for (k = 1; k < d; k++) { // no k = 0 to skip main diagonal
         c = 0;
         for (i = 0; i < d - k; i++) {
             mv = i * (d + 1) + k * d;
@@ -363,7 +363,7 @@ function isPlayerWon(sn, sqrs, plyr, d, wl) {
     }
 
     // diagonal right top to left bottom and its upper lines
-    for (k = 0; k < wl; k++) {
+    for (k = 0; k < d; k++) {
         c = 0;
         const m = d - 1;
         for (i = 1; i <= d - k; i++) {
@@ -381,7 +381,7 @@ function isPlayerWon(sn, sqrs, plyr, d, wl) {
     }
 
     // its lower sub diagonal lines
-    for (k = 1; k < wl; k++) { // no main diagonal
+    for (k = 1; k < d; k++) { // no main diagonal
         c = 0;
         const m = d - 1;
         for (i = 1; i <= d - k; i++) {
@@ -403,11 +403,11 @@ function isPlayerWon(sn, sqrs, plyr, d, wl) {
 
 function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     // x wins
-    let a = isPlayerWon(mv, sqrs, XTOKEN, d, wl);
+    let a = playerWinningMoves(XTOKEN, mv, sqrs, d, wl);
     if (a) return a;
 
     // o wins
-    a = isPlayerWon(mv, sqrs, OTOKEN, d, wl);
+    a = playerWinningMoves(OTOKEN, mv, sqrs, d, wl);
     if (a) return a;
 
     // game continues
