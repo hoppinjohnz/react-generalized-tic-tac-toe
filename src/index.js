@@ -236,15 +236,14 @@ class Game extends React.Component {
                     Enter Board Dimension:
                     <input type="text" value={this.state.dimension} onChange={this.handleChange} />
                 </form>
-
-                <div class="left" id="big"></div>
+                <div class="left" id="tiny"></div>
 
                 <form onKeyPress={this.onKeyPress}>
                     Enter Winning Length:
                     <input type="text" value={this.state.winlngth} onChange={this.handleWinLength} />
                 </form>
 
-                <div class="left" id="bigger"></div>
+                <div class="left" id="small"></div>
 
                 <div className="game">
                     <div className="game-board">

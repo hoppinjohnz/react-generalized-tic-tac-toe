@@ -57,10 +57,18 @@ left {
     margin-right: 10px;
 }
 
-#bigger {
-    height: 45px;
+#tiny {
+    height: 8;
+}
+
+#small {
+    height: 12px;
 }
 
 #big {
     height: 25px;
+}
+
+#bigger {
+    height: 45px;
 }

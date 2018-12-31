@@ -29,9 +29,10 @@ Hit [localhost:3000](http://localhost:3000/) to play the game if your browser di
 
 Enter your favorite dimension at the bottom of the page to play a generalized tic-tac-toe game.
 
+The following is a demo of a five-in-a-roll game on a 11 x 11 board:
+
+<img src='five-in-a-roll.gif' title='Video Walkthrough' alt='Video Walkthrough' />
+
 ## Future Enhancements
 
-1. To allow winning to less than the dimension. For example, to win on five in a line when the dimension is ten.
-2. To mark the win as well when time travelling to win.
-
-![check this out]()
+To allow to play against the computer's artificial intelligence.
