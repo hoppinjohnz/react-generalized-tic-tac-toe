@@ -1,5 +1,8 @@
 # react-generalized-tic-tac-toe
 
+### Demo
+<img src='demo.gif' title='Video Walkthrough' alt='Video Walkthrough' />
+
 This tic-tac-toe game was built by following the [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html).  It is meant as an exercise for learning React, so it's well documented.  
 
 In addition to implementing the six suggested improvements, it generalizes the tic-tac-toe game to n-th dimension where n = 1, 2, ..., 25.  The limit of 25 is arbitrary. 
@@ -31,3 +34,5 @@ Enter your favorite dimension at the bottom of the page to play a generalized ti
 
 1. To allow winning to less than the dimension. For example, to win on five in a line when the dimension is ten.
 2. To mark the win as well when time travelling to win.
+
+![check this out]()

@@ -115,7 +115,7 @@ class Game extends React.Component {
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
         // return and no updating if already won or moving into an occupied square
-        if (sqrs[i] || winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth)) return;
+        if (sqrs[i] || winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth)) return;
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
@@ -131,7 +131,7 @@ class Game extends React.Component {
         });
 
         // now, it's time to set up the winning line highlighting if the new move wins
-        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth);
+        const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
         if (w) {
             const clrs = this.state.bgColors.slice();
             let i;
@@ -213,7 +213,8 @@ class Game extends React.Component {
 
         // set the status accordingly right before rendering
         const sqrs = this.state.history[this.state.moveNumber].squares;
-        const w = winnerAndWinningLineOrDraw(sqrs, this.state.dimension, this.state.winlngth);
+        const sn = this.state.history[this.state.moveNumber].squrNum;
+        const w = winnerAndWinningLineOrDraw(sn, sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -269,26 +270,47 @@ class Game extends React.Component {
     }
 }
 
-function isPlayerWon(sqrs, plyr, d, wl) {
+function fullRow(mv, d) {
+    const r = rowNum(mv, d) - 1;
+    let a = [], j;
+    for (j = 0; j < d; j++) a.push(r * d + j);
+    return a;
+}
+
+function isPlayerWon(sn, sqrs, plyr, d, wl) {
     let c = 0, a = Array(ARRLEN).fill(null);
     let i, j, k, mv;
 
-    // won in rows
-    for (i = 0; i < d; i++) {
-        c = 0;
-        for (j = 0; j < d; j++) {
-            mv = i * d + j;
-            if (sqrs[mv] === plyr) {
-                a[j] = mv;
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
+    const fr = fullRow(sn, d);
+    for (j = 0; j < d; j++) {
+        const p = sqrs[fr[j]];
+        if (p === plyr) {
+            a[j] = fr[j];
+            c++;
+            if (c === wl) return [plyr, a].flat();
+        } else {
+            c = 0;
+            a = [];
         }
-        a = [];
     }
+
+
+    // won in rows
+    // for (i = 0; i < d; i++) {
+    //     c = 0;
+    //     for (j = 0; j < d; j++) {
+    //         mv = i * d + j;
+    //         if (sqrs[mv] === plyr) {
+    //             a[j] = mv;
+    //             c++;
+    //             if (c === wl) return [plyr, a].flat();
+    //         } else {
+    //             c = 0;
+    //             a = [];
+    //         }
+    //     }
+    //     a = [];
+    // }
 
     // won in columns
     for (j = 0; j < d; j++) {
@@ -380,13 +402,13 @@ function isPlayerWon(sqrs, plyr, d, wl) {
     return false;
 }
 
-function winnerAndWinningLineOrDraw(sqrs, d, wl) {
+function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     // x wins
-    let a = isPlayerWon(sqrs, XTOKEN, d, wl);
+    let a = isPlayerWon(mv, sqrs, XTOKEN, d, wl);
     if (a) return a;
 
     // o wins
-    a = isPlayerWon(sqrs, OTOKEN, d, wl);
+    a = isPlayerWon(mv, sqrs, OTOKEN, d, wl);
     if (a) return a;
 
     // game continues
@@ -407,6 +429,50 @@ function rowNum(squareNum, d) {
 
 function colNum(squareNum, d) {
     return (squareNum % d) + 1;
+}
+
+function fullCol(mv, d) {
+    const c = colNum(mv, d) - 1;
+    let a = [], i;
+    for (i = 0; i < d; i++) a.push(i * d + c);
+    return a;
+}
+
+function diagonalNE(mv, d, wl) {
+    const r = rowNum(mv, d);
+    const c = colNum(mv, d);
+    const u = c - r;
+
+    let a = [], k;
+    if (u > 0) { // upper
+        for (k = u; k < d; k++) a.push(k + (k - u) * d);
+        return (a.length < wl ? null : a);
+    } else if (u < 0) { // lower
+        for (k = -u; k < d; k++) a.push(k + d - 1 + (k + u) * d);
+        return (a.length < wl ? null : a);
+    } else { // diag
+        for (k = 0; k < d; k++) a.push((d + 1) * k);
+        return a;
+    }
+}
+
+function diagonalNW(mv, d, wl) {
+    const r = rowNum(mv, d);
+    const c = colNum(mv, d);
+    const u = r + c;
+
+    let a = [], k;
+    const t = d - u, s = d - 1;
+    if (u < d) { // upper
+        for (k = t; k <= d; k++) a.push(u + (k - t) * s);
+        return (a.length < wl ? null : a);
+    } else if (u > d) { // lower
+        for (k = u - d + 1; k < d; k++) a.push(u + k * s);
+        return (a.length < wl ? null : a);
+    } else { // diag
+        for (k = 1; k <= d; k++) a.push(k * s);
+        return a;
+    }
 }
 
 // ============================================
