@@ -270,14 +270,7 @@ class Game extends React.Component {
 
 export default Game;
 
-function fullRow(mv, d) {
-    const r = rowNum(mv, d) - 1;
-    let a = [], j;
-    for (j = 0; j < d; j++) a.push(r * d + j);
-    return a;
-}
-
-function playerWinningMoves(plyr, sn, sqrs, d, wl) {
+export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     let c = 0, a = Array(ARRLEN).fill(null);
     let i, j, k, mv;
 
@@ -388,7 +381,7 @@ function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     return false;
 }
 
-function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
+export function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     // x wins
     let a = playerWinningMoves(XTOKEN, mv, sqrs, d, wl);
     if (a) return a;
@@ -409,22 +402,29 @@ function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     return 'D';
 }
 
-function rowNum(squareNum, d) {
+export function rowNum(squareNum, d) {
     return Math.floor(squareNum / d) + 1;
 }
 
-function colNum(squareNum, d) {
+export function colNum(squareNum, d) {
     return (squareNum % d) + 1;
 }
 
-function fullCol(mv, d) {
+export function fullRow(mv, d) {
+    const r = rowNum(mv, d) - 1;
+    let a = [], j;
+    for (j = 0; j < d; j++) a.push(r * d + j);
+    return a;
+}
+
+export function fullCol(mv, d) {
     const c = colNum(mv, d) - 1;
     let a = [], i;
     for (i = 0; i < d; i++) a.push(i * d + c);
     return a;
 }
 
-function diagonalNE(mv, d, wl) {
+export function diagonalNE(mv, d, wl) {
     const r = rowNum(mv, d);
     const c = colNum(mv, d);
     const u = c - r;
@@ -442,7 +442,7 @@ function diagonalNE(mv, d, wl) {
     }
 }
 
-function diagonalNW(mv, d, wl) {
+export function diagonalNW(mv, d, wl) {
     const r = rowNum(mv, d);
     const c = colNum(mv, d);
     const u = r + c;
