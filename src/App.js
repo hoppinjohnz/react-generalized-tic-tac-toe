@@ -199,7 +199,7 @@ class Game extends React.Component {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const sn = currValue.squrNum;
-            const lctn = index ? '(' + rowNum(sn, this.state.dimension) + ', ' + colNum(sn, this.state.dimension) + ')' : null;
+            const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -403,22 +403,22 @@ export function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
 }
 
 export function rowNum(squareNum, d) {
-    return Math.floor(squareNum / d) + 1;
+    return Math.floor(squareNum / d);
 }
 
 export function colNum(squareNum, d) {
-    return (squareNum % d) + 1;
+    return (squareNum % d);
 }
 
 export function fullRow(mv, d) {
-    const r = rowNum(mv, d) - 1;
+    const r = rowNum(mv, d);
     let a = [], j;
     for (j = 0; j < d; j++) a.push(r * d + j);
     return a;
 }
 
 export function fullCol(mv, d) {
-    const c = colNum(mv, d) - 1;
+    const c = colNum(mv, d);
     let a = [], i;
     for (i = 0; i < d; i++) a.push(i * d + c);
     return a;
