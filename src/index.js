@@ -204,7 +204,7 @@ class Game extends React.Component {
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
-                    <button onClick={() => this.jumpTo(index)}>{crrtMv}</button> {lctn}
+                    <button onClick={() => this.jumpTo(index)}>{crrtMv}</button> {lctn} - {sn}
                 </li>
             );
         });
@@ -280,36 +280,22 @@ function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     let c = 0, a = Array(ARRLEN).fill(null);
     let i, j, k, mv;
 
-    const fr = fullRow(sn, d);
-    for (j = 0; j < d; j++) {
-        const p = sqrs[fr[j]];
-        if (p === plyr) {
-            a[j] = fr[j];
-            c++;
-            if (c === wl) return [plyr, a].flat();
-        } else {
-            c = 0;
-            a = [];
-        }
-    }
-
-
     // won in rows
-    // for (i = 0; i < d; i++) {
-    //     c = 0;
-    //     for (j = 0; j < d; j++) {
-    //         mv = i * d + j;
-    //         if (sqrs[mv] === plyr) {
-    //             a[j] = mv;
-    //             c++;
-    //             if (c === wl) return [plyr, a].flat();
-    //         } else {
-    //             c = 0;
-    //             a = [];
-    //         }
-    //     }
-    //     a = [];
-    // }
+    for (i = 0; i < d; i++) {
+        c = 0;
+        for (j = 0; j < d; j++) {
+            mv = i * d + j;
+            if (sqrs[mv] === plyr) {
+                a[j] = mv;
+                c++;
+                if (c === wl) return [plyr, a].flat();
+            } else {
+                c = 0;
+                a = [];
+            }
+        }
+        a = [];
+    }
 
     // won in columns
     for (j = 0; j < d; j++) {
