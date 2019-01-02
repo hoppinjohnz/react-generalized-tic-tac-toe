@@ -410,6 +410,87 @@ export function colNum(squareNum, d) {
     return (squareNum % d);
 }
 
+export function mv2RowAndCol(sqrN, d) {
+    const r = Math.floor(sqrN / d);
+    const c = (sqrN % d);
+    return [r, c];
+}
+
+export function rowAndCol2mv(r, c, d) {
+    return r * d + c;
+}
+
+export function weSN(r, c, d) {
+    const t = c - 1;
+    return (t < 0) ? null : rowAndCol2mv(r, t, d);
+}
+
+export function eaSN(r, c, d) {
+    const t = c + 1;
+    return (t >= d) ? null : rowAndCol2mv(r, t, d);
+}
+
+export function northSN(r, c, d) {
+    const t = r - 1;
+    return (t < 0) ? null : rowAndCol2mv(t, c, d);
+}
+
+export function southSN(r, c, d) {
+    const t = r + 1;
+    return (t >= d) ? null : rowAndCol2mv(t, c, d);
+}
+
+export function nwSN(r, c, d) {
+    const s = r - 1, t = c - 1;
+    return (s < 0 || t < 0) ? null : rowAndCol2mv(s, t, d);
+}
+
+export function swSN(r, c, d) {
+    const s = r + 1, t = c - 1;
+    return (s >= d || t < 0) ? null : rowAndCol2mv(s, t, d);
+}
+
+export function neSN(r, c, d) {
+    const s = r - 1, t = c + 1;
+    return (s < 0 || t >= d) ? null : rowAndCol2mv(s, t, d);
+}
+
+export function seSN(r, c, d) {
+    const s = r + 1, t = c + 1;
+    return (s >= d || t >= d) ? null : rowAndCol2mv(s, t, d);
+}
+
+export function rowSec(mv, d, wl) {
+    let a = [], i;
+    const [r, c] = mv2RowAndCol(mv, d);
+    for (i = wl - 2; i >= 0; i--) {
+        const t = c - i;
+        if (t >= 0) {
+            const n = weSN(r, t, d);
+            if (n != null) a.push(n);
+        }
+    }
+    a.push(mv);
+    for (i = 0; i < wl - 1; i++) {
+        const t = c + i;
+        if (t < d) {
+            const n = eaSN(r, t, d);
+            if (n != null) a.push(n);
+        }
+    }
+    return a;
+}
+
+export function colSec(mv, d, wl) {
+}
+
+export function nweSec(mv, d, wl) {
+}
+
+export function neaSec(mv, d, wl) {
+}
+
+
 export function fullRow(mv, d) {
     const r = rowNum(mv, d);
     let a = [], j;
