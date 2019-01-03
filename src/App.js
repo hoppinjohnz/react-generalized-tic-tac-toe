@@ -7,7 +7,7 @@ const WINLEN = 3;
 
 const MINDIM = 1;
 const MAXDIM = 25;
-const ARRLEN = MAXDIM * MAXDIM; // TODO possible to use dimension length instead to be more efficient
+const ARRLEN = MAXDIM * MAXDIM; // TODO possible to use dimension * dimension length instead to be more efficient
 
 const XTOKEN = 'X';
 const OTOKEN = 'O';
