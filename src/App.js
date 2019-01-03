@@ -312,74 +312,34 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
         }
     }
 
-    // diagonal left top to right bottom and its upper diagonal lines
-    for (k = 0; k < d; k++) {
-        c = 0;
-        for (i = 0; i < d - k; i++) {
-            mv = i * (d + 1) + k;
-            if (sqrs[mv] === plyr) {
-                a[i] = mv;
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
+    // won in diagonal north east
+    c = 0; a = []; arr = [];
+    arr = neaSec(sn, d, wl);
+    for (i = 0; i < arr.length; i++) {
+        mv = arr[i];
+        if (sqrs[mv] === plyr) {
+            a[i] = mv;
+            c++;
+            if (c === wl) return [plyr, a].flat();
+        } else {
+            c = 0;
+            a = [];
         }
-        a = [];
     }
 
-    // its lower sub diagonal lines
-    for (k = 1; k < d; k++) { // no k = 0 to skip main diagonal
-        c = 0;
-        for (i = 0; i < d - k; i++) {
-            mv = i * (d + 1) + k * d;
-            if (sqrs[mv] === plyr) {
-                a[i] = mv;
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
+    // won in diagonal north west
+    c = 0; a = []; arr = [];
+    arr = nweSec(sn, d, wl);
+    for (i = 0; i < arr.length; i++) {
+        mv = arr[i];
+        if (sqrs[mv] === plyr) {
+            a[i] = mv;
+            c++;
+            if (c === wl) return [plyr, a].flat();
+        } else {
+            c = 0;
+            a = [];
         }
-        a = [];
-    }
-
-    // diagonal right top to left bottom and its upper lines
-    for (k = 0; k < d; k++) {
-        c = 0;
-        const m = d - 1;
-        for (i = 1; i <= d - k; i++) {
-            mv = i * m - k;
-            if (sqrs[mv] === plyr) {
-                a[i - 1] = mv;  // since i started from 1 not 0
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
-        }
-        a = [];
-    }
-
-    // its lower sub diagonal lines
-    for (k = 1; k < d; k++) { // no main diagonal
-        c = 0;
-        const m = d - 1;
-        for (i = 1; i <= d - k; i++) {
-            mv = i * m + k * d;
-            if (sqrs[mv] === plyr) {
-                a[i - 1] = mv;  // since i started from 1 not 0
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
-        }
-        a = [];
     }
 
     return false;
