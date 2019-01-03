@@ -87,7 +87,7 @@ class Game extends React.Component {
         const initialState = {
             history: [{
                 squares: Array(ARRLEN).fill(null),
-                mvSqurNum: null,
+                mvSqurNum: null, // to display (r, c) - move location on history list
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
@@ -284,20 +284,17 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     let i, j, k, mv;
 
     // won in rows
-    for (i = 0; i < d; i++) {
-        c = 0;
-        for (j = 0; j < d; j++) {
-            mv = i * d + j;
-            if (sqrs[mv] === plyr) {
-                a[j] = mv;
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
+    const arr = rowSec(sn, d, wl);
+    for (j = 0; j < arr.length; j++) {
+        mv = arr[j];
+        if (sqrs[mv] === plyr) {
+            a[j] = mv;
+            c++;
+            if (c === wl) return [plyr, a].flat();
+        } else {
+            c = 0;
+            a = [];
         }
-        a = [];
     }
 
     // won in columns
