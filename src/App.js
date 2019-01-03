@@ -290,29 +290,22 @@ export function chkArrForWin(arr, plyr, sqrs, wl) {
 }
 
 export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
-    let r = [], a = [];
+    let r = [];
 
     // won in rows
-    a = rowSec(sn, d, wl);
-    r = chkArrForWin(a, plyr, sqrs, wl); 
+    r = chkArrForWin(rowSec(sn, d, wl), plyr, sqrs, wl); 
     if (r) return r;
 
     // won in columns
-    a = []; r = [];
-    a = colSec(sn, d, wl);
-    r = chkArrForWin(a, plyr, sqrs, wl); 
+    r = chkArrForWin(colSec(sn, d, wl), plyr, sqrs, wl); 
     if (r) return r;
 
     // won in north east diagonals
-    a = []; r = [];
-    a = neaSec(sn, d, wl);
-    r = chkArrForWin(a, plyr, sqrs, wl); 
+    r = chkArrForWin(neaSec(sn, d, wl), plyr, sqrs, wl); 
     if (r) return r;
 
     // won in north west diagonals
-    a = []; r = [];
-    a = nweSec(sn, d, wl);
-    r = chkArrForWin(a, plyr, sqrs, wl); 
+    r = chkArrForWin(nweSec(sn, d, wl), plyr, sqrs, wl); 
     if (r) return r;
 
     return false;
