@@ -95,6 +95,7 @@ class Game extends React.Component {
             bgColors: Array(ARRLEN).fill('white'),
             dimension: DEFDIM,
             winlngth: WINLEN,
+            alreadyWon: false, // to support return without checking previous wins after clicking a square
         };
         return initialState;
     }
@@ -114,7 +115,7 @@ class Game extends React.Component {
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
         // return and no updating if moving into an occupied square or already won
-        if (sqrs[i] || winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth)) return;
+        if (sqrs[i] || this.state.alreadyWon) return;
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
@@ -138,6 +139,7 @@ class Game extends React.Component {
 
             this.setState({
                 bgColors: clrs,
+                alreadyWon: true,
             });
         }
     }
@@ -148,6 +150,7 @@ class Game extends React.Component {
             moveNumber: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
             bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
+            alreadyWon: false,
         });
     }
 
