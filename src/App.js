@@ -430,12 +430,12 @@ export function eaSN(r, c, d) {
     return (t >= d) ? null : rowAndCol2mv(r, t, d);
 }
 
-export function northSN(r, c, d) {
+export function noSN(r, c, d) {
     const t = r - 1;
     return (t < 0) ? null : rowAndCol2mv(t, c, d);
 }
 
-export function southSN(r, c, d) {
+export function soSN(r, c, d) {
     const t = r + 1;
     return (t >= d) ? null : rowAndCol2mv(t, c, d);
 }
@@ -461,18 +461,18 @@ export function seSN(r, c, d) {
 }
 
 export function rowSec(mv, d, wl) {
-    let a = [], i;
+    let a = [], j;
     const [r, c] = mv2RowAndCol(mv, d);
-    for (i = wl - 2; i >= 0; i--) {
-        const t = c - i;
+    for (j = wl - 2; j >= 0; j--) {
+        const t = c - j;
         if (t >= 0) {
             const n = weSN(r, t, d);
             if (n != null) a.push(n);
         }
     }
     a.push(mv);
-    for (i = 0; i < wl - 1; i++) {
-        const t = c + i;
+    for (j = 0; j < wl - 1; j++) {
+        const t = c + j;
         if (t < d) {
             const n = eaSN(r, t, d);
             if (n != null) a.push(n);
@@ -482,12 +482,70 @@ export function rowSec(mv, d, wl) {
 }
 
 export function colSec(mv, d, wl) {
-}
-
-export function nweSec(mv, d, wl) {
+    let a = [], i;
+    const [r, c] = mv2RowAndCol(mv, d);
+    for (i = wl - 2; i >= 0; i--) {
+        const t = r - i;
+        if (t >= 0) {
+            const n = noSN(t, c, d);
+            if (n != null) a.push(n);
+        }
+    }
+    a.push(mv);
+    for (i = 0; i < wl - 1; i++) {
+        const t = r + i;
+        if (t < d) {
+            const n = soSN(t, c, d);
+            if (n != null) a.push(n);
+        }
+    }
+    return a;
 }
 
 export function neaSec(mv, d, wl) {
+    let a = [], i;
+    const [r, c] = mv2RowAndCol(mv, d);
+    for (i = wl - 2; i >= 0; i--) {
+        const s = r - i;
+        const t = c - i;
+        if (s >= 0 && t >= 0) {
+            const n = nwSN(s, t, d);
+            if (n != null) a.push(n);
+        }
+    }
+    a.push(mv);
+    for (i = 0; i < wl - 1; i++) {
+        const s = r + i;
+        const t = c + i;
+        if (s < d && t < d) {
+            const n = seSN(s, t, d);
+            if (n != null) a.push(n);
+        }
+    }
+    return a;
+}
+
+export function nweSec(mv, d, wl) {
+    let a = [], i;
+    const [r, c] = mv2RowAndCol(mv, d);
+    for (i = wl - 2; i >= 0; i--) {
+        const s = r - i;
+        const t = c + i;
+        if (s >= 0 && t < d) {
+            const n = neSN(s, t, d);
+            if (n != null) a.push(n);
+        }
+    }
+    a.push(mv);
+    for (i = 0; i < wl - 1; i++) {
+        const s = r + i;
+        const t = c - i;
+        if (s < d && t >= 0) {
+            const n = swSN(s, t, d);
+            if (n != null) a.push(n);
+        }
+    }
+    return a;
 }
 
 
