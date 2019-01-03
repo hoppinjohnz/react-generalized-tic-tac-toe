@@ -113,7 +113,7 @@ class Game extends React.Component {
         // the board squares right before the new move
         const sqrs = hstr[hstr.length - 1].squares.slice();
 
-        // return and no updating if already won or moving into an occupied square
+        // return and no updating if moving into an occupied square or already won
         if (sqrs[i] || winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth)) return;
 
         // add the new move in
@@ -271,8 +271,9 @@ class Game extends React.Component {
 export default Game;
 
 /**
- * The idea of only checking the immediate neighbors for winning is appealing, but not sufficient here because 
- * we need to check the entire board for every clicking even after winning.  
+ * The idea of checking only the immediate neighbors for winning is appealing,
+ * but not sufficient for the current data structure
+ * because we need to check the entire board for every clicking even after winning.
  * Only checking immediate neighbors, in this case, will cause continued play beyond winning.
  */
 export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
