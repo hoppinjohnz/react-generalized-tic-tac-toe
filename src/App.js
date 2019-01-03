@@ -232,20 +232,20 @@ class Game extends React.Component {
 
                 <p> The play history allows to time travel back into history. You can go back to re-play or do-it-over play from any point in the past. Try it. </p>
 
-                <div class="left" id="bigger"></div>
+                <div className="left" id="bigger"></div>
 
                 <form onKeyPress={this.onKeyPress}>
                     Enter Board Dimension:
                     <input type="text" value={this.state.dimension} onChange={this.handleDimChange} />
                 </form>
-                <div class="left" id="tiny"></div>
+                <div className="left" id="tiny"></div>
 
                 <form onKeyPress={this.onKeyPress}>
                     Enter Winning Length:
                     <input type="text" value={this.state.winlngth} onChange={this.handleWinLength} />
                 </form>
 
-                <div class="left" id="small"></div>
+                <div className="left" id="small"></div>
 
                 <div className="game">
                     <div className="game-board">
