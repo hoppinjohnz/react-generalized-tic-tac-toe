@@ -270,8 +270,13 @@ class Game extends React.Component {
 
 export default Game;
 
+/**
+ * The idea of only checking the immediate neighbors for winning is appealing, but not sufficient here because 
+ * we need to check the entire board for every clicking even after winning.  
+ * Only checking immediate neighbors, in this case, will cause continued play beyond winning.
+ */
 export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
-    let c = 0, a = Array(ARRLEN).fill(null);
+    let c = 0, a = [];
     let i, j, k, mv;
 
     // won in rows
@@ -546,56 +551,4 @@ export function nweSec(mv, d, wl) {
         }
     }
     return a;
-}
-
-
-export function fullRow(mv, d) {
-    const r = rowNum(mv, d);
-    let a = [], j;
-    for (j = 0; j < d; j++) a.push(r * d + j);
-    return a;
-}
-
-export function fullCol(mv, d) {
-    const c = colNum(mv, d);
-    let a = [], i;
-    for (i = 0; i < d; i++) a.push(i * d + c);
-    return a;
-}
-
-export function diagonalNE(mv, d, wl) {
-    const r = rowNum(mv, d);
-    const c = colNum(mv, d);
-    const u = c - r;
-
-    let a = [], k;
-    if (u > 0) { // upper
-        for (k = u; k < d; k++) a.push(k + (k - u) * d);
-        return (a.length < wl ? null : a);
-    } else if (u < 0) { // lower
-        for (k = -u; k < d; k++) a.push(k + d - 1 + (k + u) * d);
-        return (a.length < wl ? null : a);
-    } else { // diag
-        for (k = 0; k < d; k++) a.push((d + 1) * k);
-        return a;
-    }
-}
-
-export function diagonalNW(mv, d, wl) {
-    const r = rowNum(mv, d);
-    const c = colNum(mv, d);
-    const u = r + c;
-
-    let a = [], k;
-    const t = d - u, s = d - 1;
-    if (u < d) { // upper
-        for (k = t; k <= d; k++) a.push(u + (k - t) * s);
-        return (a.length < wl ? null : a);
-    } else if (u > d) { // lower
-        for (k = u - d + 1; k < d; k++) a.push(u + k * s);
-        return (a.length < wl ? null : a);
-    } else { // diag
-        for (k = 1; k <= d; k++) a.push(k * s);
-        return a;
-    }
 }
