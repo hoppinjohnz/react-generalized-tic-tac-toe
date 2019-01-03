@@ -273,74 +273,47 @@ class Game extends React.Component {
 
 export default Game;
 
-/**
- * The idea of checking only the immediate neighbors for winning is appealing,
- * but not sufficient for the current data structure
- * because we need to check the entire board for every clicking even after winning.
- * Only checking immediate neighbors, in this case, will cause continued play beyond winning.
- */
+export function chkArrForWin(arr, plyr, sqrs, wl) {
+    let i, mv, c = 0, a = [];
+    for (i = 0; i < arr.length; i++) {
+        mv = arr[i];
+        if (sqrs[mv] === plyr) {
+            a[i] = mv;
+            c++;
+            if (c === wl) return [plyr, a].flat();
+        } else {
+            c = 0;
+            a = [];
+        }
+    }
+    return null;
+}
+
 export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
-    let c = 0, a = [], arr = [];
-    let i, j, k, mv;
+    let r = [], a = [];
 
     // won in rows
-    arr = rowSec(sn, d, wl);
-    for (j = 0; j < arr.length; j++) {
-        mv = arr[j];
-        if (sqrs[mv] === plyr) {
-            a[j] = mv;
-            c++;
-            if (c === wl) return [plyr, a].flat();
-        } else {
-            c = 0;
-            a = [];
-        }
-    }
+    a = rowSec(sn, d, wl);
+    r = chkArrForWin(a, plyr, sqrs, wl); 
+    if (r) return r;
 
     // won in columns
-    c = 0; a = []; arr = [];
-    arr = colSec(sn, d, wl);
-    for (i = 0; i < arr.length; i++) {
-        mv = arr[i];
-        if (sqrs[mv] === plyr) {
-            a[i] = mv;
-            c++;
-            if (c === wl) return [plyr, a].flat();
-        } else {
-            c = 0;
-            a = [];
-        }
-    }
+    a = []; r = [];
+    a = colSec(sn, d, wl);
+    r = chkArrForWin(a, plyr, sqrs, wl); 
+    if (r) return r;
 
-    // won in diagonal north east
-    c = 0; a = []; arr = [];
-    arr = neaSec(sn, d, wl);
-    for (i = 0; i < arr.length; i++) {
-        mv = arr[i];
-        if (sqrs[mv] === plyr) {
-            a[i] = mv;
-            c++;
-            if (c === wl) return [plyr, a].flat();
-        } else {
-            c = 0;
-            a = [];
-        }
-    }
+    // won in north east diagonals
+    a = []; r = [];
+    a = neaSec(sn, d, wl);
+    r = chkArrForWin(a, plyr, sqrs, wl); 
+    if (r) return r;
 
-    // won in diagonal north west
-    c = 0; a = []; arr = [];
-    arr = nweSec(sn, d, wl);
-    for (i = 0; i < arr.length; i++) {
-        mv = arr[i];
-        if (sqrs[mv] === plyr) {
-            a[i] = mv;
-            c++;
-            if (c === wl) return [plyr, a].flat();
-        } else {
-            c = 0;
-            a = [];
-        }
-    }
+    // won in north west diagonals
+    a = []; r = [];
+    a = nweSec(sn, d, wl);
+    r = chkArrForWin(a, plyr, sqrs, wl); 
+    if (r) return r;
 
     return false;
 }
