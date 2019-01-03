@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 
 // a few global constants
-const DEFDIM = 3;
+const DFLDIM = 3;
 const WINLEN = 3;
 
 const MINDIM = 1;
@@ -93,7 +93,7 @@ class Game extends React.Component {
             xIsNext: true,
             isSortOn: false,
             bgColors: Array(ARRLEN).fill('white'),
-            dimension: DEFDIM,
+            dimension: DFLDIM,
             winlngth: WINLEN,
             alreadyWon: false, // to support return without checking previous wins after clicking a square
         };
