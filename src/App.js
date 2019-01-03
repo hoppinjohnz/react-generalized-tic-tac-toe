@@ -78,7 +78,7 @@ class Game extends React.Component {
         super(props);
         this.state = this.getInitialState();
         this.handleSortToggle = this.handleSortToggle.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+        this.handleDimChange = this.handleDimChange.bind(this);
         this.handleWinLength = this.handleWinLength.bind(this);
     }
     
@@ -160,11 +160,11 @@ class Game extends React.Component {
         });
     }
 
-    handleChange(event) {
+    handleDimChange(event) {
         const v = parseInt(event.target.value);
         const w = this.state.winlngth;
-        if (v < MINDIM || v > MAXDIM) {
-            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + MAXDIM + '.');
+        if (isNaN(v) || v === null || v < MINDIM || v > MAXDIM || v < w) {
+            alert('You entered ' + v + '. Please enter a value between ' + ((v < w) ? w : MINDIM) + ' and ' + MAXDIM + '.');
             return;
         }
         this.resetState();
@@ -177,8 +177,8 @@ class Game extends React.Component {
     handleWinLength(event) {
         const v = parseInt(event.target.value);
         const d = this.state.dimension;
-        if (v < MINDIM || v > this.state.dimension) {
-            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + this.state.dimension + '.');
+        if (isNaN(v) || v === null || v < MINDIM || v > d) {
+            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + d + '.');
             return;
         }
         this.resetState();
@@ -236,7 +236,7 @@ class Game extends React.Component {
 
                 <form onKeyPress={this.onKeyPress}>
                     Enter Board Dimension:
-                    <input type="text" value={this.state.dimension} onChange={this.handleChange} />
+                    <input type="text" value={this.state.dimension} onChange={this.handleDimChange} />
                 </form>
                 <div class="left" id="tiny"></div>
 
@@ -280,11 +280,11 @@ export default Game;
  * Only checking immediate neighbors, in this case, will cause continued play beyond winning.
  */
 export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
-    let c = 0, a = [];
+    let c = 0, a = [], arr = [];
     let i, j, k, mv;
 
     // won in rows
-    const arr = rowSec(sn, d, wl);
+    arr = rowSec(sn, d, wl);
     for (j = 0; j < arr.length; j++) {
         mv = arr[j];
         if (sqrs[mv] === plyr) {
@@ -298,20 +298,18 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in columns
-    for (j = 0; j < d; j++) {
-        c = 0;
-        for (i = 0; i < d; i++) {
-            mv = i * d + j;
-            if (sqrs[mv] === plyr) {
-                a[i] = mv;
-                c++;
-                if (c === wl) return [plyr, a].flat();
-            } else {
-                c = 0;
-                a = [];
-            }
+    c = 0; a = []; arr = [];
+    arr = colSec(sn, d, wl);
+    for (i = 0; i < arr.length; i++) {
+        mv = arr[i];
+        if (sqrs[mv] === plyr) {
+            a[i] = mv;
+            c++;
+            if (c === wl) return [plyr, a].flat();
+        } else {
+            c = 0;
+            a = [];
         }
-        a = [];
     }
 
     // diagonal left top to right bottom and its upper diagonal lines
