@@ -87,7 +87,7 @@ class Game extends React.Component {
         const initialState = {
             history: [{
                 squares: Array(ARRLEN).fill(null),
-                squrNum: null,
+                mvSqurNum: null,
             }],
             moveNumber: 0, // the displayed move number on UI
             xIsNext: true,
@@ -124,7 +124,7 @@ class Game extends React.Component {
         this.setState({
             history: hstr.concat([{
                 squares: sqrs,
-                squrNum: i,
+                mvSqurNum: i,
             }]),
             moveNumber: mvN,
             xIsNext: !this.state.xIsNext,
@@ -201,7 +201,7 @@ class Game extends React.Component {
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
-            const sn = currValue.squrNum;
+            const sn = currValue.mvSqurNum;
             const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
@@ -215,7 +215,7 @@ class Game extends React.Component {
 
         // set the status accordingly right before rendering
         const sqrs = this.state.history[this.state.moveNumber].squares;
-        const sn = this.state.history[this.state.moveNumber].squrNum;
+        const sn = this.state.history[this.state.moveNumber].mvSqurNum;
         const w = winnerAndWinningLineOrDraw(sn, sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
