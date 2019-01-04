@@ -79,7 +79,7 @@ class Game extends React.Component {
     }
     
     getInitialState() {
-        // mahe the initial state immutable to support state reset
+        // make the initial state immutable to support state reset
         const initialState = {
             history: [{
                 squares: Array(ARRLEN).fill(null),
