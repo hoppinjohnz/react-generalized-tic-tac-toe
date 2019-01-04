@@ -48,20 +48,16 @@ class Board extends React.Component {
 
     fullBoard() {
         const d = this.props.dmnsn;
-        const twoDemBoard = Array(d).fill(null);
+        const twoDimBoard = Array(d).fill(null);
         let i;
-        for (i = 0; i < d; i++) {
+        for (i = 0; i < d; i++) { // cannot use map here: need to pass d in
             const rowArr = Array(d).fill(null);
-            let j;
-            for (j = 0; j < d; j++) {
-                rowArr[j] = i * d + j;
-            }
-            twoDemBoard[i] = rowArr;
+            twoDimBoard[i] = rowArr.map((e, j) => i * d + j);
         }
-        // twoDemBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
+        // twoDimBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
         return (
             <div>
-                {twoDemBoard.map((e) => this.boardRow(e))}
+                {twoDimBoard.map((e) => this.boardRow(e))}
             </div>
         );
     }
@@ -206,7 +202,7 @@ class Game extends React.Component {
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
-                    <button onClick={() => this.jumpTo(index)}>{crrtMv}</button> {lctn} - {sn}
+                    <button onClick={() => this.jumpTo(index)}>{crrtMv}</button> {lctn}
                 </li>
             );
         });
@@ -275,7 +271,7 @@ export default Game;
 
 export function chkArrForWin(arr, plyr, sqrs, wl) {
     let i, mv, c = 0, a = [];
-    for (i = 0; i < arr.length; i++) {
+    for (i = 0; i < arr.length; i++) { // TODO cannot figure out how to use map()
         mv = arr[i];
         if (sqrs[mv] === plyr) {
             a[i] = mv;
@@ -323,9 +319,7 @@ export function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     // game continues
     let i;
     for (i = 0; i < d * d; i++) {
-        if (sqrs[i] === null) {
-            return null;
-        }
+        if (sqrs[i] === null) return null;
     }
 
     // draw
