@@ -63,9 +63,7 @@ class Board extends React.Component {
     }
 
     render() {
-        return (
-            this.fullBoard()
-        );
+        return this.fullBoard();
     }
 }
 
