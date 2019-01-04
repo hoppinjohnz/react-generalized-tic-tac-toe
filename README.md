@@ -27,7 +27,7 @@ Hit [localhost:3000](http://localhost:3000/) to play the game if your browser di
 
 ## Change Dimensions
 
-Enter your favorite dimension at the bottom of the page to play a generalized tic-tac-toe game.
+Enter your favorite dimension and win length to play a generalized tic-tac-toe game.
 
 The following is a demo of a five-in-a-roll game on a 11 x 11 board:
 
