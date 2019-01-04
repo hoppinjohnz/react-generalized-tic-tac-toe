@@ -38,10 +38,10 @@ class Board extends React.Component {
     }
 
     boardRow(rw) {
-        const cols = rw.slice();
+        const r = rw.slice();
         return (
-            <div key={cols} className="board-row">
-                {cols.map((i) => this.renderSquare(i))}
+            <div key={r} className="board-row">
+                {r.map((c) => this.renderSquare(c))}
             </div>
         );
     }
@@ -57,7 +57,7 @@ class Board extends React.Component {
         // twoDimBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
         return (
             <div>
-                {twoDimBoard.map((e) => this.boardRow(e))}
+                {twoDimBoard.map((r) => this.boardRow(r))}
             </div>
         );
     }
