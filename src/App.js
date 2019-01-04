@@ -259,7 +259,7 @@ class Game extends React.Component {
 
                     <div className="game-info">
                         <div>{status}</div>
-                        <div class="left" id="big"></div>
+                        <div className="left" id="big"></div>
                         <button type="button" onClick={this.handleSortToggle}>
                             {this.state.isSortOn ? 'Un Sort History' : 'Sort History'}
                         </button>
