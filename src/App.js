@@ -67,6 +67,41 @@ class Board extends React.Component {
     }
 }
 
+class DimensionInput extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleSubmit = this.handleSubmit.bind(this)
+        // initialize ref
+        this.form = React.createRef()
+    }
+
+    handleSubmit(e) {
+        e.preventDefault()
+        let message = ''
+        //ref has all DOM element children of form in its current property
+        if (!/^[0-9]+$/i.test(this.form.current.dimension.value)) {
+            message = 'Please enter a valid email address. For example "example@example.com".'
+            alert(message)
+        } else {
+            message = 'This is a valid email address :)'
+            alert(message)
+        }
+    }
+
+    render(){
+      return(
+        // put ref attribute into the form element
+        <form onSubmit={this.handleSubmit} ref={this.form}>
+            <label>
+                Email:
+                <input type="text" name="dimension" placeholder="enter your email"/>
+            </label>
+            <input type="submit" value="Submit" />
+        </form>
+      )
+    }
+}
+
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -227,6 +262,8 @@ class Game extends React.Component {
                 <p> The play history allows to time travel back into history. You can go back to re-play or do-it-over play from any point in the past. Try it. </p>
 
                 <div className="left" id="bigger"></div>
+
+                <DimensionInput/>
 
                 <form onKeyPress={this.onKeyPress}>
                     Enter Board Dimension:
