@@ -76,7 +76,7 @@ class Board extends React.Component {
  * The value of the child input is assigned to the this.dimension property of the parent via 'ref' attribute connected to the dimension prop, 
  * so the child's value is available to the parent.
  */
-function DimensionInput(props) {
+function CustomInput(props) {
     return (
         <div>
             <label>{props.label}:</label>
@@ -251,7 +251,7 @@ class Game extends React.Component {
 
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
                 <form onSubmit={this.handleDimSubmit}>
-                    <DimensionInput
+                    <CustomInput
                         label={'Enter Board Dimension'}
                         dimension={v => this.dimension = v}
                         winlength={null}
@@ -261,7 +261,7 @@ class Game extends React.Component {
                 <div className="left" id="small"></div>
 
                 <form onSubmit={this.handleWinLenSubmit}>
-                    <DimensionInput
+                    <CustomInput
                         label={'Enter Win Length'}
                         dimension={null}
                         winlength={v => this.winlength = v}
