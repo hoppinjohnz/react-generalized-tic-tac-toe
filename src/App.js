@@ -81,6 +81,7 @@ function CustomInput(props) {
         <div>
             <label>{props.label}:</label>
             <input type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension}/>
+            <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
         </div>
     );
 }
@@ -108,6 +109,8 @@ class Game extends React.Component {
             dimension: DFLDIM,
             winlngth: WINLEN,
             alreadyWon: false, // to support return without checking previous wins after clicking a square
+            dm_error: null,
+            wl_error: null,
         };
         return initialState;
     }
@@ -183,7 +186,10 @@ class Game extends React.Component {
         const v = parseInt(this.dimension.value);
         const w = this.state.winlngth;
         if (isNaN(v) || v === null || v < MINDIM || v > MAXDIM || v < w) {
-            alert('You entered ' + v + '. Please enter a value between ' + ((v < w) ? w : MINDIM) + ' and ' + MAXDIM + '.');
+            const e = 'You entered ' + v + '. Please enter a value between ' + ((v < w) ? w : MINDIM) + ' and ' + MAXDIM + '.';
+            this.setState({
+                dm_error: e,
+            });
             return;
         }
         this.resetState();
@@ -198,7 +204,10 @@ class Game extends React.Component {
         const v = parseInt(this.winlength.value);
         const d = this.state.dimension;
         if (isNaN(v) || v === null || v < MINDIM || v > d) {
-            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + d + '.');
+            const e = 'You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + d + '.';
+            this.setState({
+                wl_error: e,
+            });
             return;
         }
         this.resetState();
@@ -255,7 +264,9 @@ class Game extends React.Component {
                         label={'Enter Board Dimension'}
                         dimension={v => this.dimension = v}
                         winlength={null}
-                        plchldr={DFLDIM}/>
+                        plchldr={DFLDIM}
+                        input_error={this.state.dm_error}
+                    />
                 </form>
 
                 <div className="left" id="small"></div>
@@ -265,7 +276,9 @@ class Game extends React.Component {
                         label={'Enter Win Length'}
                         dimension={null}
                         winlength={v => this.winlength = v}
-                        plchldr={WINLEN}/>
+                        plchldr={WINLEN}
+                        input_error={this.state.wl_error}
+                    />
                 </form>
 
                 <div className="left" id="small"></div>
