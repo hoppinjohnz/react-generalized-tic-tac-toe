@@ -262,13 +262,15 @@ class Game extends React.Component {
                 <form onSubmit={this.handleDimSubmit}>
                     <DimensionInput
                         label={'Enter Board Dimension'}
-                        dimension={input => this.dimension = input} />  
+                        dimension={v => this.dimension = v} />
                 </form>
+
                 <div className="left" id="small"></div>
+
                 <form onSubmit={this.handleWinLenSubmit}>
                     <WinLengthInput
                         label={'Enter Win Length'}
-                        winlength={input => this.winlength = input} />
+                        winlength={v => this.winlength = v} />
                 </form>
 
                 <div className="left" id="small"></div>
