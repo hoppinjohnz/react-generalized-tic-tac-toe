@@ -110,7 +110,7 @@ class Game extends React.Component {
                 squares: Array(ARRLEN).fill(null),
                 mvSqurNum: null, // to display (r, c) - move location on history list
             }],
-            moveNumber: 0, // the player's move sequential number
+            mvSequentialNum: 0, // the player's move sequential number
             xIsNext: true,
             isSortOn: false,
             bgColors: Array(ARRLEN).fill('white'),
@@ -127,7 +127,7 @@ class Game extends React.Component {
 
     handleClick(i) {
         // increment the move number
-        const mvN = this.state.moveNumber + 1;
+        const mvN = this.state.mvSequentialNum + 1;
 
         // get the history only for moves so far; this is important for maintaining the history correctly even when going back in time
         const hstr = this.state.history.slice(0, mvN);
@@ -147,7 +147,7 @@ class Game extends React.Component {
                 squares: sqrs,
                 mvSqurNum: i,
             }]),
-            moveNumber: mvN,
+            mvSequentialNum: mvN,
             xIsNext: !this.state.xIsNext,
         });
 
@@ -168,7 +168,7 @@ class Game extends React.Component {
     // not sure why this one doesn't need binding
     jumpTo(mv) {
         this.setState({
-            moveNumber: mv,
+            mvSequentialNum: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
             bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
             alreadyWon: false,
@@ -224,7 +224,7 @@ class Game extends React.Component {
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
             // to bold the curr move in the history list
-            const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
+            const crrtMv = (index === this.state.mvSequentialNum) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
             const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
@@ -238,8 +238,8 @@ class Game extends React.Component {
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         // set the status accordingly right before rendering
-        const sqrs = this.state.history[this.state.moveNumber].squares;
-        const sn = this.state.history[this.state.moveNumber].mvSqurNum;
+        const sqrs = this.state.history[this.state.mvSequentialNum].squares;
+        const sn = this.state.history[this.state.mvSequentialNum].mvSqurNum;
         const w = winnerAndWinningLineOrDraw(sn, sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
