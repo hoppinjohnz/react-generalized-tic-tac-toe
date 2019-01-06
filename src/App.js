@@ -98,8 +98,6 @@ class Game extends React.Component {
         super(props);
         this.state = this.getInitialState();
         this.handleSortToggle = this.handleSortToggle.bind(this);
-        this.handleDimChange = this.handleDimChange.bind(this);
-        this.handleWinLength = this.handleWinLength.bind(this);
         this.handleDimSubmit = this.handleDimSubmit.bind(this)
         this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this)
     }
@@ -182,34 +180,6 @@ class Game extends React.Component {
         });
     }
 
-    handleDimChange(event) {
-        const v = parseInt(event.target.value);
-        const w = this.state.winlngth;
-        if (isNaN(v) || v === null || v < MINDIM || v > MAXDIM || v < w) {
-            alert('You entered ' + v + '. Please enter a value between ' + ((v < w) ? w : MINDIM) + ' and ' + MAXDIM + '.');
-            return;
-        }
-        this.resetState();
-        this.setState({
-            dimension: v,
-            winlngth: w,
-        });
-    }
-
-    handleWinLength(event) {
-        const v = parseInt(event.target.value);
-        const d = this.state.dimension;
-        if (isNaN(v) || v === null || v < MINDIM || v > d) {
-            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + d + '.');
-            return;
-        }
-        this.resetState();
-        this.setState({
-            dimension: d,
-            winlngth: v,
-        });
-    }
-
     onKeyPress(event) {
         if (event.which === 13 /* Enter */) {
           event.preventDefault();
@@ -286,17 +256,18 @@ class Game extends React.Component {
 
                 <div className="left" id="bigger"></div>
 
-        <form onSubmit={this.handleDimSubmit}>
-          <DimensionInput
-            label={'Enter Board Dimension'}
-            dimension={input => this.dimension = input} />  
-        </form>
-        <div className="left" id="small"></div>
-        <form onSubmit={this.handleWinLenSubmit}>
-          <WinLengthInput
-            label={'Enter Win Length'}
-            winlength={input => this.winlength = input} />
-        </form>
+                {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
+                <form onSubmit={this.handleDimSubmit}>
+                    <DimensionInput
+                        label={'Enter Board Dimension'}
+                        dimension={input => this.dimension = input} />  
+                </form>
+                <div className="left" id="small"></div>
+                <form onSubmit={this.handleWinLenSubmit}>
+                    <WinLengthInput
+                        label={'Enter Win Length'}
+                        winlength={input => this.winlength = input} />
+                </form>
 
                 <div className="left" id="small"></div>
 
