@@ -15,7 +15,7 @@ const OTOKEN = 'O';
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}}>
+        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}} id={props.bld}>
             {props.value}
         </button>
     );
@@ -33,6 +33,7 @@ class Board extends React.Component {
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
                 bgc={this.props.bgClrs[i]}
+                bld={(i === this.props.sqrnum) ? 'bold' : null} // to bold the current move
             />
         );
     }
@@ -109,7 +110,7 @@ class Game extends React.Component {
                 squares: Array(ARRLEN).fill(null),
                 mvSqurNum: null, // to display (r, c) - move location on history list
             }],
-            moveNumber: 0, // the displayed move number on UI
+            moveNumber: 0, // the player's move sequential number
             xIsNext: true,
             isSortOn: false,
             bgColors: Array(ARRLEN).fill('white'),
@@ -150,7 +151,7 @@ class Game extends React.Component {
             xIsNext: !this.state.xIsNext,
         });
 
-        // now, it's time to set up the winning line highlighting if the new move wins
+        // now, it's time to highlight the winning line if the new move wins
         const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
         if (w) {
             const clrs = this.state.bgColors.slice();
@@ -222,6 +223,7 @@ class Game extends React.Component {
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
+            // to bold the curr move in the history list
             const crrtMv = (index === this.state.moveNumber) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
             const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
@@ -278,6 +280,7 @@ class Game extends React.Component {
                             onClick={(i) => this.handleClick(i)}
                             bgClrs={this.state.bgColors}
                             dmnsn={this.state.dimension}
+                            sqrnum={sn}
                         />
                     </div>
 

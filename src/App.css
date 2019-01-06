@@ -22,7 +22,7 @@ ol, ul {
     border: 1px solid #999;
     float: left;
     font-size: 24px;
-    font-weight: bold;
+    /* font-weight: bold; */ /* only bold the current move */
     line-height: 34px;
     height: 34px;
     margin-right: -1px;
@@ -71,4 +71,8 @@ left {
 
 #bigger {
     height: 45px;
+}
+
+#bold {
+    font-weight: bold;
 }
