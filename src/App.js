@@ -52,7 +52,11 @@ class Board extends React.Component {
         let i;
         for (i = 0; i < d; i++) { // cannot use map here: need to pass d in
             const rowArr = Array(d).fill(null);
-            twoDimBoard[i] = rowArr.map((e, j) => i * d + j);
+            let j;
+            for (j = 0; j < d; j++) {
+                rowArr[j] = i * d + j;
+            }
+            twoDimBoard[i] = rowArr;
         }
         // twoDimBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
         return (
@@ -67,39 +71,26 @@ class Board extends React.Component {
     }
 }
 
-class DimensionInput extends React.Component {
-    constructor(props) {
-        super(props)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        // initialize ref
-        this.form = React.createRef()
-    }
+/**
+ * The value of the child input is assigned to the this.dimension property of the parent via 'ref' attribute connected to the dimension prop, 
+ * so the child's value is available to the parent.
+ */
+function DimensionInput(props) {
+    return (
+        <div>
+            <label>{props.label}:</label>
+            <input type="text" placeholder={DFLDIM} ref={props.dimension}/>
+        </div>
+    );
+}
 
-    handleSubmit(e) {
-        e.preventDefault()
-        let message = ''
-        //ref has all DOM element children of form in its current property
-        if (!/^[0-9]+$/i.test(this.form.current.dimension.value)) {
-            message = 'Please enter a valid email address. For example "example@example.com".'
-            alert(message)
-        } else {
-            message = 'This is a valid email address :)'
-            alert(message)
-        }
-    }
-
-    render(){
-      return(
-        // put ref attribute into the form element
-        <form onSubmit={this.handleSubmit} ref={this.form}>
-            <label>
-                Email:
-                <input type="text" name="dimension" placeholder="enter your email"/>
-            </label>
-            <input type="submit" value="Submit" />
-        </form>
-      )
-    }
+function WinLengthInput(props) {
+    return (
+        <div>
+            <label>{props.label}:</label>
+            <input type="text" placeholder={WINLEN} ref={props.winlength}/>
+        </div>
+    );
 }
 
 class Game extends React.Component {
@@ -109,6 +100,8 @@ class Game extends React.Component {
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleDimChange = this.handleDimChange.bind(this);
         this.handleWinLength = this.handleWinLength.bind(this);
+        this.handleSubmit = this.handleDimSubmit.bind(this)
+        this.handleSubmitWl = this.handleWinLenSubmit.bind(this)
     }
     
     getInitialState() {
@@ -223,6 +216,36 @@ class Game extends React.Component {
         }
     }
 
+    handleDimSubmit(e) {
+        e.preventDefault();
+        const v = parseInt(this.dimension.value);
+        const w = this.state.winlngth;
+        if (isNaN(v) || v === null || v < MINDIM || v > MAXDIM || v < w) {
+            alert('You entered ' + v + '. Please enter a value between ' + ((v < w) ? w : MINDIM) + ' and ' + MAXDIM + '.');
+            return;
+        }
+        this.resetState();
+        this.setState({
+            dimension: v,
+            winlngth: w,
+        });
+    }
+
+    handleWinLenSubmit(e) {
+        e.preventDefault();
+        const v = parseInt(this.winlength.value);
+        const d = this.state.dimension;
+        if (isNaN(v) || v === null || v < MINDIM || v > d) {
+            alert('You entered ' + v + '. Please enter a value between ' + MINDIM + ' and ' + d + '.');
+            return;
+        }
+        this.resetState();
+        this.setState({
+            dimension: d,
+            winlngth: v,
+        });
+    }
+
     render() {
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
@@ -263,18 +286,17 @@ class Game extends React.Component {
 
                 <div className="left" id="bigger"></div>
 
-                <DimensionInput/>
-
-                <form onKeyPress={this.onKeyPress}>
-                    Enter Board Dimension:
-                    <input type="text" value={this.state.dimension} onChange={this.handleDimChange} />
-                </form>
-                <div className="left" id="tiny"></div>
-
-                <form onKeyPress={this.onKeyPress}>
-                    Enter Winning Length:
-                    <input type="text" value={this.state.winlngth} onChange={this.handleWinLength} />
-                </form>
+        <form onSubmit={this.handleDimSubmit}>
+          <DimensionInput
+            label={'Enter Board Dimension'}
+            dimension={input => this.dimension = input} />  
+        </form>
+        <div className="left" id="small"></div>
+        <form onSubmit={this.handleWinLenSubmit}>
+          <WinLengthInput
+            label={'Enter Win Length'}
+            winlength={input => this.winlength = input} />
+        </form>
 
                 <div className="left" id="small"></div>
 
