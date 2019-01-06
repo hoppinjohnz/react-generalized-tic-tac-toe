@@ -100,8 +100,8 @@ class Game extends React.Component {
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleDimChange = this.handleDimChange.bind(this);
         this.handleWinLength = this.handleWinLength.bind(this);
-        this.handleSubmit = this.handleDimSubmit.bind(this)
-        this.handleSubmitWl = this.handleWinLenSubmit.bind(this)
+        this.handleDimSubmit = this.handleDimSubmit.bind(this)
+        this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this)
     }
     
     getInitialState() {
