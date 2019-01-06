@@ -80,16 +80,7 @@ function DimensionInput(props) {
     return (
         <div>
             <label>{props.label}:</label>
-            <input type="text" placeholder={DFLDIM} ref={props.dimension}/>
-        </div>
-    );
-}
-
-function WinLengthInput(props) {
-    return (
-        <div>
-            <label>{props.label}:</label>
-            <input type="text" placeholder={WINLEN} ref={props.winlength}/>
+            <input type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension}/>
         </div>
     );
 }
@@ -262,15 +253,19 @@ class Game extends React.Component {
                 <form onSubmit={this.handleDimSubmit}>
                     <DimensionInput
                         label={'Enter Board Dimension'}
-                        dimension={v => this.dimension = v} />
+                        dimension={v => this.dimension = v}
+                        winlength={null}
+                        plchldr={DFLDIM}/>
                 </form>
 
                 <div className="left" id="small"></div>
 
                 <form onSubmit={this.handleWinLenSubmit}>
-                    <WinLengthInput
+                    <DimensionInput
                         label={'Enter Win Length'}
-                        winlength={v => this.winlength = v} />
+                        dimension={null}
+                        winlength={v => this.winlength = v}
+                        plchldr={WINLEN}/>
                 </form>
 
                 <div className="left" id="small"></div>
