@@ -317,7 +317,7 @@ export function chkArrForWin(arr, plyr, sqrs, wl) {
         if (sqrs[mv] === plyr) {
             a[i] = mv;
             c++;
-            if (c === wl) {
+            if (c >= wl) {
                 if (firstW) {
                     Array.prototype.push.apply(r, [plyr, a].flat());
                     firstW = false;
@@ -342,9 +342,13 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     // won in rows
     a = chkArrForWin(rowSec(sn, d, wl), plyr, sqrs, wl);
     if (a) {
-        Array.prototype.push.apply(r, a.slice());
+        if (firstWin) {
+            Array.prototype.push.apply(r, a.slice(1));
+        } else {
+            Array.prototype.push.apply(r, a.slice());
+            firstWin = true;
+        }
         a = [];
-        firstWin = true;
     }
 
     // won in columns
