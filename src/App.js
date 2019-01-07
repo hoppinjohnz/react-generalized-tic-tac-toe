@@ -150,7 +150,7 @@ class Game extends React.Component {
         if (w) {
             const clrs = this.state.bgColors.slice();
             let i;
-            for (i = 1; i <= this.state.dimension; i++) clrs[w[i]] = 'lightblue';
+            for (i = 1; i <= w.length; i++) clrs[w[i]] = 'lightblue';
 
             this.setState({
                 bgColors: clrs,
@@ -311,43 +311,94 @@ class Game extends React.Component {
 export default Game;
 
 export function chkArrForWin(arr, plyr, sqrs, wl) {
-    let i, mv, c = 0, a = [];
+    let i, mv, c = 0, a = [], r = [], firstW = true;
     for (i = 0; i < arr.length; i++) { // TODO cannot figure out how to use map()
         mv = arr[i];
         if (sqrs[mv] === plyr) {
             a[i] = mv;
             c++;
-            if (c === wl) return [plyr, a].flat();
+            if (c === wl) {
+                if (firstW) {
+                    Array.prototype.push.apply(r, [plyr, a].flat());
+                    firstW = false;
+                } else {
+                    Array.prototype.push.apply(r, a.flat());
+                }
+            }
         } else {
             c = 0;
             a = [];
         }
     }
+
+    if (r.length > 0) return r;
+
     return null;
 }
 
 export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
-    let r = [];
+    let a = [], r = [], firstWin = false;
 
     // won in rows
-    r = chkArrForWin(rowSec(sn, d, wl), plyr, sqrs, wl); 
-    if (r) return r;
+    a = chkArrForWin(rowSec(sn, d, wl), plyr, sqrs, wl);
+    if (a) {
+        Array.prototype.push.apply(r, a.slice());
+        a = [];
+        firstWin = true;
+    }
 
     // won in columns
-    r = chkArrForWin(colSec(sn, d, wl), plyr, sqrs, wl); 
-    if (r) return r;
+    a = chkArrForWin(colSec(sn, d, wl), plyr, sqrs, wl);
+    if (a) {
+        if (firstWin) {
+            Array.prototype.push.apply(r, a.slice(1));
+        } else {
+            Array.prototype.push.apply(r, a.slice());
+            firstWin = true;
+        }
+        a = [];
+    }
 
     // won in north east diagonals
-    r = chkArrForWin(neaSec(sn, d, wl), plyr, sqrs, wl); 
-    if (r) return r;
+    a = chkArrForWin(neaSec(sn, d, wl), plyr, sqrs, wl);
+    if (a) {
+        if (firstWin) {
+            Array.prototype.push.apply(r, a.slice(1));
+        } else {
+            Array.prototype.push.apply(r, a.slice());
+            firstWin = true;
+        }
+        a = [];
+    }
 
     // won in north west diagonals
-    r = chkArrForWin(nweSec(sn, d, wl), plyr, sqrs, wl); 
-    if (r) return r;
+    a = chkArrForWin(nweSec(sn, d, wl), plyr, sqrs, wl);
+    if (a) {
+        if (firstWin) {
+            Array.prototype.push.apply(r, a.slice(1));
+        } else {
+            Array.prototype.push.apply(r, a.slice());
+            firstWin = true;
+        }
+        a = [];
+    }
+
+    if (r.length > 0) return r;
 
     return false;
 }
 
+/**
+ * return:
+ *  null    not done yet
+ *  D       draw
+ *  an array like ['X', 0, 1, 2]    x wins and the squares to color for winning
+ *
+ * @param {k} mv
+ * @param {*} sqrs
+ * @param {*} d
+ * @param {*} wl
+ */
 export function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     // x wins
     let a = playerWinningMoves(XTOKEN, mv, sqrs, d, wl);
