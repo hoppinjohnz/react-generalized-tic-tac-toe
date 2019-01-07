@@ -33,7 +33,7 @@ class Board extends React.Component {
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
                 bgc={this.props.bgClrs[i]}
-                currmv={(i === this.props.sqrnum) ? 'curr_button' : null} // to make the current move stand out
+                currmv={(i === this.props.sqrnum) ? 'current_move' : null} // to make the current move stand out
             />
         );
     }
@@ -224,7 +224,7 @@ class Game extends React.Component {
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
             // to mark the curr move in the history list
-            const crrtMv = (index === this.state.mvSequentialNum) ? (<span className="curr_button" >{dscrptn}</span>) : dscrptn;
+            const crrtMv = (index === this.state.mvSequentialNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
             const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
