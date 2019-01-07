@@ -73,6 +73,8 @@ left {
     height: 45px;
 }
 
-#bold {
-    font-weight: bold;
+.curr_button {
+    background-color: #ccffcc;
+    color: black;
+    font-weight: 900;
 }

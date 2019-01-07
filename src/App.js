@@ -15,8 +15,8 @@ const OTOKEN = 'O';
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}} id={props.bld}>
-            {props.value}
+        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}} >
+            <span className={props.currmv} > {props.value} </span>
         </button>
     );
 }
@@ -33,7 +33,7 @@ class Board extends React.Component {
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
                 bgc={this.props.bgClrs[i]}
-                bld={(i === this.props.sqrnum) ? 'bold' : null} // to bold the current move
+                currmv={(i === this.props.sqrnum) ? 'curr_button' : null} // to make the current move stand out
             />
         );
     }
@@ -223,8 +223,8 @@ class Game extends React.Component {
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Go to move ' : 'Go to game start';
-            // to bold the curr move in the history list
-            const crrtMv = (index === this.state.mvSequentialNum) ? (<span style={ {fontWeight: 900} }>{dscrptn}</span>) : dscrptn;
+            // to mark the curr move in the history list
+            const crrtMv = (index === this.state.mvSequentialNum) ? (<span className="curr_button" >{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
             const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
