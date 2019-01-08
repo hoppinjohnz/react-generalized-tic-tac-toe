@@ -222,11 +222,11 @@ class Game extends React.Component {
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const historicalMoves = this.state.history.map((currValue, index) => {
-            const dscrptn = index ? 'Go to move ' : 'Go to game start';
+            const dscrptn = index ? 'Move ' : 'Start';
             // to mark the curr move in the history list
             const crrtMv = (index === this.state.mvSequentialNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
-            const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + ', ' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
+            const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + '-' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
