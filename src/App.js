@@ -99,8 +99,8 @@ class Game extends React.Component {
         // make the initial state immutable to support state reset
         const initialState = {
             history: [{
-                squares: Array(ARRLEN).fill(null),
-                mvSqurNum: null, // to display (r, c) - move location on history list
+                squares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
+                mvSqurNum: null, // the current move to display (r, c) - move location on history list
             }],
             mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
             xIsNext: true,
@@ -224,11 +224,12 @@ class Game extends React.Component {
     }
 
     render() {
+        // the single trigger data from which all other rendering data are derived
+        const mvNum = this.state.mvSequentialNum;
+
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        const mvNum = this.state.mvSequentialNum; // the single trigger data from which all other rendering data are derived
-
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Move ' : 'Start';
             // to mark the curr move in the history list
