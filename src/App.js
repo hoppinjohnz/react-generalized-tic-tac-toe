@@ -128,10 +128,13 @@ class Game extends React.Component {
         const hstr = this.state.history.slice(0, mvN);
 
         // the board squares right before the new move
-        const sqrs = hstr[hstr.length - 1].squares.slice();
+        const sqrs = hstr[this.state.mvSequentialNum].squares.slice();
 
-        // return and no updating if moving into an occupied square or already won
+        // stop and no updating if clicked on an occupied square or game won
         if (sqrs[i] || this.state.alreadyWon) return;
+
+
+        // process the new move after this point
 
         // add the new move in
         sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
