@@ -80,7 +80,7 @@ function CustomInput(props) {
     return (
         <div>
             <label>{props.label}:</label>
-            <input type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension}/>
+            <input type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension} size="2"/>
             <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
         </div>
     );
@@ -226,11 +226,11 @@ class Game extends React.Component {
             // to mark the curr move in the history list
             const crrtMv = (index === this.state.mvSequentialNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
-            const lctn = index ? '(' + (1 + rowNum(sn, this.state.dimension)) + '-' + (1 + colNum(sn, this.state.dimension)) + ')' : null;
+            const lctn = index ? (1 + rowNum(sn, this.state.dimension)) + '-' + (1 + colNum(sn, this.state.dimension)) : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
-                    <button onClick={() => this.jumpTo(index)}>{crrtMv}</button> {lctn}
+                    <button onClick={() => this.jumpTo(index)}>{crrtMv} {lctn}</button>
                 </li>
             );
         });
@@ -255,7 +255,7 @@ class Game extends React.Component {
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
                 <form onSubmit={this.handleDimSubmit}>
                     <CustomInput
-                        label={'Enter Board Dimension'}
+                        label={'Board Dimension'}
                         dimension={v => this.dimension = v}
                         winlength={null}
                         plchldr={DFLDIM}
@@ -267,7 +267,7 @@ class Game extends React.Component {
 
                 <form onSubmit={this.handleWinLenSubmit}>
                     <CustomInput
-                        label={'Enter Win Length'}
+                        label={'Win Length'}
                         dimension={null}
                         winlength={v => this.winlength = v}
                         plchldr={WINLEN}
