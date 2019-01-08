@@ -166,20 +166,13 @@ class Game extends React.Component {
 
     // not sure why this one doesn't need binding
     jumpTo(mv) {
-        // clicking the winning move right away would not wipe out coloring and alreadyWon flag; but, still, wipe out after clicking others out of history; so, this is only a hack!  TODO
-        if (mv === this.state.winningMv) {
-            this.setState({
-                mvSequentialNum: mv,
-                xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
-            });
-        } else {
-            this.setState({
-                mvSequentialNum: mv,
-                xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
-                bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
-                alreadyWon: false,
-            });
-        }
+        // TODO need to move every state into history to make coloring win line work correctly
+        this.setState({
+            mvSequentialNum: mv,
+            xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+            bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
+            alreadyWon: false,
+        });
     }
 
     handleSortToggle() {
@@ -327,7 +320,7 @@ export default Game;
 
 export function chkArrForWin(arr, plyr, sqrs, wl) {
     let i, mv, c = 0, a = [], r = [], firstW = true;
-    for (i = 0; i < arr.length; i++) { // TODO cannot figure out how to use map()
+    for (i = 0; i < arr.length; i++) { // don't use map() inside for-loop
         mv = arr[i];
         if (sqrs[mv] === plyr) {
             a[i] = mv;
