@@ -233,8 +233,8 @@ class Game extends React.Component {
             const dscrptn = index ? 'Move ' : 'Start';
             // to mark the curr move in the history list
             const crrtMv = (index === mvNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
-            const sn = currValue.mvSqurNum;
-            const lctn = index ? (1 + rowNum(sn, this.state.dimension)) + '-' + (1 + colNum(sn, this.state.dimension)) : null;
+            const msn = currValue.mvSqurNum;
+            const lctn = index ? (1 + rowNum(msn, this.state.dimension)) + '-' + (1 + colNum(msn, this.state.dimension)) : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -246,11 +246,11 @@ class Game extends React.Component {
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         // get data out of history keyed on the move number whether it's from playing game or clicking on history list
-        const sqrs = this.state.history[mvNum].squares;
-        const sn = this.state.history[mvNum].mvSqurNum;
+        const my_sqrs = this.state.history[mvNum].squares;
+        const sNum = this.state.history[mvNum].mvSqurNum;
 
         // set the status accordingly right before rendering
-        const w = winnerAndWinningLineOrDraw(sn, sqrs, this.state.dimension, this.state.winlngth);
+        const w = winnerAndWinningLineOrDraw(sNum, my_sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -290,11 +290,11 @@ class Game extends React.Component {
                 <div className="game">
                     <div className="game-board">
                         <Board
-                            squares={sqrs}
+                            squares={my_sqrs}
                             onClick={(i) => this.handleClick(i)}
                             bgClrs={this.state.bgColors}
                             dmnsn={this.state.dimension}
-                            sqrnum={sn}
+                            sqrnum={sNum}
                         />
                     </div>
 
