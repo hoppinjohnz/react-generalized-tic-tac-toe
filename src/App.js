@@ -250,13 +250,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h1> Tic-Tac-Toe Generalized </h1>
-
-                <p> This is a traditional tic-tac-toe game by default.  In addition, it can be played with any board dimension and any win length.  Try to change board dimension to 11 and win length to 5.  It will become a challenging and enjoyable game of 5-in-a-roll. </p>
-
-                <p> The play history allows to time travel back into history. You can go back to re-play or do-it-over play from any point in the past. Try it. </p>
-
-                <div className="left" id="bigger"></div>
+                <h3> Tic-Tac-Toe Generalized </h3>
 
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
                 <form onSubmit={this.handleDimSubmit}>
@@ -303,6 +297,10 @@ class Game extends React.Component {
                         <ol>{sortedMoves}</ol>
                     </div>
                 </div>
+
+                <p> This is tic-tac-toe.  But, you can change the board dimension and win length.  Changing board dimension to 11 and win length to 5, you will have a challenging and enjoyable 5-in-a-row game. </p>
+
+                <p> The play history allows you to time-travel into history to re-play or do-it-over from any point in the past. </p>
             </div>
         );
     }
