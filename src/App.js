@@ -102,13 +102,14 @@ class Game extends React.Component {
                 squares: Array(ARRLEN).fill(null),
                 mvSqurNum: null, // to display (r, c) - move location on history list
             }],
-            mvSequentialNum: 0, // the player's move sequential number
+            mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
             xIsNext: true,
             isSortOn: false,
             bgColors: Array(ARRLEN).fill('white'),
             dimension: DFLDIM,
             winlngth: WINLEN,
             alreadyWon: false, // to support return without checking previous wins after clicking a square
+            winningMv: null,
             dm_error: null,
             wl_error: null,
         };
@@ -155,18 +156,27 @@ class Game extends React.Component {
             this.setState({
                 bgColors: clrs,
                 alreadyWon: true,
+                winningMv: i,
             });
         }
     }
 
     // not sure why this one doesn't need binding
     jumpTo(mv) {
-        this.setState({
-            mvSequentialNum: mv,
-            xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
-            bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
-            alreadyWon: false,
-        });
+        // clicking the winning move right away would not wipe out coloring and alreadyWon flag; but, still, wipe out after clicking others out of history; so, this is only a hack!  TODO
+        if (mv === this.state.winningMv) {
+            this.setState({
+                mvSequentialNum: mv,
+                xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+            });
+        } else {
+            this.setState({
+                mvSequentialNum: mv,
+                xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+                bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
+                alreadyWon: false,
+            });
+        }
     }
 
     handleSortToggle() {
@@ -221,10 +231,11 @@ class Game extends React.Component {
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        const mvNum = this.state.mvSequentialNum;
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Move ' : 'Start';
             // to mark the curr move in the history list
-            const crrtMv = (index === this.state.mvSequentialNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
+            const crrtMv = (index === mvNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
             const sn = currValue.mvSqurNum;
             const lctn = index ? (1 + rowNum(sn, this.state.dimension)) + '-' + (1 + colNum(sn, this.state.dimension)) : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
@@ -238,8 +249,8 @@ class Game extends React.Component {
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         // set the status accordingly right before rendering
-        const sqrs = this.state.history[this.state.mvSequentialNum].squares;
-        const sn = this.state.history[this.state.mvSequentialNum].mvSqurNum;
+        const sqrs = this.state.history[mvNum].squares;
+        const sn = this.state.history[mvNum].mvSqurNum;
         const w = winnerAndWinningLineOrDraw(sn, sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
