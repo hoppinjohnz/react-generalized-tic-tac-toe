@@ -101,14 +101,14 @@ class Game extends React.Component {
             history: [{
                 histSquares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
                 mvSqurNum: null, // the current move to display (r, c) - move location on history list
+                bgColors: Array(ARRLEN).fill('white'),
+                alreadyWon: false, // to support return without checking previous wins after clicking a square
             }],
             mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
             xIsNext: true,
             isSortOn: false,
-            bgColors: Array(ARRLEN).fill('white'),
             dimension: DFLDIM,
             winlngth: WINLEN,
-            alreadyWon: false, // to support return without checking previous wins after clicking a square
             dm_error: null,
             wl_error: null,
         };
@@ -128,9 +128,10 @@ class Game extends React.Component {
 
         // the board right before the new move
         const sqrs = hstr[this.state.mvSequentialNum].histSquares.slice();
+        const alrW = hstr[this.state.mvSequentialNum].alreadyWon;
 
         // stop and no updating if clicked on an occupied square or game won
-        if (sqrs[i] || this.state.alreadyWon) return;
+        if (sqrs[i] || alrW) return;
 
 
         // process the new move after this point
@@ -140,7 +141,7 @@ class Game extends React.Component {
 
         // highlight the winning line if the new move wins
         const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
-        const clrs = this.state.bgColors.slice();
+        const clrs = hstr[this.state.mvSequentialNum].bgColors.slice();
         let alrWon = false;
         if (w) {
             let j;
@@ -153,11 +154,11 @@ class Game extends React.Component {
             history: hstr.concat([{
                 histSquares: sqrs,
                 mvSqurNum: i,
+                bgColors: clrs,
+                alreadyWon: alrWon,
             }]),
             mvSequentialNum: mvN,
             xIsNext: !this.state.xIsNext,
-            bgColors: clrs,
-            alreadyWon: alrWon,
         });
     }
 
@@ -167,8 +168,6 @@ class Game extends React.Component {
         this.setState({
             mvSequentialNum: mv,
             xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
-            bgColors: Array(ARRLEN).fill('white'), // totally clear/reset the color; this is why no coloring when winning in time travel in the history; moving color to history is one way to correct this
-            alreadyWon: false,
         });
     }
 
@@ -245,6 +244,7 @@ class Game extends React.Component {
 
         // get data out of history keyed on the move number whether it's from playing game or clicking on history list
         const my_sqrs = this.state.history[mvNum].histSquares;
+        const my_clrs = this.state.history[mvNum].bgColors;
         const sNum = this.state.history[mvNum].mvSqurNum;
 
         // set the status accordingly right before rendering
@@ -290,7 +290,7 @@ class Game extends React.Component {
                         <Board
                             squares={my_sqrs}
                             onClick={(i) => this.handleClick(i)}
-                            bgClrs={this.state.bgColors}
+                            bgClrs={my_clrs}
                             dmnsn={this.state.dimension}
                             sqrnum={sNum}
                         />
