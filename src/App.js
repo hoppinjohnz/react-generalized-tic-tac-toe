@@ -109,7 +109,6 @@ class Game extends React.Component {
             dimension: DFLDIM,
             winlngth: WINLEN,
             alreadyWon: false, // to support return without checking previous wins after clicking a square
-            winningMv: null,
             dm_error: null,
             wl_error: null,
         };
@@ -139,6 +138,16 @@ class Game extends React.Component {
         // add the new move in
         sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
 
+        // highlight the winning line if the new move wins
+        const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
+        const clrs = this.state.bgColors.slice();
+        let alrWon = false;
+        if (w) {
+            let j;
+            for (j = 1; j <= w.length; j++) clrs[w[j]] = 'lightblue';
+            alrWon = true;
+        }
+
         // then, update the state to re-render the UI to reflect all changes caused by the new move
         this.setState({
             history: hstr.concat([{
@@ -147,21 +156,9 @@ class Game extends React.Component {
             }]),
             mvSequentialNum: mvN,
             xIsNext: !this.state.xIsNext,
+            bgColors: clrs,
+            alreadyWon: alrWon,
         });
-
-        // now, it's time to highlight the winning line if the new move wins
-        const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
-        if (w) {
-            const clrs = this.state.bgColors.slice();
-            let i;
-            for (i = 1; i <= w.length; i++) clrs[w[i]] = 'lightblue';
-
-            this.setState({
-                bgColors: clrs,
-                alreadyWon: true,
-                winningMv: i,
-            });
-        }
     }
 
     // not sure why this one doesn't need binding
