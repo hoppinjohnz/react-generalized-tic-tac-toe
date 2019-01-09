@@ -50,13 +50,6 @@ ol, ul {
     width: 120px;
 }
 
-left {
-    width: 20%;
-    float: left;
-    min-height: 30px;
-    margin-right: 10px;
-}
-
 #tiny {
     height: 8;
 }
@@ -76,5 +69,10 @@ left {
 .current_move {
     background-color: #ccffcc;
     color: black;
+    font-weight: 900;
+}
+
+.input_size {
+    width: 30px;
     font-weight: 900;
 }

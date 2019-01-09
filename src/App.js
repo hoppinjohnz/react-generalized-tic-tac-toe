@@ -23,8 +23,8 @@ function Square(props) {
 
 /**
  * board consists of sqrs numbered as / 1 2 3 \ for 3x3
- *                                       | 4 5 6 |
- *                                       \ 7 8 9 /
+ *                                    | 4 5 6 |
+ *                                    \ 7 8 9 /
  */
 class Board extends React.Component {
     renderSquare(i) {
@@ -80,7 +80,7 @@ function CustomInput(props) {
     return (
         <div>
             <label>{props.label}:</label>
-            <input type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension} size="2"/>
+            <input className="input_size" type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension} />
             <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
         </div>
     );
@@ -271,7 +271,7 @@ class Game extends React.Component {
                     />
                 </form>
 
-                <div className="left" id="small"></div>
+                <div id="small"></div>
 
                 <form onSubmit={this.handleWinLenSubmit}>
                     <CustomInput
@@ -283,7 +283,7 @@ class Game extends React.Component {
                     />
                 </form>
 
-                <div className="left" id="small"></div>
+                <div id="small"></div>
 
                 <div className="game">
                     <div className="game-board">
@@ -298,7 +298,7 @@ class Game extends React.Component {
 
                     <div className="game-info">
                         <div>{status}</div>
-                        <div className="left" id="big"></div>
+                        <div id="big"></div>
                         <button type="button" onClick={this.handleSortToggle}>
                             {this.state.isSortOn ? 'Un Sort History' : 'Sort History'}
                         </button>
