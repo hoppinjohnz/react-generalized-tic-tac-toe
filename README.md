@@ -1,6 +1,6 @@
 # react-generalized-tic-tac-toe
 
-This tic-tac-toe game was built by following the [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html).  
+Play this tic-tac-toe game [here](https://powerful-cove-23499.herokuapp.com/).  This game was built by following the [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html).
 
 
 ## Features
