@@ -22,7 +22,7 @@ function Square(props) {
 }
 
 /**
- * board consists of squares numbered as / 1 2 3 \ for 3x3
+ * board consists of sqrs numbered as / 1 2 3 \ for 3x3
  *                                       | 4 5 6 |
  *                                       \ 7 8 9 /
  */
@@ -99,7 +99,7 @@ class Game extends React.Component {
         // make the initial state immutable to support state reset
         const initialState = {
             history: [{
-                squares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
+                histSquares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
                 mvSqurNum: null, // the current move to display (r, c) - move location on history list
             }],
             mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
@@ -127,8 +127,8 @@ class Game extends React.Component {
         // get the history only for moves so far; this is important for maintaining the history correctly even when going back in time
         const hstr = this.state.history.slice(0, mvN);
 
-        // the board squares right before the new move
-        const sqrs = hstr[this.state.mvSequentialNum].squares.slice();
+        // the board right before the new move
+        const sqrs = hstr[this.state.mvSequentialNum].histSquares.slice();
 
         // stop and no updating if clicked on an occupied square or game won
         if (sqrs[i] || this.state.alreadyWon) return;
@@ -142,7 +142,7 @@ class Game extends React.Component {
         // then, update the state to re-render the UI to reflect all changes caused by the new move
         this.setState({
             history: hstr.concat([{
-                squares: sqrs,
+                histSquares: sqrs,
                 mvSqurNum: i,
             }]),
             mvSequentialNum: mvN,
@@ -247,7 +247,7 @@ class Game extends React.Component {
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         // get data out of history keyed on the move number whether it's from playing game or clicking on history list
-        const my_sqrs = this.state.history[mvNum].squares;
+        const my_sqrs = this.state.history[mvNum].histSquares;
         const sNum = this.state.history[mvNum].mvSqurNum;
 
         // set the status accordingly right before rendering
@@ -405,7 +405,7 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
  * return:
  *  null    not done yet
  *  D       draw
- *  an array like ['X', 0, 1, 2]    x wins and the squares to color for winning
+ *  an array like ['X', 0, 1, 2]    x wins and the sqrs 0, 1, 2 to color for winning
  *
  * @param {k} mv
  * @param {*} sqrs
