@@ -3,7 +3,7 @@ import './App.css';
 
 // a few global constants
 const DFLDIM = 7;
-const WINLEN = 4;
+const WINLEN = 5;
 
 const MINDIM = 1;
 const MAXDIM = 25;
@@ -120,15 +120,17 @@ class Game extends React.Component {
     }
 
     handleClick(i) {
-        // increment the move number
-        const mvN = this.state.mvSequentialNum + 1;
+        const mvN = this.state.mvSequentialNum;
+
+        // store the move number for the new move
+        const newMvN = mvN + 1;
 
         // get the history only for moves so far; this is important for maintaining the history correctly even when going back in time
-        const hstr = this.state.history.slice(0, mvN);
+        const hstr = this.state.history.slice(0, newMvN);
 
         // the board right before the new move
-        const sqrs = hstr[this.state.mvSequentialNum].histSquares.slice();
-        const alrW = hstr[this.state.mvSequentialNum].alreadyWon;
+        const sqrs = hstr[mvN].histSquares.slice();
+        const alrW = hstr[mvN].alreadyWon;
 
         // stop and no updating if clicked on an occupied square or game won
         if (sqrs[i] || alrW) return;
@@ -141,7 +143,7 @@ class Game extends React.Component {
 
         // highlight the winning line if the new move wins
         const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
-        const clrs = hstr[this.state.mvSequentialNum].bgColors.slice();
+        const clrs = hstr[mvN].bgColors.slice();
         let alrWon = false;
         if (w) {
             let j;
@@ -157,7 +159,7 @@ class Game extends React.Component {
                 bgColors: clrs,
                 alreadyWon: alrWon,
             }]),
-            mvSequentialNum: mvN,
+            mvSequentialNum: newMvN,
             xIsNext: !this.state.xIsNext,
         });
     }
@@ -220,7 +222,7 @@ class Game extends React.Component {
     }
 
     render() {
-        // the single trigger data from which all other rendering data are derived
+        // the single trigger data from which all other rendering data are derived: it can come from clicking either squares or history list
         const mvNum = this.state.mvSequentialNum;
 
         // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
@@ -258,7 +260,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h3> Tic-Tac-Toe (d, w) = ({DFLDIM}, {WINLEN}) </h3>
+                <h3> Tic-Tac-Toe (d, w) = ({this.state.dimension}, {this.state.winlngth}) </h3>
 
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
                 <form onSubmit={this.handleDimSubmit}>
