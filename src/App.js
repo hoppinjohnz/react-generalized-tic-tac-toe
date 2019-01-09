@@ -2,8 +2,8 @@ import React from 'react';
 import './App.css';
 
 // a few global constants
-const DFLDIM = 3;
-const WINLEN = 3;
+const DFLDIM = 7;
+const WINLEN = 4;
 
 const MINDIM = 1;
 const MAXDIM = 25;
@@ -258,12 +258,12 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h3> Tic-Tac-Toe Generalized </h3>
+                <h3> Tic-Tac-Toe (d, w) = ({DFLDIM}, {WINLEN}) </h3>
 
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
                 <form onSubmit={this.handleDimSubmit}>
                     <CustomInput
-                        label={'Board Dimension'}
+                        label={'Dimension'}
                         dimension={v => this.dimension = v}
                         winlength={null}
                         plchldr={DFLDIM}
@@ -271,7 +271,7 @@ class Game extends React.Component {
                     />
                 </form>
 
-                <div id="small"></div>
+                <div id="tiny"></div>
 
                 <form onSubmit={this.handleWinLenSubmit}>
                     <CustomInput
