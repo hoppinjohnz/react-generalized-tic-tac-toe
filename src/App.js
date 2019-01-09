@@ -151,7 +151,7 @@ class Game extends React.Component {
             alrWon = true;
         }
 
-        // then, update the state to re-render the UI to reflect all changes caused by the new move
+        // then, update the state to re-render the UI to reflect all changes caused by the new move including winning coloring
         this.setState({
             history: hstr.concat([{
                 histSquares: sqrs,
@@ -162,6 +162,13 @@ class Game extends React.Component {
             mvSequentialNum: newMvN,
             xIsNext: !this.state.xIsNext,
         });
+
+        // if playing against computer, do it here
+        this.play_against_computer(i);
+    }
+
+    play_against_computer(mv) {
+        console.log('playing against computer on move = ' + mv);
     }
 
     // not sure why this one doesn't need binding
