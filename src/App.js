@@ -235,7 +235,16 @@ class Game extends React.Component {
         // to avoid the annoying reload triggered by form onsubmit; wuoldn't work without this
         e.preventDefault();
 
-        this.handleClick(0);
+        var min=0;
+        var max=this.state.dimension * this.state.dimension;
+
+        // make sure rndmMv is playable
+        let rndmMv =Math.floor(Math.random() * (+max - +min)) + +min;
+        // while (sqrs[rndmMv] !== null) {
+        //     rndmMv =Math.floor(Math.random() * (+max - +min)) + +min;
+        // }
+
+        this.handleClick(rndmMv);
         console.log('hi there');
     }
 
