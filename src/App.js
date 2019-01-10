@@ -235,14 +235,19 @@ class Game extends React.Component {
         // to avoid the annoying reload triggered by form onsubmit; wuoldn't work without this
         e.preventDefault();
 
-        var min=0;
-        var max=this.state.dimension * this.state.dimension;
+        // get the current board sqrs
+        const mvN = this.state.mvSequentialNum;
+        const hstr = this.state.history.slice(0, mvN + 1);
+        const sqrs = hstr[mvN].histSquares.slice();
+
+        let min = 0;
+        let max = this.state.dimension * this.state.dimension;
 
         // make sure rndmMv is playable
-        let rndmMv =Math.floor(Math.random() * (+max - +min)) + +min;
-        // while (sqrs[rndmMv] !== null) {
-        //     rndmMv =Math.floor(Math.random() * (+max - +min)) + +min;
-        // }
+        let rndmMv = Math.floor(Math.random() * (max - min)) + min;
+        while (sqrs[rndmMv] !== null) {
+            rndmMv = Math.floor(Math.random() * (max - min)) + min;
+        }
 
         this.handleClick(rndmMv);
         console.log('hi there');
