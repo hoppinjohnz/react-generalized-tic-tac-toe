@@ -91,8 +91,8 @@ class Game extends React.Component {
         super(props);
         this.state = this.getInitialState();
         this.handleSortToggle = this.handleSortToggle.bind(this);
-        this.handleDimSubmit = this.handleDimSubmit.bind(this)
-        this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this)
+        this.handleDimSubmit = this.handleDimSubmit.bind(this);
+        this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this);
     }
     
     getInitialState() {
@@ -162,13 +162,6 @@ class Game extends React.Component {
             mvSequentialNum: newMvN,
             xIsNext: !this.state.xIsNext,
         });
-
-        // if playing against computer, do it here
-        this.play_against_computer(i);
-    }
-
-    play_against_computer(mv) {
-        console.log('playing against computer on move = ' + mv);
     }
 
     // not sure why this one doesn't need binding
