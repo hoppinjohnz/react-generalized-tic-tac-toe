@@ -86,6 +86,15 @@ function CustomInput(props) {
     );
 }
 
+function PlayForMeInput(props) {
+    return (
+        <div>
+            <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
+            <input type="submit" value="Click Me To Play The Next Move" />
+        </div>
+    );
+}
+
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -93,6 +102,7 @@ class Game extends React.Component {
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleDimSubmit = this.handleDimSubmit.bind(this);
         this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this);
+        this.handlePlayForMe = this.handlePlayForMe.bind(this);
     }
     
     getInitialState() {
@@ -221,6 +231,14 @@ class Game extends React.Component {
         });
     }
 
+    handlePlayForMe(e) {
+        // to avoid the annoying reload triggered by form onsubmit; wuoldn't work without this
+        e.preventDefault();
+
+        this.handleClick(0);
+        console.log('hi there');
+    }
+
     render() {
         // the single trigger data from which all other rendering data are derived: it can come from clicking either squares or history list
         const mvNum = this.state.mvSequentialNum;
@@ -281,6 +299,14 @@ class Game extends React.Component {
                         dimension={null}
                         winlength={v => this.winlength = v}
                         plchldr={WINLEN}
+                        input_error={this.state.wl_error}
+                    />
+                </form>
+
+                <div id="tiny"></div>
+
+                <form onSubmit={this.handlePlayForMe}>
+                    <PlayForMeInput
                         input_error={this.state.wl_error}
                     />
                 </form>
