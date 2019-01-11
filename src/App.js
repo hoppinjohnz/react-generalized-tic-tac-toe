@@ -225,13 +225,8 @@ class Game extends React.Component {
         });
     }
 
-    computerMove() {
-        // get the current board sqrs
-        const mvN = this.state.mvSequentialNum;
-        const hstr = this.state.history.slice(0, mvN + 1);
-        const sqrs = hstr[mvN].histSquares.slice();
-
-        // check against the current board to make sure the generated computer move is not played yet
+    random_move(sqrs) {
+        // check against the current board to make sure the generated computer move is valid
         let min = 0;
         let max = this.state.dimension * this.state.dimension;
         let rndmMv = Math.floor(Math.random() * (max - min)) + min;
@@ -241,11 +236,20 @@ class Game extends React.Component {
         return rndmMv;
     }
 
+    move_by_computer() {
+        // get the current board sqrs
+        const mvN = this.state.mvSequentialNum;
+        const hstr = this.state.history.slice(0, mvN + 1);
+        const sqrs = hstr[mvN].histSquares.slice();
+
+        return this.random_move(sqrs);
+    }
+
     handlePlayForMe(e) {
         // to avoid the annoying reload triggered by form's on submit; wouldn't work without this
         e.preventDefault();
 
-        const cmv = this.computerMove();
+        const cmv = this.move_by_computer();
         this.handleClick(cmv);
     }
 
