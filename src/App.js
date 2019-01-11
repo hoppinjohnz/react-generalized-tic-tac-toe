@@ -90,7 +90,7 @@ function PlayForMeInput(props) {
     return (
         <div>
             <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
-            <input type="submit" value="Click Me To Play The Next Move" />
+            <input type="submit" value="Play For Me" />
         </div>
     );
 }
@@ -189,12 +189,6 @@ class Game extends React.Component {
         });
     }
 
-    onKeyPress(event) {
-        if (event.which === 13 /* Enter */) {
-          event.preventDefault();
-        }
-    }
-
     handleDimSubmit(e) {
         e.preventDefault();
         const v = parseInt(this.dimension.value);
@@ -231,26 +225,28 @@ class Game extends React.Component {
         });
     }
 
-    handlePlayForMe(e) {
-        // to avoid the annoying reload triggered by form onsubmit; wuoldn't work without this
-        e.preventDefault();
-
+    computerMove() {
         // get the current board sqrs
         const mvN = this.state.mvSequentialNum;
         const hstr = this.state.history.slice(0, mvN + 1);
         const sqrs = hstr[mvN].histSquares.slice();
 
+        // check against the current board to make sure the generated computer move is not played yet
         let min = 0;
         let max = this.state.dimension * this.state.dimension;
-
-        // make sure rndmMv is playable
         let rndmMv = Math.floor(Math.random() * (max - min)) + min;
         while (sqrs[rndmMv] !== null) {
             rndmMv = Math.floor(Math.random() * (max - min)) + min;
         }
+        return rndmMv;
+    }
 
-        this.handleClick(rndmMv);
-        console.log('hi there');
+    handlePlayForMe(e) {
+        // to avoid the annoying reload triggered by form's on submit; wouldn't work without this
+        e.preventDefault();
+
+        const cmv = this.computerMove();
+        this.handleClick(cmv);
     }
 
     render() {
