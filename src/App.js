@@ -363,6 +363,31 @@ class Game extends React.Component {
 
 export default Game;
 
+/**
+ * return:
+ *  null                            not done yet
+ *  D                               draw
+ *  an array like ['X', 0, 1, 2]    x wins and the sqrs 0, 1, 2 to color for winning
+ */
+export function winner_and_winning_line_or_draw(mv, sqrs, d, wl) {
+    // x wins
+    let a = player_winning_moves(XTOKEN, mv, sqrs, d, wl);
+    if (a) return a;
+
+    // o wins
+    a = player_winning_moves(OTOKEN, mv, sqrs, d, wl);
+    if (a) return a;
+
+    // game continues
+    let i;
+    for (i = 0; i < d * d; i++) {
+        if (sqrs[i] === null) return null;
+    }
+
+    // draw
+    return 'D';
+}
+
 export function check_arr_for_win(arr, plyr, sqrs, wl) {
     let i, mv, c = 0, a = [], r = [], firstW = true;
     for (i = 0; i < arr.length; i++) { // don't use map() inside for-loop
@@ -443,36 +468,6 @@ export function player_winning_moves(plyr, sn, sqrs, d, wl) {
     if (r.length > 0) return r;
 
     return false;
-}
-
-/**
- * return:
- *  null    not done yet
- *  D       draw
- *  an array like ['X', 0, 1, 2]    x wins and the sqrs 0, 1, 2 to color for winning
- *
- * @param {k} mv
- * @param {*} sqrs
- * @param {*} d
- * @param {*} wl
- */
-export function winner_and_winning_line_or_draw(mv, sqrs, d, wl) {
-    // x wins
-    let a = player_winning_moves(XTOKEN, mv, sqrs, d, wl);
-    if (a) return a;
-
-    // o wins
-    a = player_winning_moves(OTOKEN, mv, sqrs, d, wl);
-    if (a) return a;
-
-    // game continues
-    let i;
-    for (i = 0; i < d * d; i++) {
-        if (sqrs[i] === null) return null;
-    }
-
-    // draw
-    return 'D';
 }
 
 export function row_number(squareNum, d) {

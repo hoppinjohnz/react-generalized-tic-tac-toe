@@ -2,12 +2,12 @@ const app = require('./App');
 
 describe('row_number', () => {
     test.each`
-      sqrNum   | d      | expected
-      ${2}     | ${3}   | ${0}
-      ${22}    | ${6}   | ${3}
-      ${92}    | ${11}  | ${8}
+        sqrNum   | d      | expected
+        ${2}     | ${3}   | ${0}
+        ${22}    | ${6}   | ${3}
+        ${92}    | ${11}  | ${8}
     `('sqrNum: $sqrNum and dimension: $d => row number: $expected', ({ sqrNum, d, expected }) => {
-      expect(app.row_number(sqrNum, d)).toEqual(expected)
+        expect(app.row_number(sqrNum, d)).toEqual(expected)
     });
 });
 
