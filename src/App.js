@@ -2,8 +2,8 @@ import React from 'react';
 import './App.css';
 
 // a few global constants
-const DFLDIM = 7;
-const WINLEN = 5;
+const DFLDIM = 3;
+const WINLEN = 3;
 
 const MINDIM = 1;
 const MAXDIM = 25;
@@ -152,7 +152,7 @@ class Game extends React.Component {
         sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
 
         // highlight the winning line if the new move wins
-        const w = winnerAndWinningLineOrDraw(i, sqrs, this.state.dimension, this.state.winlngth);
+        const w = winner_and_winning_line_or_draw(i, sqrs, this.state.dimension, this.state.winlngth);
         const clrs = hstr[mvN].bgColors.slice();
         let alrWon = false;
         if (w) {
@@ -230,10 +230,13 @@ class Game extends React.Component {
         let min = 0;
         let max = this.state.dimension * this.state.dimension;
         let rndmMv = Math.floor(Math.random() * (max - min)) + min;
-        while (sqrs[rndmMv] !== null) {
+        let i = 0;
+        while (sqrs[rndmMv] !== null && i < ARRLEN) {
+            i++;
             rndmMv = Math.floor(Math.random() * (max - min)) + min;
         }
-        return rndmMv;
+
+        return ((i >= ARRLEN) ? null : rndmMv);
     }
 
     move_by_computer() {
@@ -250,6 +253,8 @@ class Game extends React.Component {
         e.preventDefault();
 
         const cmv = this.move_by_computer();
+        if (cmv === null) return;
+
         this.handleClick(cmv);
     }
 
@@ -265,7 +270,7 @@ class Game extends React.Component {
             // to mark the curr move in the history list
             const crrtMv = (index === mvNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
             const msn = currValue.mvSqurNum;
-            const lctn = index ? (1 + rowNum(msn, this.state.dimension)) + '-' + (1 + colNum(msn, this.state.dimension)) : null;
+            const lctn = index ? (1 + row_number(msn, this.state.dimension)) + '-' + (1 + column_number(msn, this.state.dimension)) : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -282,7 +287,7 @@ class Game extends React.Component {
         const sNum = this.state.history[mvNum].mvSqurNum;
 
         // set the status accordingly right before rendering
-        const w = winnerAndWinningLineOrDraw(sNum, my_sqrs, this.state.dimension, this.state.winlngth);
+        const w = winner_and_winning_line_or_draw(sNum, my_sqrs, this.state.dimension, this.state.winlngth);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -358,7 +363,7 @@ class Game extends React.Component {
 
 export default Game;
 
-export function chkArrForWin(arr, plyr, sqrs, wl) {
+export function check_arr_for_win(arr, plyr, sqrs, wl) {
     let i, mv, c = 0, a = [], r = [], firstW = true;
     for (i = 0; i < arr.length; i++) { // don't use map() inside for-loop
         mv = arr[i];
@@ -384,11 +389,11 @@ export function chkArrForWin(arr, plyr, sqrs, wl) {
     return null;
 }
 
-export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
+export function player_winning_moves(plyr, sn, sqrs, d, wl) {
     let a = [], r = [], firstWin = false;
 
     // won in rows
-    a = chkArrForWin(rowSec(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(rwo_section(sn, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -400,7 +405,7 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in columns
-    a = chkArrForWin(colSec(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(column_section(sn, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -412,7 +417,7 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in north east diagonals
-    a = chkArrForWin(neaSec(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(north_east_section(sn, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -424,7 +429,7 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in north west diagonals
-    a = chkArrForWin(nweSec(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(north_west_section(sn, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -451,13 +456,13 @@ export function playerWinningMoves(plyr, sn, sqrs, d, wl) {
  * @param {*} d
  * @param {*} wl
  */
-export function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
+export function winner_and_winning_line_or_draw(mv, sqrs, d, wl) {
     // x wins
-    let a = playerWinningMoves(XTOKEN, mv, sqrs, d, wl);
+    let a = player_winning_moves(XTOKEN, mv, sqrs, d, wl);
     if (a) return a;
 
     // o wins
-    a = playerWinningMoves(OTOKEN, mv, sqrs, d, wl);
+    a = player_winning_moves(OTOKEN, mv, sqrs, d, wl);
     if (a) return a;
 
     // game continues
@@ -470,71 +475,71 @@ export function winnerAndWinningLineOrDraw(mv, sqrs, d, wl) {
     return 'D';
 }
 
-export function rowNum(squareNum, d) {
+export function row_number(squareNum, d) {
     return Math.floor(squareNum / d);
 }
 
-export function colNum(squareNum, d) {
+export function column_number(squareNum, d) {
     return (squareNum % d);
 }
 
-export function mv2RowAndCol(sqrN, d) {
+export function move_to_row_and_column(sqrN, d) {
     const r = Math.floor(sqrN / d);
     const c = (sqrN % d);
     return [r, c];
 }
 
-export function rowAndCol2mv(r, c, d) {
+export function row_and_column_to_move(r, c, d) {
     return r * d + c;
 }
 
-export function weSN(r, c, d) {
+export function west_square_number(r, c, d) {
     const t = c - 1;
-    return (t < 0) ? null : rowAndCol2mv(r, t, d);
+    return (t < 0) ? null : row_and_column_to_move(r, t, d);
 }
 
-export function eaSN(r, c, d) {
+export function east_square_number(r, c, d) {
     const t = c + 1;
-    return (t >= d) ? null : rowAndCol2mv(r, t, d);
+    return (t >= d) ? null : row_and_column_to_move(r, t, d);
 }
 
-export function noSN(r, c, d) {
+export function north_square_number(r, c, d) {
     const t = r - 1;
-    return (t < 0) ? null : rowAndCol2mv(t, c, d);
+    return (t < 0) ? null : row_and_column_to_move(t, c, d);
 }
 
-export function soSN(r, c, d) {
+export function south_square_number(r, c, d) {
     const t = r + 1;
-    return (t >= d) ? null : rowAndCol2mv(t, c, d);
+    return (t >= d) ? null : row_and_column_to_move(t, c, d);
 }
 
-export function nwSN(r, c, d) {
+export function nroth_west_square_number(r, c, d) {
     const s = r - 1, t = c - 1;
-    return (s < 0 || t < 0) ? null : rowAndCol2mv(s, t, d);
+    return (s < 0 || t < 0) ? null : row_and_column_to_move(s, t, d);
 }
 
-export function swSN(r, c, d) {
+export function south_west_square_number(r, c, d) {
     const s = r + 1, t = c - 1;
-    return (s >= d || t < 0) ? null : rowAndCol2mv(s, t, d);
+    return (s >= d || t < 0) ? null : row_and_column_to_move(s, t, d);
 }
 
-export function neSN(r, c, d) {
+export function nroth_east_square_number(r, c, d) {
     const s = r - 1, t = c + 1;
-    return (s < 0 || t >= d) ? null : rowAndCol2mv(s, t, d);
+    return (s < 0 || t >= d) ? null : row_and_column_to_move(s, t, d);
 }
 
-export function seSN(r, c, d) {
+export function south_east_square_number(r, c, d) {
     const s = r + 1, t = c + 1;
-    return (s >= d || t >= d) ? null : rowAndCol2mv(s, t, d);
+    return (s >= d || t >= d) ? null : row_and_column_to_move(s, t, d);
 }
 
-export function rowSec(mv, d, wl) {
+export function rwo_section(mv, d, wl) {
     let a = [], j;
-    const [r, c] = mv2RowAndCol(mv, d);
+    const [r, c] = move_to_row_and_column(mv, d);
     for (j = wl - 2; j >= 0; j--) {
         const t = c - j;
         if (t >= 0) {
-            const n = weSN(r, t, d);
+            const n = west_square_number(r, t, d);
             if (n != null) a.push(n);
         }
     }
@@ -542,20 +547,20 @@ export function rowSec(mv, d, wl) {
     for (j = 0; j < wl - 1; j++) {
         const t = c + j;
         if (t < d) {
-            const n = eaSN(r, t, d);
+            const n = east_square_number(r, t, d);
             if (n != null) a.push(n);
         }
     }
     return a;
 }
 
-export function colSec(mv, d, wl) {
+export function column_section(mv, d, wl) {
     let a = [], i;
-    const [r, c] = mv2RowAndCol(mv, d);
+    const [r, c] = move_to_row_and_column(mv, d);
     for (i = wl - 2; i >= 0; i--) {
         const t = r - i;
         if (t >= 0) {
-            const n = noSN(t, c, d);
+            const n = north_square_number(t, c, d);
             if (n != null) a.push(n);
         }
     }
@@ -563,21 +568,21 @@ export function colSec(mv, d, wl) {
     for (i = 0; i < wl - 1; i++) {
         const t = r + i;
         if (t < d) {
-            const n = soSN(t, c, d);
+            const n = south_square_number(t, c, d);
             if (n != null) a.push(n);
         }
     }
     return a;
 }
 
-export function neaSec(mv, d, wl) {
+export function north_east_section(mv, d, wl) {
     let a = [], i;
-    const [r, c] = mv2RowAndCol(mv, d);
+    const [r, c] = move_to_row_and_column(mv, d);
     for (i = wl - 2; i >= 0; i--) {
         const s = r - i;
         const t = c - i;
         if (s >= 0 && t >= 0) {
-            const n = nwSN(s, t, d);
+            const n = nroth_west_square_number(s, t, d);
             if (n != null) a.push(n);
         }
     }
@@ -586,21 +591,21 @@ export function neaSec(mv, d, wl) {
         const s = r + i;
         const t = c + i;
         if (s < d && t < d) {
-            const n = seSN(s, t, d);
+            const n = south_east_square_number(s, t, d);
             if (n != null) a.push(n);
         }
     }
     return a;
 }
 
-export function nweSec(mv, d, wl) {
+export function north_west_section(mv, d, wl) {
     let a = [], i;
-    const [r, c] = mv2RowAndCol(mv, d);
+    const [r, c] = move_to_row_and_column(mv, d);
     for (i = wl - 2; i >= 0; i--) {
         const s = r - i;
         const t = c + i;
         if (s >= 0 && t < d) {
-            const n = neSN(s, t, d);
+            const n = nroth_east_square_number(s, t, d);
             if (n != null) a.push(n);
         }
     }
@@ -609,7 +614,7 @@ export function nweSec(mv, d, wl) {
         const s = r + i;
         const t = c - i;
         if (s < d && t >= 0) {
-            const n = swSN(s, t, d);
+            const n = south_west_square_number(s, t, d);
             if (n != null) a.push(n);
         }
     }
