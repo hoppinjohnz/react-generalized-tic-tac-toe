@@ -1,5 +1,99 @@
 const app = require('./App');
 
+describe('number_of_lines', () => {
+    test.each`
+        mv   | d      | expected
+        ${2}     | ${2}   | ${3}
+        ${2}     | ${3}   | ${3}
+        ${4}    | ${3}   | ${4}
+        ${10}    | ${4}   | ${4}
+        ${5}    | ${4}  | ${4}
+        ${15}    | ${4}  | ${3}
+        ${10}    | ${6}   | ${4}
+        ${22}    | ${6}   | ${4}
+        ${25}    | ${6}   | ${4}
+        ${6}    | ${6}   | ${2}
+        ${18}    | ${6}   | ${2}
+        ${23}    | ${6}   | ${2}
+        ${33}    | ${6}   | ${2}
+        ${0}    | ${11}   | ${3}
+        ${99}    | ${11}   | ${2}
+    `('mv: $mv and dimension: $d => number_of_lines: $expected', ({ mv, d, expected }) => {
+        expect(app.number_of_lines(mv, d)).toEqual(expected)
+    });
+});
+
+describe('on_inside', () => {
+    test.each`
+        mv   | d      | expected
+        ${2}     | ${3}   | ${false}
+        ${4}    | ${3}   | ${true}
+        ${10}    | ${4}   | ${true}
+        ${5}    | ${4}  | ${true}
+        ${15}    | ${4}  | ${false}
+        ${10}    | ${6}   | ${true}
+        ${22}    | ${6}   | ${true}
+        ${25}    | ${6}   | ${true}
+        ${6}    | ${6}   | ${false}
+        ${18}    | ${6}   | ${false}
+        ${23}    | ${6}   | ${false}
+        ${33}    | ${6}   | ${false}
+        ${0}    | ${11}   | ${false}
+        ${99}    | ${11}   | ${false}
+    `('mv: $mv and dimension: $d => on_inside: $expected', ({ mv, d, expected }) => {
+        expect(app.on_inside(mv, d)).toEqual(expected)
+    });
+});
+
+describe('on_wall', () => {
+    test.each`
+        mv   | d      | expected
+        ${2}     | ${3}   | ${false}
+        ${15}    | ${4}  | ${false}
+        ${22}    | ${6}   | ${false}
+        ${6}    | ${6}   | ${true}
+        ${18}    | ${6}   | ${true}
+        ${23}    | ${6}   | ${true}
+        ${33}    | ${6}   | ${true}
+        ${0}    | ${11}   | ${false}
+        ${99}    | ${11}   | ${true}
+    `('mv: $mv and dimension: $d => on_wall: $expected', ({ mv, d, expected }) => {
+        expect(app.on_wall(mv, d)).toEqual(expected)
+    });
+});
+
+describe('on_corner', () => {
+    test.each`
+        mv   | d      | expected
+        ${2}     | ${3}   | ${true}
+        ${15}    | ${4}  | ${true}
+        ${22}    | ${6}   | ${false}
+        ${0}    | ${11}   | ${true}
+        ${99}    | ${11}   | ${false}
+    `('mv: $mv and dimension: $d => on_corner: $expected', ({ mv, d, expected }) => {
+        expect(app.on_corner(mv, d)).toEqual(expected)
+    });
+});
+
+describe('check_arr_for_best_line', () => {
+    test.each`
+        arr          | plyr   | sqrs                                                      | expected
+        ${[0, 1, 2]} | ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${null}
+        ${[0, 1, 2]} | ${'X'} | ${[null, null, 'X', null, null, null, null, null, null]} | ${['X', 2]}
+        ${[0, 1, 2]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, null]} | ${['X', 2]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', null, null, null, null, null, null, null, null]} | ${['X', 0]}
+        ${[0, 1, 2]} | ${'X'} | ${[null, 'X', null, null, null, null, null, null, null]} | ${['X', 1]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', null, null, null, null, null, null, null]} | ${['X', 0, 1]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${['X', 0, 1, 2]}
+        ${[0, 1, 2]} | ${'X'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${['X', 1, 2]}
+        ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${['O', 0]}
+        ${[0, 1, 2]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
+        ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
+    `('', ({ arr, plyr, sqrs, wl, expected }) => {
+        expect(app.check_arr_for_best_line(arr, plyr, sqrs)).toEqual(expected)
+    });
+});
+
 describe('row_number', () => {
     test.each`
         sqrNum   | d      | expected

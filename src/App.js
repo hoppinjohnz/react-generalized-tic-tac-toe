@@ -5,7 +5,7 @@ import './App.css';
 const DFLDIM = 3;
 const WINLEN = 3;
 
-const MINDIM = 1;
+const MINDIM = 2;
 const MAXDIM = 25;
 const ARRLEN = MAXDIM * MAXDIM; // TODO possible to use dimension * dimension length instead to be more efficient
 
@@ -362,6 +362,75 @@ class Game extends React.Component {
 }
 
 export default Game;
+
+// return a have-to-make move or null if there is no such move
+export function have_to_make_move(sqrs, wl) {
+}
+
+// return the number of potential good moves adjacent to mv
+export function degree_of_freedom(mv, sqrs) {
+}
+
+export function adjacent_movable_squares(mv, sqrs) {
+}
+
+export function number_of_lines(mv, d) {
+    if (on_inside(mv, d)) return 4;
+    if (on_wall(mv, d)) return 2;
+    if (on_corner(mv, d)) return 3;
+}
+
+export function on_corner(mv, d) {
+    const r = row_number(mv, d);
+    const c = column_number(mv, d);
+    const dd = d - 1;
+
+    if ((r === 0 || r === dd) && (c === 0 || c === dd)) return true;
+    return false;
+}
+
+export function on_wall(mv, d) {
+    const r = row_number(mv, d);
+    const c = column_number(mv, d);
+    const dd = d - 1;
+    // top and bottom
+    if ((r === 0 || r === dd) && c !== 0 && c !== dd) return true;
+    // left and right
+    if ((c === 0 || c === dd) && r !== 0 && r !== dd) return true;
+    return false;
+}
+
+export function on_inside(mv, d) {
+    const r = row_number(mv, d);
+    const c = column_number(mv, d);
+    const dd = d - 1;
+    if (r !== 0 && r !== dd && c !== 0 && c !== dd) return true;
+    return false;
+}
+
+// return the longest line made by player in arr
+export function check_arr_for_best_line(arr, plyr, sqrs) {
+    let i, mv, c = 0, r = [], firstW = true, max = 0;
+    for (i = 0; i < arr.length; i++) { // don't use map() inside for-loop
+        mv = arr[i];
+        if (sqrs[mv] === plyr) {
+            c++;
+            if (c > max) {
+                max = c;
+                if (firstW) {
+                    Array.prototype.push.apply(r, [plyr, mv]);
+                    firstW = false;
+                } else {
+                    Array.prototype.push.apply(r, [mv]);
+                }
+            }
+        }
+    }
+
+    if (r.length > 0) return r;
+
+    return null;
+}
 
 /**
  * return:
