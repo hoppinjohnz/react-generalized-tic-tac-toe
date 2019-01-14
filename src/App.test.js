@@ -75,34 +75,6 @@ describe('on_corner', () => {
     });
 });
 
-describe('check_line_for_best_potential', () => {
-    test.each`
-        arr          | plyr   | sqrs                                                      | expected
-        ${[0, 1, 2]} | ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${null}
-        ${[0, 1, 2]} | ${'X'} | ${[null, null, 'X', null, null, null, null, null, null]} | ${['X', 2]}
-        ${[0, 1, 2]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, null]} | ${['X', 2]}
-        ${[0, 1, 2]} | ${'X'} | ${['X', null, null, null, null, null, null, null, null]} | ${['X', 0]}
-        ${[0, 1, 2]} | ${'X'} | ${[null, 'X', null, null, null, null, null, null, null]} | ${['X', 1]}
-        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', null, null, null, null, null, null, null]} | ${['X', 0, 1]}
-        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${['X', 0, 1, 2]}
-        ${[0, 1, 2]} | ${'X'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${['X', 1, 2]}
-        ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${['O', 0]}
-        ${[0, 1, 2]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
-        ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
-        ${[6, 7, 8]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['O', 6, 7, 8]}
-        ${[0, 4, 8]} | ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['X', 0]}
-        ${[0, 4, 8]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['O', 8]}
-        ${[2, 4, 6]} | ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['X', 2]}
-        ${[2, 4, 6]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['O', 6]}
-        ${[2, 4, 6]} | ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${['X', 2, 4, 6]}
-        ${[2, 4, 6]} | ${'O'} | ${['X', 'X', 'O', null, 'O', null, 'O', 'O', 'O']} | ${['O', 2, 4, 6]}
-        ${[3, 4, 5]} | ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${['X', 4]}
-        ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O']} | ${['O', 3, 4, 5]}
-    `('$arr, $plyr, $sqrs', ({ arr, plyr, sqrs, expected }) => {
-        expect(app.check_line_for_best_potential(arr, plyr, sqrs)).toEqual(expected)
-    });
-});
-
 describe('row_number', () => {
     test.each`
         sqrNum   | d      | expected
@@ -343,7 +315,10 @@ it('north_west_section', () => {
 describe('whole_row', () => {
     test.each`
         row_number   | d      | expected
+        ${0}     | ${2}   | ${[0, 1]}
         ${1}     | ${2}   | ${[2, 3]}
+        ${0}     | ${3}   | ${[0, 1, 2]}
+        ${1}     | ${3}   | ${[3, 4, 5]}
         ${2}     | ${3}   | ${[6, 7, 8]}
         ${1}    | ${4}   | ${[4, 5, 6, 7]}
         ${0}    | ${6}   | ${[0, 1, 2, 3, 4, 5]}
@@ -454,3 +429,123 @@ describe('whole_south_west', () => {
         expect(app.whole_south_west(mv, d)).toEqual(expected)
     });
 });
+
+describe('check_line_for_best_potential', () => {
+    test.each`
+        arr          | plyr   | sqrs                                                      | expected
+        ${[2, 5, 8]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, 'X']} | ${[2]}
+        ${[2, 4, 6]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, 'X']} | ${[2]}
+        ${[2, 4, 6]} | ${'X'} | ${['O', null, null, null, 'X', null, null, null, 'X']} | ${[4]}
+        ${[2, 4, 6]} | ${'X'} | ${['O', null, null, null, null, null, 'X', null, 'X']} | ${[6]}
+        ${[0, 1, 2]} | ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${null}
+        ${[0, 1, 2]} | ${'X'} | ${[null, null, 'X', null, null, null, null, null, null]} | ${[2]}
+        ${[0, 1, 2]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, null]} | ${[2]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', null, null, null, null, null, null, null, null]} | ${[0]}
+        ${[0, 1, 2]} | ${'X'} | ${[null, 'X', null, null, null, null, null, null, null]} | ${[1]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', null, null, null, null, null, null, null]} | ${[0, 1]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${[0, 1, 2]}
+        ${[0, 1, 2]} | ${'X'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${[1, 2]}
+        ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${[0]}
+        ${[0, 1, 2]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
+        ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
+        ${[6, 7, 8]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${[6, 7, 8]}
+        ${[0, 4, 8]} | ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${[0]}
+        ${[0, 4, 8]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${[8]}
+        ${[2, 4, 6]} | ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${[2]}
+        ${[2, 4, 6]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${[6]}
+        ${[2, 4, 6]} | ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${[2, 4, 6]}
+        ${[2, 4, 6]} | ${'O'} | ${['X', 'X', 'O', null, 'O', null, 'O', 'O', 'O']} | ${[2, 4, 6]}
+        ${[3, 4, 5]} | ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${[4]}
+        ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O']} | ${[3, 4, 5]}
+    `('$arr, $plyr, $sqrs', ({ arr, plyr, sqrs, expected }) => {
+        expect(app.check_line_for_best_potential(arr, plyr, sqrs)).toEqual(expected)
+    });
+});
+
+// rows
+describe('most_plausible for rows', () => {
+    test.each`
+        plyr   | sqrs                                                      | d | expected
+        ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${3} | ${null}
+        ${'X'} | ${[null, null, 'X', null, null, null, null, null, null]} | ${3} | ${[2]}
+        ${'X'} | ${['O', null, 'X', null, null, null, null, null, null]} | ${3} | ${[2]}
+        ${'X'} | ${['X', null, null, null, null, null, null, null, null]} | ${3} | ${[0]}
+        ${'X'} | ${[null, 'X', null, null, null, null, null, null, null]} | ${3} | ${[1]}
+        ${'X'} | ${['X', 'X', null, null, null, null, null, null, null]} | ${3} | ${[0, 1]}
+        ${'X'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${[0, 1, 2]}
+        ${'X'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${[1, 2]}
+        ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${[0]}
+        ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${3} | ${[6, 7, 8]}
+        ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${3} | ${[0, 1, 2]}
+        ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${3} | ${[6, 7, 8]}
+        ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${3} | ${[0, 1, 2]}
+        ${'O'} | ${['X', 'X', 'O', null, 'O', null, 'O', 'O', 'O']} | ${3} | ${[6, 7, 8]}
+        ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${3} | ${[0, 1, 2]}
+        ${'O'} | ${['X', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O']} | ${3} | ${[3, 4, 5]}
+    `('$plyr, $sqrs, $d => most plausible: $expected', ({ plyr, sqrs, d, expected }) => {
+        expect(app.most_plausible(plyr, sqrs, d)).toEqual(expected)
+    });
+});
+
+// columns
+describe('most_plausible for columns', () => {
+    test.each`
+        plyr   | sqrs                                                      | d | expected
+        ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${3} | ${null}
+        ${'X'} | ${['X', null, null, 'X', null, null, null, null, null]} | ${3} | ${[0, 3]}
+        ${'X'} | ${['X', null, null, 'X', null, null, 'O', null, null]} | ${3} | ${[0, 3]}
+        ${'X'} | ${['X', null, null, 'X', null, null, 'X', null, null]} | ${3} | ${[0, 3, 6]}
+        ${'O'} | ${['X', null, null, 'X', null, null, 'X', null, null]} | ${3} | ${null}
+        ${'X'} | ${[null, null, 'X', null, null, 'X', null, null, 'X']} | ${3} | ${[2, 5, 8]}
+        ${'O'} | ${[null, null, 'O', null, null, 'O', null, null, 'O']} | ${3} | ${[2, 5, 8]}
+        ${'X'} | ${['O', null, 'X', null, null, null, null, null, 'X']} | ${3} | ${[2]}
+        ${'X'} | ${['O', null, null, null, null, null, null, null, 'X']} | ${3} | ${[8]}
+        ${'X'} | ${['X', null, null, null, null, null, null, null, null]} | ${3} | ${[0]}
+        ${'X'} | ${[null, 'X', null, null, null, null, null, null, null]} | ${3} | ${[1]}
+        ${'O'} | ${['X', 'X', 'O', 'X', 'O', 'O', 'O', 'O', 'O']} | ${3} | ${[6, 7, 8]}
+        ${'O'} | ${['X', 'X', 'O', 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[2, 5, 8]}
+        ${'X'} | ${['X', 'X', 'O', 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[0, 1]}
+        ${'O'} | ${[null, 'X', null, 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[4, 5]}
+        ${'X'} | ${[null, 'X', 'X', 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[1, 2]}
+        ${'O'} | ${[null, 'X', 'X', 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[4, 5]}
+    `('$plyr, $sqrs, $d => most plausible: $expected', ({ plyr, sqrs, d, expected }) => {
+        expect(app.most_plausible(plyr, sqrs, d)).toEqual(expected)
+    });
+});
+
+// south east
+describe('most_plausible for south east', () => {
+    test.each`
+        plyr   | sqrs                                                      | d | expected
+        ${'X'} | ${[null, 'X', null, 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[3, 7]}
+        ${'O'} | ${[null, 'X', null, 'X', 'O', 'O', 'O', 'X', 'O']} | ${3} | ${[4, 5]}
+        ${'O'} | ${[null, 'X', null, 'X', 'O', null, 'O', 'X', 'O']} | ${3} | ${[4, 8]}
+        ${'O'} | ${[null, 'X', null, 'X', 'O', 'X', 'O', 'X', 'O']} | ${3} | ${[4, 8]}
+        ${'X'} | ${[null, 'X', null, 'X', 'O', 'X', 'O', 'X', 'O']} | ${3} | ${[1, 5]}
+        ${'O'} | ${['O', null, 'X', null, 'O', null, null, null, 'X']} | ${3} | ${[0, 4]}
+        ${'X'} | ${['O', null, 'X', null, 'O', null, null, null, 'X']} | ${3} | ${[2]}
+        ${'X'} | ${['O', null, 'X', null, 'O', null, 'X', null, 'X']} | ${3} | ${[2]}
+        ${'O'} | ${['O', 'O', 'X', null, 'O', null, 'X', null, 'X']} | ${3} | ${[0, 1]}
+    `('$plyr, $sqrs, $d => most plausible: $expected', ({ plyr, sqrs, d, expected }) => {
+        expect(app.most_plausible(plyr, sqrs, d)).toEqual(expected)
+    });
+});
+
+// south west
+describe('most_plausible for south west', () => {
+    test.each`
+        plyr   | sqrs                                                      | d | expected
+        ${'X'} | ${[null, 'X', null, 'X', null, null, null, null, 'O']} | ${3} | ${[1, 3]}
+        ${'O'} | ${[null, 'O', null, 'O', null, null, null, null, 'X']} | ${3} | ${[1, 3]}
+        ${'X'} | ${[null, null, null, null, null, 'X', null, 'X', 'O']} | ${3} | ${[5, 7]}
+        ${'O'} | ${[null, null, null, null, null, 'X', null, 'X', 'O']} | ${3} | ${[8]}
+        ${'X'} | ${[null, null, 'X', null, 'X', null, 'X', null, null]} | ${3} | ${[2, 4, 6]}
+        ${'X'} | ${['O', null, 'X', null, 'X', null, 'X', null, 'O']} | ${3} | ${[2, 4, 6]}
+    `('$plyr, $sqrs, $d => most plausible: $expected', ({ plyr, sqrs, d, expected }) => {
+        expect(app.most_plausible(plyr, sqrs, d)).toEqual(expected)
+    });
+});
+
+

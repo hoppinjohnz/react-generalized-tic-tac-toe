@@ -363,6 +363,8 @@ class Game extends React.Component {
 
 export default Game;
 
+
+
 // return a have-to-make move or null if there is no such move
 export function have_to_make_move(sqrs, wl) {
 }
@@ -373,6 +375,77 @@ export function degree_of_freedom(mv, sqrs) {
 
 export function adjacent_movable_squares(mv, sqrs) {
 }
+
+// scan for the most plausible line segment for the player
+// loop through all possible moves for rows, cols, NE, and NW crosses
+// find the longest length of lines made by the player
+export function most_plausible(plyr, sqrs, d) {
+    let a = [], r = [], l = 0;
+
+    // check rows
+    let i;
+    for (i = 0; i < d; i++) {
+        a = check_line_for_best_potential(whole_row(i, d), plyr, sqrs);
+        if (a && a.length > l) {
+            l = a.length;
+            r = a.slice();
+            a = [];
+        }
+    }
+
+    // check columns
+    for (i = 0; i < d; i++) {
+        a = check_line_for_best_potential(whole_column(i, d), plyr, sqrs);
+        if (a && a.length > l) {
+            l = a.length;
+            r = a.slice();
+            a = [];
+        }
+    }
+
+    // check south east diagonals
+    for (i = 0; i < d; i++) {
+        a = check_line_for_best_potential(whole_south_east(i, d), plyr, sqrs);
+        if (a && a.length > l) {
+            l = a.length;
+            r = a.slice();
+            a = [];
+        }
+    }
+    for (i = 1; i < d; i++) {
+        a = check_line_for_best_potential(whole_south_east(i * d, d), plyr, sqrs);
+        if (a && a.length > l) {
+            l = a.length;
+            r = a.slice();
+            a = [];
+        }
+    }
+
+    // check south west diagonals
+    for (i = 0; i < d; i++) {
+        a = check_line_for_best_potential(whole_south_west(i, d), plyr, sqrs);
+        if (a && a.length > l) {
+            l = a.length;
+            r = a.slice();
+            a = [];
+        }
+    }
+    for (i = 1; i < d; i++) {
+        a = check_line_for_best_potential(whole_south_west((i + 1) * d - 1, d), plyr, sqrs);
+        if (a && a.length > l) {
+            l = a.length;
+            r = a.slice();
+            a = [];
+        }
+    }
+
+    if (r.length > 0) return r;
+
+    return null;
+}
+
+
+
 
 // get the entire row indexed by rn = 0, 1, ... , d-1
 export function whole_row(rn, d) {
@@ -395,7 +468,7 @@ export function what_diagonal (mv, d) {
     else return -1;
 }
 
-// get the entire north-east diagonal identified by mv
+// get the entire south-east diagonal identified by mv
 export function whole_south_east(mv, d) {
     const wd = what_diagonal(mv, d);
     if (wd === 0) {
@@ -459,57 +532,6 @@ export function whole_south_west(mv, d) {
     }
 }
 
-// scan for the most plausible line segment for the player
-// loop through all possible moves for rows, cols, NE, and NW crosses
-// find the longest length of lines made by the player
-export function most_plausible(plyr, sqrs, d) {
-    // let a = [], r = [], l;
-
-    // const dd = d * d;
-    // let i;
-    // for (i = 0; i < d; i++) {
-    //     // check rows
-    //     a = check_line_for_best_potential(whole_row(i * d, d, wl), plyr, sqrs);
-    //     if (a && a.length > l) {
-    //         l = a.length;
-    //         r = a.slice();
-    //         a = [];
-    //     }
-    // }
-
-    // for (mv = 0; mv < dd; mv++) {
-    //     // check columns
-    //     a = check_line_for_best_potential(column_section(mv, d, wl), plyr, sqrs);
-    //     if (a && a.length > l) {
-    //         l = a.length;
-    //         r = a.slice();
-    //         a = [];
-    //     }
-
-    //     // check north east diagonals
-    //     a = check_line_for_best_potential(north_east_section(mv, d, wl), plyr, sqrs);
-    //     if (a && a.length > l) {
-    //         l = a.length;
-    //         r = a.slice();
-    //         a = [];
-    //     }
-
-    //     // check north west diagonals
-    //     a = check_line_for_best_potential(north_west_section(mv, d, wl), plyr, sqrs);
-    //     if (a && a.length > l) {
-    //         l = a.length;
-    //         r = a.slice();
-    //         a = [];
-    //     }
-    // }
-
-    // if (r.length > 0) return r;
-
-    // return false;
-}
-
-
-
 export function number_of_lines(mv, d) {
     if (on_inside(mv, d)) return 4;
     if (on_wall(mv, d)) return 2;
@@ -546,20 +568,17 @@ export function on_inside(mv, d) {
 
 // return the longest potential made by player in line
 export function check_line_for_best_potential(line, plyr, sqrs) {
-    let i, mv, c = 0, r = [], firstW = true, max = 0;
+    let i, mv, c = 0, r = [], max = 0;
     for (i = 0; i < line.length; i++) { // don't use map() inside for-loop
         mv = line[i];
         if (sqrs[mv] === plyr) {
             c++;
             if (c > max) {
                 max = c;
-                if (firstW) {
-                    Array.prototype.push.apply(r, [plyr, mv]);
-                    firstW = false;
-                } else {
-                    Array.prototype.push.apply(r, [mv]);
-                }
+                Array.prototype.push.apply(r, [mv]);
             }
+        } else {
+            c = 0;
         }
     }
 
@@ -567,6 +586,8 @@ export function check_line_for_best_potential(line, plyr, sqrs) {
 
     return null;
 }
+
+
 
 /**
  * return:
