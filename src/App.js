@@ -374,6 +374,142 @@ export function degree_of_freedom(mv, sqrs) {
 export function adjacent_movable_squares(mv, sqrs) {
 }
 
+// get the entire row indexed by rn = 0, 1, ... , d-1
+export function whole_row(rn, d) {
+    const a = Array(d).fill(null);
+    return a.map((x, i) => {return rn * d + i;});
+}
+
+// get the entire colomn indexed by cn = 0, 1, ... , d-1
+export function whole_column(cn, d) {
+    const a = Array(d).fill(null);
+    return a.map((x, i) => {return cn + (d * i);});
+}
+
+// -1 under, 0 diagonal, 1 upper
+export function what_diagonal (mv, d) {
+    const r = row_number(mv, d);
+    const c = column_number(mv, d);
+    if (r === c) return 0;
+    else if (r < c) return 1;
+    else return -1;
+}
+
+// get the entire north-east diagonal identified by mv
+export function whole_south_east(mv, d) {
+    const wd = what_diagonal(mv, d);
+    if (wd === 0) {
+        const a = Array(d).fill(null);
+        return a.map((x, i) => {return (d + 1) * i;});
+    } else {
+        const a = [];
+        if (wd === 1) { // upper sub
+            const s = column_number(mv, d) - row_number(mv, d);
+            const l = d - s;
+            let i;
+            for (i = 0; i < l; i++) {
+                a.push(s + i * (d + 1));
+            }
+        } else {
+            const s = row_number(mv, d) - column_number(mv, d);
+            const l = d - s;
+            let i;
+            for (i = 0; i < l; i++) {
+                a.push(s * d + i * (d + 1));
+            }
+        }
+        return a;
+    }
+}
+
+// -1 under, 0 sub-diagonal, 1 upper
+export function what_sub_diagonal (mv, d) {
+    const s = 1 + row_number(mv, d) + column_number(mv, d);
+    if (s === d) return 0;
+    else if (s < d) return 1;
+    else return -1;
+}
+
+// get the entire north-west diagonal identified by mv
+export function whole_south_west(mv, d) {
+    const wd = what_sub_diagonal(mv, d);
+    if (wd === 0) {
+        const a = Array(d).fill(null);
+        return a.map((x, i) => {
+            return (d - 1) * (i + 1);
+        });
+    } else {
+        const a = [];
+        if (wd === 1) { // upper
+            const s = Math.abs(column_number(mv, d) - row_number(mv, d));
+            let i;
+            const l = s + 1;
+            for (i = 0; i < l; i++) {
+                a.push(s + i * (d - 1));
+            }
+        } else {
+            const s = column_number(mv, d) + row_number(mv, d);
+            const l = 2 * d - 1 -s;
+            let i;
+            for (i = 0; i < l; i++) {
+                a.push(d * (s - d + 2) - 1 + i * (d - 1));
+            }
+        }
+        return a;
+    }
+}
+
+// scan for the most plausible line segment for the player
+// loop through all possible moves for rows, cols, NE, and NW crosses
+// find the longest length of lines made by the player
+export function most_plausible(plyr, sqrs, d) {
+    // let a = [], r = [], l;
+
+    // const dd = d * d;
+    // let i;
+    // for (i = 0; i < d; i++) {
+    //     // check rows
+    //     a = check_line_for_best_potential(whole_row(i * d, d, wl), plyr, sqrs);
+    //     if (a && a.length > l) {
+    //         l = a.length;
+    //         r = a.slice();
+    //         a = [];
+    //     }
+    // }
+
+    // for (mv = 0; mv < dd; mv++) {
+    //     // check columns
+    //     a = check_line_for_best_potential(column_section(mv, d, wl), plyr, sqrs);
+    //     if (a && a.length > l) {
+    //         l = a.length;
+    //         r = a.slice();
+    //         a = [];
+    //     }
+
+    //     // check north east diagonals
+    //     a = check_line_for_best_potential(north_east_section(mv, d, wl), plyr, sqrs);
+    //     if (a && a.length > l) {
+    //         l = a.length;
+    //         r = a.slice();
+    //         a = [];
+    //     }
+
+    //     // check north west diagonals
+    //     a = check_line_for_best_potential(north_west_section(mv, d, wl), plyr, sqrs);
+    //     if (a && a.length > l) {
+    //         l = a.length;
+    //         r = a.slice();
+    //         a = [];
+    //     }
+    // }
+
+    // if (r.length > 0) return r;
+
+    // return false;
+}
+
+
+
 export function number_of_lines(mv, d) {
     if (on_inside(mv, d)) return 4;
     if (on_wall(mv, d)) return 2;
@@ -408,11 +544,11 @@ export function on_inside(mv, d) {
     return false;
 }
 
-// return the longest line made by player in arr
-export function check_arr_for_best_line(arr, plyr, sqrs) {
+// return the longest potential made by player in line
+export function check_line_for_best_potential(line, plyr, sqrs) {
     let i, mv, c = 0, r = [], firstW = true, max = 0;
-    for (i = 0; i < arr.length; i++) { // don't use map() inside for-loop
-        mv = arr[i];
+    for (i = 0; i < line.length; i++) { // don't use map() inside for-loop
+        mv = line[i];
         if (sqrs[mv] === plyr) {
             c++;
             if (c > max) {
@@ -483,11 +619,12 @@ export function check_arr_for_win(arr, plyr, sqrs, wl) {
     return null;
 }
 
-export function player_winning_moves(plyr, sn, sqrs, d, wl) {
+// check plyr's winning in each of all 4 directions centered around mv
+export function player_winning_moves(plyr, mv, sqrs, d, wl) {
     let a = [], r = [], firstWin = false;
 
     // won in rows
-    a = check_arr_for_win(rwo_section(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(row_section(mv, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -499,7 +636,7 @@ export function player_winning_moves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in columns
-    a = check_arr_for_win(column_section(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(column_section(mv, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -511,7 +648,7 @@ export function player_winning_moves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in north east diagonals
-    a = check_arr_for_win(north_east_section(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(north_east_section(mv, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -523,7 +660,7 @@ export function player_winning_moves(plyr, sn, sqrs, d, wl) {
     }
 
     // won in north west diagonals
-    a = check_arr_for_win(north_west_section(sn, d, wl), plyr, sqrs, wl);
+    a = check_arr_for_win(north_west_section(mv, d, wl), plyr, sqrs, wl);
     if (a) {
         if (firstWin) {
             Array.prototype.push.apply(r, a.slice(1));
@@ -597,7 +734,8 @@ export function south_east_square_number(r, c, d) {
     return (s >= d || t >= d) ? null : row_and_column_to_move(s, t, d);
 }
 
-export function rwo_section(mv, d, wl) {
+// row section centered by mv extending up to wl-1 squares in both directions
+export function row_section(mv, d, wl) {
     let a = [], j;
     const [r, c] = move_to_row_and_column(mv, d);
     for (j = wl - 2; j >= 0; j--) {

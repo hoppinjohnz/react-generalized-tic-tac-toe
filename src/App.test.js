@@ -75,7 +75,7 @@ describe('on_corner', () => {
     });
 });
 
-describe('check_arr_for_best_line', () => {
+describe('check_line_for_best_potential', () => {
     test.each`
         arr          | plyr   | sqrs                                                      | expected
         ${[0, 1, 2]} | ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${null}
@@ -89,8 +89,17 @@ describe('check_arr_for_best_line', () => {
         ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${['O', 0]}
         ${[0, 1, 2]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
         ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${null}
-    `('', ({ arr, plyr, sqrs, wl, expected }) => {
-        expect(app.check_arr_for_best_line(arr, plyr, sqrs)).toEqual(expected)
+        ${[6, 7, 8]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['O', 6, 7, 8]}
+        ${[0, 4, 8]} | ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['X', 0]}
+        ${[0, 4, 8]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['O', 8]}
+        ${[2, 4, 6]} | ${'X'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['X', 2]}
+        ${[2, 4, 6]} | ${'O'} | ${['X', 'X', 'X', null, null, null, 'O', 'O', 'O']} | ${['O', 6]}
+        ${[2, 4, 6]} | ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${['X', 2, 4, 6]}
+        ${[2, 4, 6]} | ${'O'} | ${['X', 'X', 'O', null, 'O', null, 'O', 'O', 'O']} | ${['O', 2, 4, 6]}
+        ${[3, 4, 5]} | ${'X'} | ${['X', 'X', 'X', null, 'X', null, 'X', 'O', 'O']} | ${['X', 4]}
+        ${[3, 4, 5]} | ${'O'} | ${['X', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O']} | ${['O', 3, 4, 5]}
+    `('$arr, $plyr, $sqrs', ({ arr, plyr, sqrs, expected }) => {
+        expect(app.check_line_for_best_potential(arr, plyr, sqrs)).toEqual(expected)
     });
 });
 
@@ -208,34 +217,34 @@ it('south_east_square_number', () => {
     expect(app.south_east_square_number(4, 5, 6)).toEqual(null);
 });
 
-it('rwo_section', () => {
-    expect(app.rwo_section(0, 1, 1)).toEqual([0]);
+it('row_section', () => {
+    expect(app.row_section(0, 1, 1)).toEqual([0]);
 
-    expect(app.rwo_section(0, 2, 2)).toEqual([0, 1]);
-    expect(app.rwo_section(1, 2, 2)).toEqual([0, 1]);
-    expect(app.rwo_section(2, 2, 2)).toEqual([2, 3]);
-    expect(app.rwo_section(3, 2, 2)).toEqual([2, 3]);
+    expect(app.row_section(0, 2, 2)).toEqual([0, 1]);
+    expect(app.row_section(1, 2, 2)).toEqual([0, 1]);
+    expect(app.row_section(2, 2, 2)).toEqual([2, 3]);
+    expect(app.row_section(3, 2, 2)).toEqual([2, 3]);
 
-    expect(app.rwo_section(4, 4, 1)).toEqual([4]);
+    expect(app.row_section(4, 4, 1)).toEqual([4]);
 
-    expect(app.rwo_section(0, 4, 2)).toEqual([0, 1]);
-    expect(app.rwo_section(1, 4, 2)).toEqual([0, 1, 2]);
-    expect(app.rwo_section(3, 4, 2)).toEqual([2, 3]);
-    expect(app.rwo_section(13, 4, 2)).toEqual([12, 13, 14]);
+    expect(app.row_section(0, 4, 2)).toEqual([0, 1]);
+    expect(app.row_section(1, 4, 2)).toEqual([0, 1, 2]);
+    expect(app.row_section(3, 4, 2)).toEqual([2, 3]);
+    expect(app.row_section(13, 4, 2)).toEqual([12, 13, 14]);
 
-    expect(app.rwo_section(3, 4, 3)).toEqual([1, 2, 3]);
-    expect(app.rwo_section(8, 4, 3)).toEqual([8, 9, 10]);
-    expect(app.rwo_section(6, 4, 3)).toEqual([4, 5, 6, 7]);
+    expect(app.row_section(3, 4, 3)).toEqual([1, 2, 3]);
+    expect(app.row_section(8, 4, 3)).toEqual([8, 9, 10]);
+    expect(app.row_section(6, 4, 3)).toEqual([4, 5, 6, 7]);
 
-    expect(app.rwo_section(4, 4, 4)).toEqual([4, 5, 6, 7]);
-    expect(app.rwo_section(7, 4, 4)).toEqual([4, 5, 6, 7]);
+    expect(app.row_section(4, 4, 4)).toEqual([4, 5, 6, 7]);
+    expect(app.row_section(7, 4, 4)).toEqual([4, 5, 6, 7]);
 
-    expect(app.rwo_section(30, 6, 2)).toEqual([30, 31]);
-    expect(app.rwo_section(7, 6, 2)).toEqual([6, 7, 8]);
+    expect(app.row_section(30, 6, 2)).toEqual([30, 31]);
+    expect(app.row_section(7, 6, 2)).toEqual([6, 7, 8]);
 
-    expect(app.rwo_section(33, 6, 3)).toEqual([31, 32, 33, 34, 35]);
-    expect(app.rwo_section(7, 6, 4)).toEqual([6, 7, 8, 9, 10]);
-    expect(app.rwo_section(7, 6, 5)).toEqual([6, 7, 8, 9, 10, 11]);
+    expect(app.row_section(33, 6, 3)).toEqual([31, 32, 33, 34, 35]);
+    expect(app.row_section(7, 6, 4)).toEqual([6, 7, 8, 9, 10]);
+    expect(app.row_section(7, 6, 5)).toEqual([6, 7, 8, 9, 10, 11]);
 });
 
 it('column_section', () => {
@@ -329,4 +338,119 @@ it('north_west_section', () => {
     expect(app.north_west_section(33, 6, 3)).toEqual([23, 28, 33]);
     expect(app.north_west_section(7, 6, 4)).toEqual([2, 7, 12]);
     expect(app.north_west_section(7, 6, 5)).toEqual([2, 7, 12]);
+});
+
+describe('whole_row', () => {
+    test.each`
+        row_number   | d      | expected
+        ${1}     | ${2}   | ${[2, 3]}
+        ${2}     | ${3}   | ${[6, 7, 8]}
+        ${1}    | ${4}   | ${[4, 5, 6, 7]}
+        ${0}    | ${6}   | ${[0, 1, 2, 3, 4, 5]}
+        ${5}    | ${6}   | ${[30, 31, 32, 33, 34, 35]}
+    `('row_number: $row_number and dimension: $d => whole_row: $expected', ({ row_number, d, expected }) => {
+        expect(app.whole_row(row_number, d)).toEqual(expected)
+    });
+});
+
+describe('whole_column', () => {
+    test.each`
+        col_num   | d      | expected
+        ${1}     | ${2}   | ${[1, 3]}
+        ${2}     | ${3}   | ${[2, 5, 8]}
+        ${1}    | ${4}   | ${[1, 5, 9, 13]}
+        ${0}    | ${6}   | ${[0, 6, 12, 18, 24, 30]}
+        ${5}    | ${6}   | ${[5, 11, 17, 23, 29, 35]}
+    `('col_num: $col_num and dimension: $d => whole_column: $expected', ({ col_num, d, expected }) => {
+        expect(app.whole_column(col_num, d)).toEqual(expected)
+    });
+});
+
+describe('what_diagonal', () => {
+    test.each`
+        mv   | d      | expected
+        ${0}     | ${2}   | ${0}
+        ${1}     | ${2}   | ${1}
+        ${2}     | ${2}   | ${-1}
+        ${3}     | ${2}   | ${0}
+        ${2}     | ${3}   | ${1}
+        ${6}     | ${3}   | ${-1}
+        ${1}    | ${4}   | ${1}
+        ${13}    | ${4}   | ${-1}
+        ${0}    | ${6}   | ${0}
+        ${5}    | ${6}   | ${1}
+        ${33}    | ${6}   | ${-1}
+        ${18}    | ${6}   | ${-1}
+    `('mv: $mv and dimension: $d => what_diagonal: $expected', ({ mv, d, expected }) => {
+        expect(app.what_diagonal(mv, d)).toEqual(expected)
+    });
+});
+
+describe('whole_south_east', () => {
+    test.each`
+        mv   | d      | expected
+        ${0}     | ${2}   | ${[0, 3]}
+        ${1}     | ${2}   | ${[1]}
+        ${2}     | ${3}   | ${[2]}
+        ${1}    | ${4}   | ${[1, 6, 11]}
+        ${0}    | ${6}   | ${[0, 7, 14, 21, 28, 35]}
+        ${1}    | ${6}   | ${[1, 8, 15, 22, 29]}
+        ${6}    | ${6}   | ${[6, 13, 20, 27, 34]}
+        ${18}    | ${6}   | ${[18, 25, 32]}
+        ${25}    | ${6}   | ${[18, 25, 32]}
+        ${32}    | ${6}   | ${[18, 25, 32]}
+        ${5}    | ${6}   | ${[5]}
+        ${30}    | ${6}   | ${[30]}
+    `('mv: $mv and dimension: $d => whole_south_east: $expected', ({ mv, d, expected }) => {
+        expect(app.whole_south_east(mv, d)).toEqual(expected)
+    });
+});
+
+describe('what_sub_diagonal', () => {
+    test.each`
+        mv   | d      | expected
+        ${0}     | ${2}   | ${1}
+        ${1}     | ${2}   | ${0}
+        ${2}     | ${2}   | ${0}
+        ${3}     | ${2}   | ${-1}
+        ${2}     | ${3}   | ${0}
+        ${6}     | ${3}   | ${0}
+        ${1}    | ${4}   | ${1}
+        ${13}    | ${4}   | ${-1}
+        ${0}    | ${6}   | ${1}
+        ${5}    | ${6}   | ${0}
+        ${33}    | ${6}   | ${-1}
+        ${18}    | ${6}   | ${1}
+    `('mv: $mv and dimension: $d => what_sub_diagonal: $expected', ({ mv, d, expected }) => {
+        expect(app.what_sub_diagonal(mv, d)).toEqual(expected)
+    });
+});
+
+describe('whole_south_west', () => {
+    test.each`
+        mv   | d      | expected
+        ${0}     | ${2}   | ${[0]}
+        ${1}     | ${2}   | ${[1, 2]}
+        ${2}     | ${2}   | ${[1, 2]}
+        ${2}     | ${3}   | ${[2, 4, 6]}
+        ${1}     | ${3}   | ${[1, 3]}
+        ${1}     | ${4}   | ${[1, 4]}
+        ${2}     | ${4}   | ${[2, 5, 8]}
+        ${3}     | ${4}   | ${[3, 6, 9, 12]}
+        ${20}     | ${6}   | ${[5, 10, 15, 20, 25, 30]}
+        ${3}     | ${2}   | ${[3]}
+        ${5}     | ${3}   | ${[5, 7]}
+        ${7}     | ${3}   | ${[5, 7]}
+        ${1}     | ${4}   | ${[1, 4]}
+        ${7}     | ${4}   | ${[7, 10, 13]}
+        ${10}     | ${4}   | ${[7, 10, 13]}
+        ${13}     | ${4}   | ${[7, 10, 13]}
+        ${9}     | ${5}   | ${[9, 13, 17, 21]}
+        ${13}     | ${5}   | ${[9, 13, 17, 21]}
+        ${17}     | ${5}   | ${[9, 13, 17, 21]}
+        ${21}     | ${5}   | ${[9, 13, 17, 21]}
+        ${24}     | ${5}   | ${[24]}
+    `('mv: $mv and dimension: $d => whole_south_west: $expected', ({ mv, d, expected }) => {
+        expect(app.whole_south_west(mv, d)).toEqual(expected)
+    });
 });
