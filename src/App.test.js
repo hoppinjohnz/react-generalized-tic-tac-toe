@@ -534,7 +534,7 @@ describe('most_plausible for south east', () => {
 });
 
 // south west
-describe('most_plausible for south west', () => {
+describe('most_plausible for south west; for 4x4 too', () => {
     test.each`
         plyr   | sqrs                                                      | d | expected
         ${'X'} | ${[null, 'X', null, 'X', null, null, null, null, 'O']} | ${3} | ${[1, 3]}
@@ -543,6 +543,34 @@ describe('most_plausible for south west', () => {
         ${'O'} | ${[null, null, null, null, null, 'X', null, 'X', 'O']} | ${3} | ${[8]}
         ${'X'} | ${[null, null, 'X', null, 'X', null, 'X', null, null]} | ${3} | ${[2, 4, 6]}
         ${'X'} | ${['O', null, 'X', null, 'X', null, 'X', null, 'O']} | ${3} | ${[2, 4, 6]}
+        ${'X'} | ${[null, null, null, 'X',  
+                    null, null, null, null,  
+                    null, null, null, null,  
+                    null, null, null, null]} | ${4} | ${[3]}
+        ${'X'} | ${[null, 'X', null, 'X',  
+                    null, null, null, null,  
+                    null, null, null, null,  
+                    null, null, null, null]} | ${4} | ${[1]}
+        ${'X'} | ${[null, null, null, 'X',  
+                    null, null, 'X', null,  
+                    null, null, null, null,  
+                    null, null, null, null]} | ${4} | ${[3, 6]}
+        ${'X'} | ${[null, 'X', 'X', 'X',  
+                    'X', null, 'X', null,  
+                    'X', 'X', 'X', null,  
+                    null, 'X', 'X', 'X']} | ${4} | ${[2, 6, 10, 14]}
+        ${'X'} | ${['O', null, 'X', 'O',  
+                    'X', 'X', 'O', 'O',  
+                    'O', 'X', 'O', 'X',  
+                    null, 'X', 'X', null]} | ${4} | ${[5, 9, 13]}
+        ${'O'} | ${['O', null, 'X', 'O',  
+                    'X', 'X', 'O', 'O',  
+                    'O', 'X', 'O', 'X',  
+                    null, 'X', 'X', null]} | ${4} | ${[6, 7]}
+        ${'O'} | ${['O', null, 'X', 'O',  
+                    'X', 'X', 'O', 'O',  
+                    'O', 'X', 'O', 'X',  
+                    null, 'O', 'X', null]} | ${4} | ${[7, 10, 13]}
     `('$plyr, $sqrs, $d => most plausible: $expected', ({ plyr, sqrs, d, expected }) => {
         expect(app.most_plausible(plyr, sqrs, d)).toEqual(expected)
     });

@@ -115,7 +115,7 @@ class Game extends React.Component {
                 alreadyWon: false, // to support return without checking previous wins after clicking a square
             }],
             mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
-            xIsNext: true,
+            xIsTheMove: true,
             isSortOn: false,
             dimension: DFLDIM,
             winlngth: WINLEN,
@@ -149,7 +149,7 @@ class Game extends React.Component {
         // process the new move after this point
 
         // add the new move in
-        sqrs[i] = this.state.xIsNext ? XTOKEN : OTOKEN;
+        sqrs[i] = this.state.xIsTheMove ? XTOKEN : OTOKEN;
 
         // highlight the winning line if the new move wins
         const w = winner_and_winning_line_or_draw(i, sqrs, this.state.dimension, this.state.winlngth);
@@ -170,7 +170,7 @@ class Game extends React.Component {
                 alreadyWon: alrWon,
             }]),
             mvSequentialNum: newMvN,
-            xIsNext: !this.state.xIsNext,
+            xIsTheMove: !this.state.xIsTheMove,
         });
     }
 
@@ -179,7 +179,7 @@ class Game extends React.Component {
         // TODO need to move every state into history to make coloring win line work correctly
         this.setState({
             mvSequentialNum: mv,
-            xIsNext: (mv % 2) === 0, // set xIsNext to true if mv is even
+            xIsTheMove: (mv % 2) === 0, // set xIsTheMove to true if mv is even
         });
     }
 
@@ -226,6 +226,20 @@ class Game extends React.Component {
     }
 
     random_move(sqrs) {
+        // check against the current board to make sure the generated computer move is valid
+        let min = 0;
+        let max = this.state.dimension * this.state.dimension;
+        let rndmMv = Math.floor(Math.random() * (max - min)) + min;
+        let i = 0;
+        while (sqrs[rndmMv] !== null && i < ARRLEN) {
+            i++;
+            rndmMv = Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        return ((i >= ARRLEN) ? null : rndmMv);
+    }
+
+    to_win_move(sqrs) {
         // check against the current board to make sure the generated computer move is valid
         let min = 0;
         let max = this.state.dimension * this.state.dimension;
@@ -292,7 +306,7 @@ class Game extends React.Component {
         if (w === 'D') {
             status = 'It\'s a draw.';
         } else {
-            status = w ? 'Winner is ' + w[0] : 'Next player: ' + (this.state.xIsNext ? XTOKEN : OTOKEN);
+            status = w ? 'Winner is ' + w[0] : 'Next player: ' + (this.state.xIsTheMove ? XTOKEN : OTOKEN);
         }
 
         return (
@@ -373,8 +387,25 @@ export function have_to_make_move(sqrs, wl) {
 export function degree_of_freedom(mv, sqrs) {
 }
 
-export function adjacent_movable_squares(mv, sqrs) {
+// if sctn contains only one element, it'll have up to 8 adjacent moves; ow 2 adjacent moves
+export function adjacent_movable_squares(sctn, sqrs, d) {
+    // const h = sctn[0];
+    // if (sctn.length === 1) {
+    //     const r = row_number(h, d);
+    //     const c = column_number(h, d);
+    //     const n = r - 1;
+    //     const s = r + 1;
+    //     const w = c - 1;
+    //     const e = c + 1;
+    //     if (n > -1) {
+    //     } else {
+    //     }
+    // } else {
+    // }
 }
+
+
+
 
 // scan for the most plausible line segment for the player
 // loop through all possible moves for rows, cols, NE, and NW crosses
@@ -444,16 +475,13 @@ export function most_plausible(plyr, sqrs, d) {
     return null;
 }
 
-
-
-
-// get the entire row indexed by rn = 0, 1, ... , d-1
+// get the entire row indexed by row number = 0, 1, ... , d-1
 export function whole_row(rn, d) {
     const a = Array(d).fill(null);
     return a.map((x, i) => {return rn * d + i;});
 }
 
-// get the entire colomn indexed by cn = 0, 1, ... , d-1
+// get the entire colomn indexed by col number = 0, 1, ... , d-1
 export function whole_column(cn, d) {
     const a = Array(d).fill(null);
     return a.map((x, i) => {return cn + (d * i);});
