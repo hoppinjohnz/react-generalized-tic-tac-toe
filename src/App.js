@@ -239,18 +239,12 @@ class Game extends React.Component {
         return ((i >= ARRLEN) ? null : rndmMv);
     }
 
+    // return a move most likely to win
     to_win_move(sqrs) {
-        // check against the current board to make sure the generated computer move is valid
-        let min = 0;
-        let max = this.state.dimension * this.state.dimension;
-        let rndmMv = Math.floor(Math.random() * (max - min)) + min;
-        let i = 0;
-        while (sqrs[rndmMv] !== null && i < ARRLEN) {
-            i++;
-            rndmMv = Math.floor(Math.random() * (max - min)) + min;
-        }
-
-        return ((i >= ARRLEN) ? null : rndmMv);
+        const p = this.state.xIsTheMove ? XTOKEN : OTOKEN;
+        const d = this.state.dimension;
+        const a = most_plausible(p, sqrs, d);
+        // TODO need to find the both ends of a here: need a help function
     }
 
     move_by_computer() {
@@ -378,6 +372,9 @@ class Game extends React.Component {
 export default Game;
 
 
+
+export function end_of_plausible_section(sctn, d, wl) {
+}
 
 // return a have-to-make move or null if there is no such move
 export function have_to_make_move(sqrs, wl) {
@@ -596,7 +593,7 @@ export function on_inside(mv, d) {
 
 // return the longest potential made by player in line
 export function check_line_for_best_potential(line, plyr, sqrs) {
-    let i, mv, c = 0, r = [], max = 0;
+    let i, mv, c = 0, r = [], max = 0, ret = [];
     for (i = 0; i < line.length; i++) { // don't use map() inside for-loop
         mv = line[i];
         if (sqrs[mv] === plyr) {
@@ -604,13 +601,16 @@ export function check_line_for_best_potential(line, plyr, sqrs) {
             if (c > max) {
                 max = c;
                 Array.prototype.push.apply(r, [mv]);
+                ret = r.slice();
             }
-        } else {
+        } else { // favor the last found one
             c = 0;
+            max = 0;
+            r = [];
         }
     }
 
-    if (r.length > 0) return r;
+    if (ret.length > 0) return ret;
 
     return null;
 }
