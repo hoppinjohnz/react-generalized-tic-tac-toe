@@ -241,10 +241,10 @@ class Game extends React.Component {
 
     // return a move most likely to win
     to_win_move(sqrs) {
-        const p = this.state.xIsTheMove ? XTOKEN : OTOKEN;
-        const d = this.state.dimension;
-        const a = most_plausible(p, sqrs, d);
-        // TODO need to find the both ends of a here: need a help function
+        // const p = this.state.xIsTheMove ? XTOKEN : OTOKEN;
+        // const d = this.state.dimension;
+        // const a = most_plausible(p, sqrs, d);
+        // // TODO need to find the both ends of a here: need a help function
     }
 
     move_by_computer() {
@@ -615,6 +615,54 @@ export function check_line_for_best_potential(line, plyr, sqrs) {
     return null;
 }
 
+export function line_plausible_moves(line, plyr, sqrs, wl) {
+    const l = line.length;
+    const o = ((plyr === XTOKEN) ? OTOKEN : XTOKEN);
+    if (l < wl) return null;
+    // if = wl and there's at lease one opponent's play, return null
+    if (l === wl) {
+        let i;
+        for (i = 0; i < l; i++) {
+            if (sqrs[line[i]] === o) return null;
+        }
+    } else { // l > wl
+        let i, c = 0;
+        for (i = 0; i < l; i++) {
+            if (sqrs[line[i]] === o) {
+                c++;
+                if (l - c < wl) return null;
+            }
+        }
+    }
+
+    // check the consecutiveness of plyr and nulls
+    let i, c = 0, nc = 0, nca = [];
+    for (i = 0; i < l; i++) {
+        const li = line[i];
+        const e = sqrs[li];
+        if (e === plyr || e === null) {
+            if (e === null) {
+                nc++;
+                nca.push(li);
+            }
+            c++;
+            if (c >= wl && nc > 0) return nca;
+        } else {
+            c = 0;
+            nc = 0;
+        }
+    }
+
+    return null;
+}
+
+export function number_of_continuous_plyr_and_null(line, plyr, sqrs) {
+}
+
+// has to do with wl, it determines if the line is plausible for win or not
+// the line needs to have a continuous numbef of plyr and null >= wl
+export function check_line_for_good_moves(line, plyr, sqrs, wl) {
+}
 
 
 /**

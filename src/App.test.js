@@ -626,5 +626,103 @@ describe('check_line_for_best_potential', () => {
     });
 });
 
-
-
+describe('line_plausible_moves', () => {
+    test.each`
+        line             | plyr   | sqrs                        | wl | expected
+        ${[0, 1, 2]} | ${'X'} | ${[null, null, null, null, null, null, null, null, null]} | ${3} | ${[0, 1, 2]}
+        ${[0, 1, 2]} | ${'X'} | ${[null, null, 'X', null, null, null, null, null, null]} | ${3} | ${[0, 1]}
+        ${[0, 1, 2]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${[0, 1, 2]} | ${'X'} | ${['O', null, 'X', null, null, null, null, null, null]} | ${2} | ${[1]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', null, null, null, null, null, null, null, null]} | ${3} | ${[1, 2]}
+        ${[0, 1, 2]} | ${'X'} | ${[null, 'X', null, null, null, null, null, null, null]} | ${3} | ${[0, 2]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', null, null, null, null, null, null, null]} | ${3} | ${[2]}
+        ${[0, 1, 2]} | ${'X'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${[0, 1, 2]} | ${'X'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${[0, 1, 2]} | ${'X'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${2} | ${null}
+        ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${2} | ${null}
+        ${[0, 1, 2]} | ${'O'} | ${['O', 'X', 'X', null, null, null, null, null, null]} | ${1} | ${null}
+        ${[0, 1, 2]} | ${'O'} | ${['X', 'X', 'X', null, null, null, null, null, null]} | ${3} | ${null}
+        ${[2, 5, 8]} | ${'X'} | ${['O', null, 'X',
+                                    null, null, null,
+                                    null, null, 'X']} | ${3} | ${[5]}
+        ${[2, 5, 8]} | ${'O'} | ${['O', null, 'X',
+                                    null, null, null,
+                                    null, null, 'X']} | ${3} | ${null}
+        ${[2, 5, 8]} | ${'O'} | ${['O', null, 'O',
+                                    null, null, null,
+                                    null, null, 'X']} | ${2} | ${[5]}
+        ${[2, 5, 8]} | ${'O'} | ${['O', null, 'X',
+                                    null, null, null,
+                                    null, null, 'O']} | ${2} | ${[5]}
+        ${[2, 5, 8]} | ${'X'} | ${['O', null, 'X',
+                                    null, null, 'O',
+                                    null, null, 'X']} | ${3} | ${null}
+        ${[0, 1, 2, 3]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, null, null,
+                                      null, null, null, null]} | ${4} | ${[0, 1, 2]}
+        ${[0, 1, 2, 3]} | ${'O'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, null, null,
+                                      null, null, null, null]} | ${3} | ${[0, 1, 2]}
+        ${[0, 1, 2, 3]} | ${'X'} | ${['X', null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, null, null,
+                                      null, null, null, null]} | ${4} | ${[1, 2]}
+        ${[7, 10, 13]} | ${'O'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, null, null,
+                                      null, null, null, null]} | ${3} | ${[7, 10, 13]}
+        ${[7, 10, 13]} | ${'O'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, null, null,
+                                      null, 'O', null, null]} | ${3} | ${[7, 10]}
+        ${[7, 10, 13]} | ${'O'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, 'X', null,
+                                      null, 'O', null, null]} | ${3} | ${null}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, 'X', null,
+                                      null, 'O', null, null]} | ${3} | ${null}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, null,
+                                      null, null, 'X', null,
+                                      null, 'O', null, null]} | ${2} | ${[7]}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'O',
+                                      null, null, 'X', null,
+                                      null, null, null, null]} | ${2} | ${[13]}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'X',
+                                      null, null, 'X', null,
+                                      null, 'O', null, null]} | ${2} | ${null}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'X',
+                                      null, null, 'O', null,
+                                      null, 'X', null, null]} | ${2} | ${null}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'X',
+                                      null, null, 'O', null,
+                                      null, 'X', null, null]} | ${2} | ${null}
+        ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'X',
+                                      null, null, 'X', null,
+                                      null, 'X', null, null]} | ${3} | ${null}
+        ${[3, 6, 9, 12]} | ${'X'} | ${[null, null, null, null,
+                                      null, null, null, 'X',
+                                      null, null, 'X', null,
+                                      null, 'X', null, null]} | ${4} | ${[3, 6, 9, 12]}
+        ${[3, 6, 9, 12]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'X',
+                                      null, null, 'X', null,
+                                      null, 'X', null, null]} | ${4} | ${[6, 9, 12]}
+        ${[3, 6, 9, 12]} | ${'X'} | ${[null, null, null, 'X',
+                                      null, null, null, 'X',
+                                      null, null, 'X', null,
+                                      'O', 'X', null, null]} | ${4} | ${null}
+    `('$line, $plyr, $sqrs => $expected', ({ line, plyr, sqrs, wl, expected }) => {
+        expect(app.line_plausible_moves(line, plyr, sqrs, wl)).toEqual(expected)
+    });
+});
