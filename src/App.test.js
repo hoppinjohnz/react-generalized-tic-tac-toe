@@ -839,6 +839,8 @@ describe('number_of_consecutive_token_in_line', () => {
 describe('moves_around_play_in_line', () => {
     test.each`
         play      | line                  | wl | expected
+        ${'O'}   | ${['X', null, null]} | ${3} | ${null}
+        ${'X'}   | ${[null, null, null]} | ${3} | ${null}
         ${'X'}   | ${['X', null, null]} | ${3} | ${[1]}
         ${'X'}   | ${[null, 'X', null]} | ${3} | ${[0, 2]}
         ${'X'}   | ${[null, null, 'X']} | ${3} | ${[1]}
@@ -847,6 +849,7 @@ describe('moves_around_play_in_line', () => {
         ${'O'}   | ${['O', 'X', null]}  | ${3} | ${null}
         ${'O'}   | ${['O', 'O', null]}  | ${3} | ${[2]}
         ${'O'}   | ${[null, 'O', 'O']}  | ${3} | ${[0]}
+        ${'X'}   | ${[null, 'O', 'O']}  | ${3} | ${null}
         // retun null
         ${'X'}   | ${[null, 'O', 'O']}   | ${3} | ${null}
         ${'X'}   | ${[null, null, null]} | ${3} | ${null}

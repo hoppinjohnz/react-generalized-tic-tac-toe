@@ -630,7 +630,7 @@ export function moves_around_play_in_line(play, line, wl) {
     // const n = number_of_consecutive_token_in_line(null, line);
     // if (c === 0 && n === 0) return null;
 
-    // find the moves of play
+    // there is at least one move of play, put them into array t
     const t = [];
     let i;
     for (i = 0; i < l; i++) {
@@ -639,38 +639,21 @@ export function moves_around_play_in_line(play, line, wl) {
         }
     }
 
-    // null places are the ones to return
-    if (t.length === 0) {
-        let i;
-        const a = [];
-        for (i = 0; i < l; i++) {
-            if (line[i] === null) a.push(i);
-        }
-        return a;
-    }
-
     // find the moves adjacent to the play
     const a = [];
     for (i = 0; i < t.length; i++) {
+        // the move before
         const u = t[i] - 1;
-        if (u >= 0) {
-            // if u is not in a, add it
-            let add = true;
-            let j;
-            for (j = 0; j < a.length; j++) {
-                if (a[j] === u) add = false;
-            }
-            if (add && line[u] === null) a.push(u);
+        if (u > -1) {
+            // if u is not in a and is valid, add it
+            if (!a.includes(u) && line[u] === null) a.push(u);
         }
+
+        // the move after
         const v = t[i] + 1;
         if (v < l) {
-            // if v is not in a, add it
-            let add = true;
-            let j;
-            for (j = 0; j < a.length; j++) {
-                if (a[j] === v) add = false;
-            }
-            if (add && line[v] === null) a.push(v);
+            // if v is not in a and is valid, add it
+            if (!a.includes(v) && line[v] === null) a.push(v);
         }
     }
 
