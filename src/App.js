@@ -615,6 +615,72 @@ export function check_line_for_best_potential(line, plyr, sqrs) {
     return null;
 }
 
+// if no moves of play, every one is a good move
+export function moves_around_play_in_line(play, line, wl) {
+    // invalid
+    const l = line.length;
+    if (wl > l) return null;
+
+    // no play all, return null
+    const c = number_of_consecutive_token_in_line(play, line);
+    if (c === 0) return null;
+
+    // // no play and no null, return null
+    // const c = number_of_consecutive_token_in_line(play, line);
+    // const n = number_of_consecutive_token_in_line(null, line);
+    // if (c === 0 && n === 0) return null;
+
+    // find the moves of play
+    const t = [];
+    let i;
+    for (i = 0; i < l; i++) {
+        if (line[i] === play) {
+            t.push(i);
+        }
+    }
+
+    // null places are the ones to return
+    if (t.length === 0) {
+        let i;
+        const a = [];
+        for (i = 0; i < l; i++) {
+            if (line[i] === null) a.push(i);
+        }
+        return a;
+    }
+
+    // find the moves adjacent to the play
+    const a = [];
+    for (i = 0; i < t.length; i++) {
+        const u = t[i] - 1;
+        if (u >= 0) {
+            // if u is not in a, add it
+            let add = true;
+            let j;
+            for (j = 0; j < a.length; j++) {
+                if (a[j] === u) add = false;
+            }
+            if (add && line[u] === null) a.push(u);
+        }
+        const v = t[i] + 1;
+        if (v < l) {
+            // if v is not in a, add it
+            let add = true;
+            let j;
+            for (j = 0; j < a.length; j++) {
+                if (a[j] === v) add = false;
+            }
+            if (add && line[v] === null) a.push(v);
+        }
+    }
+
+    if (a.length > 0) {
+        return a;
+    } else {
+        return null;
+    }
+}
+
 export function number_of_consecutive_token_in_line(tkn, line) {
     let i, c = 0, rc = 0;
     for (i = 0; i < line.length; i++) {
