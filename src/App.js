@@ -615,6 +615,19 @@ export function check_line_for_best_potential(line, plyr, sqrs) {
     return null;
 }
 
+export function number_of_consecutive_token_in_line(tkn, line) {
+    let i, c = 0, rc = 0;
+    for (i = 0; i < line.length; i++) {
+        if (line[i] === tkn) {
+            c++;
+            rc = c;
+        } else {
+            c = 0;
+        }
+    }
+    return rc;
+}
+
 export function line_plausible_moves(line, plyr, sqrs, wl) {
     const l = line.length;
     const o = ((plyr === XTOKEN) ? OTOKEN : XTOKEN);

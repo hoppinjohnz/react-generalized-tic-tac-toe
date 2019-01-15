@@ -812,3 +812,189 @@ describe('line_plausible_moves', () => {
         expect(app.line_plausible_moves(line, plyr, sqrs, wl)).toEqual(expected)
     });
 });
+
+describe('number_of_consecutive_token_in_line', () => {
+    test.each`
+        tkn      | line                  | expected
+        ${'X'}   | ${[null, null, null]} | ${0}
+        ${'X'}   | ${['X', null, null]} | ${1}
+        ${'X'}   | ${[null, 'X', null]} | ${1}
+        ${'X'}   | ${[null, null, 'X']} | ${1}
+        ${'X'}   | ${['X', null, 'X']} | ${1}
+        ${'X'}   | ${['X', 'X', null]} | ${2}
+        ${'O'}   | ${['X', 'X', null]} | ${0}
+        ${'O'}   | ${['O', 'X', null]} | ${1}
+        ${'O'}   | ${['O', 'O', null]} | ${2}
+        ${'O'}   | ${[null, 'O', 'O']} | ${2}
+        ${'X'}   | ${[null, 'O', 'O']} | ${0}
+        ${'O'}   | ${[null, null, null]} | ${0}
+        ${null}   | ${['X', null, 'X']} | ${1}
+        ${null}   | ${[null, null, 'X']} | ${2}
+        ${null}   | ${[null, null, null]} | ${3}
+    `('$tkn, $line => $expected', ({ tkn, line, expected }) => {
+        expect(app.number_of_consecutive_token_in_line(tkn, line)).toEqual(expected)
+    });
+});
+
+//         ${[2, 5, 8]} | ${'O'} | ${['O', null, 'X',
+//                                     null, null, null,
+//                                     null, null, 'X']} | ${3} | ${null}
+//         ${[2, 5, 8]} | ${'O'} | ${['O', null, 'O',
+//                                     null, null, null,
+//                                     null, null, 'X']} | ${2} | ${[5]}
+//         ${[2, 5, 8]} | ${'O'} | ${['O', null, 'X',
+//                                     null, null, null,
+//                                     null, null, 'O']} | ${2} | ${[5]}
+//         ${[2, 5, 8]} | ${'X'} | ${['O', null, 'X',
+//                                     null, null, 'O',
+//                                     null, null, 'X']} | ${3} | ${null}
+//         ${[0, 1, 2, 3]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, null, null,
+//                                       null, null, null, null]} | ${4} | ${[0, 1, 2]}
+//         ${[0, 1, 2, 3]} | ${'O'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, null, null,
+//                                       null, null, null, null]} | ${3} | ${[0, 1, 2]}
+//         ${[0, 1, 2, 3]} | ${'X'} | ${['X', null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, null, null,
+//                                       null, null, null, null]} | ${4} | ${[1, 2]}
+//         ${[7, 10, 13]} | ${'O'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, null, null,
+//                                       null, null, null, null]} | ${3} | ${[7, 10, 13]}
+//         ${[7, 10, 13]} | ${'O'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, null, null,
+//                                       null, 'O', null, null]} | ${3} | ${[7, 10]}
+//         ${[7, 10, 13]} | ${'O'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, 'X', null,
+//                                       null, 'O', null, null]} | ${3} | ${null}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, 'X', null,
+//                                       null, 'O', null, null]} | ${3} | ${null}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, null,
+//                                       null, null, 'X', null,
+//                                       null, 'O', null, null]} | ${2} | ${[7]}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'O',
+//                                       null, null, 'X', null,
+//                                       null, null, null, null]} | ${2} | ${[13]}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'X',
+//                                       null, null, 'X', null,
+//                                       null, 'O', null, null]} | ${2} | ${null}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'X',
+//                                       null, null, 'O', null,
+//                                       null, 'X', null, null]} | ${2} | ${null}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'X',
+//                                       null, null, 'O', null,
+//                                       null, 'X', null, null]} | ${2} | ${null}
+//         ${[7, 10, 13]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'X',
+//                                       null, null, 'X', null,
+//                                       null, 'X', null, null]} | ${3} | ${null}
+//         ${[3, 6, 9, 12]} | ${'X'} | ${[null, null, null, null,
+//                                       null, null, null, 'X',
+//                                       null, null, 'X', null,
+//                                       null, 'X', null, null]} | ${4} | ${[3, 6, 9, 12]}
+//         ${[3, 6, 9, 12]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'X',
+//                                       null, null, 'X', null,
+//                                       null, 'X', null, null]} | ${4} | ${[6, 9, 12]}
+//         ${[3, 6, 9, 12]} | ${'X'} | ${[null, null, null, 'X',
+//                                       null, null, null, 'X',
+//                                       null, null, 'X', null,
+//                                       'O', 'X', null, null]} | ${4} | ${null}
+//         ${[0, 1, 2, 3, 4]} | ${'X'} | ${[null, null, null, 'X', null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null]} | ${5} | ${[0, 1, 2, 4]}
+//         ${[3, 9]}          | ${'X'} | ${[null, null, null, 'X', null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null]} | ${2} | ${[9]}
+//         ${[3, 7, 11, 15]}  | ${'X'} | ${[null, null, null, 'X', null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null,
+//                                          null, null, null, null, null]} | ${4} | ${[7, 11, 15]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${5} | ${[8, 13, 18, 23]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${4} | ${[8, 13, 18]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${3} | ${[8, 13]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${3} | ${[13]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${3} | ${[3, 13]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null]} | ${3} | ${[3, 8, 13]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null]} | ${4} | ${[3, 8, 13, 18]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null]} | ${5} | ${[3, 8, 13, 18]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${4} | ${[3, 13, 18]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${4} | ${[3, 8, 18]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null]} | ${5} | ${[3, 8, 18, 23]}
+// // prefer to get [13, 23] around the existing play
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null]} | ${3} | ${[3, 8, 13]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null]} | ${4} | ${[3, 8, 13]}
+//         ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, null, null,
+//                                             null, null, null, 'X', null,
+//                                             null, null, null, null, null]} | ${5} | ${[3, 8, 13, 23]}
