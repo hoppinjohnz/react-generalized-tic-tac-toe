@@ -644,17 +644,13 @@ export function moves_around_play_in_line(play, line, wl) {
     for (i = 0; i < t.length; i++) {
         // the move before
         const u = t[i] - 1;
-        if (u > -1) {
-            // if u is not in a and is valid, add it
-            if (!a.includes(u) && line[u] === null) a.push(u);
-        }
+        // if u is not in a and is valid, add it
+        if (u > -1) if (!a.includes(u) && line[u] === null) a.push(u);
 
         // the move after
         const v = t[i] + 1;
-        if (v < l) {
-            // if v is not in a and is valid, add it
-            if (!a.includes(v) && line[v] === null) a.push(v);
-        }
+        // if v is not in a and is valid, add it
+        if (v < l) if (!a.includes(v) && line[v] === null) a.push(v);
     }
 
     if (a.length > 0) {
