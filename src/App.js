@@ -636,6 +636,7 @@ export function line_plausible_moves(line, plyr, sqrs, wl) {
     }
 
     // check the consecutiveness of plyr and nulls
+    // TODO need to stick to existing plyr moves if there are choices
     let i, c = 0, nc = 0, nca = [];
     for (i = 0; i < l; i++) {
         const li = line[i];

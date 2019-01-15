@@ -722,7 +722,93 @@ describe('line_plausible_moves', () => {
                                       null, null, null, 'X',
                                       null, null, 'X', null,
                                       'O', 'X', null, null]} | ${4} | ${null}
-    `('$line, $plyr, $sqrs => $expected', ({ line, plyr, sqrs, wl, expected }) => {
+        ${[0, 1, 2, 3, 4]} | ${'X'} | ${[null, null, null, 'X', null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null]} | ${5} | ${[0, 1, 2, 4]}
+        ${[3, 9]}          | ${'X'} | ${[null, null, null, 'X', null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null]} | ${2} | ${[9]}
+        ${[3, 7, 11, 15]}  | ${'X'} | ${[null, null, null, 'X', null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null,
+                                         null, null, null, null, null]} | ${4} | ${[7, 11, 15]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${5} | ${[8, 13, 18, 23]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${4} | ${[8, 13, 18]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${3} | ${[8, 13]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, 'X', null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${3} | ${[13]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${3} | ${[3, 13]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null]} | ${3} | ${[3, 8, 13]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null]} | ${4} | ${[3, 8, 13, 18]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null]} | ${5} | ${[3, 8, 13, 18]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${4} | ${[3, 13, 18]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${4} | ${[3, 8, 18]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null]} | ${5} | ${[3, 8, 18, 23]}
+// prefer to get [13, 23] around the existing play
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null]} | ${3} | ${[3, 8, 13]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null]} | ${4} | ${[3, 8, 13]}
+        ${[3, 8, 13, 18, 23]} | ${'X'} | ${[null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, null, null,
+                                            null, null, null, 'X', null,
+                                            null, null, null, null, null]} | ${5} | ${[3, 8, 13, 23]}
+    `('$line, $plyr, $sqrs, $wl => $expected', ({ line, plyr, sqrs, wl, expected }) => {
         expect(app.line_plausible_moves(line, plyr, sqrs, wl)).toEqual(expected)
     });
 });
