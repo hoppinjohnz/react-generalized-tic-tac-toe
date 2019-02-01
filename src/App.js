@@ -341,15 +341,13 @@ class Game extends React.Component {
                 <div id="small"></div>
 
                 <div className="game">
-                    <div className="game-board">
-                        <Board
-                            squares={my_sqrs}
-                            onClick={(i) => this.handleClick(i)}
-                            bgClrs={my_clrs}
-                            dmnsn={this.state.dimension}
-                            sqrnum={sNum}
-                        />
-                    </div>
+                    <Board
+                        squares={my_sqrs}
+                        onClick={(i) => this.handleClick(i)}
+                        bgClrs={my_clrs}
+                        dmnsn={this.state.dimension}
+                        sqrnum={sNum}
+                    />
 
                     <div className="game-info">
                         <div>{status}</div>
@@ -370,6 +368,7 @@ class Game extends React.Component {
 }
 
 export default Game;
+
 
 
 
@@ -722,6 +721,8 @@ export function number_of_continuous_plyr_and_null(line, plyr, sqrs) {
 // the line needs to have a continuous numbef of plyr and null >= wl
 export function check_line_for_good_moves(line, plyr, sqrs, wl) {
 }
+
+
 
 
 /**
