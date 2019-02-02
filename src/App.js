@@ -268,10 +268,10 @@ class Game extends React.Component {
     }
 
     render() {
-        // the single trigger data from which all other rendering data are derived: it can come from clicking either squares or history list
+        // the single trigger data from which all other rendering data are derived: it comes from clicking either a square or history list
         const mvNum = this.state.mvSequentialNum;
 
-        // Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
+        // we map history moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const historicalMoves = this.state.history.map((currValue, index) => {
