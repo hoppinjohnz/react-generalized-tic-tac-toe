@@ -272,6 +272,7 @@ class Game extends React.Component {
         // we map history moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
         //                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        // to support sort toggle: no change to the history at all, only change the on-screen presentation of the history
         const historicalMoves = this.state.history.map((currValue, index) => {
             const dscrptn = index ? 'Move ' : 'Start';
             // to mark the curr move in the history list
@@ -285,7 +286,6 @@ class Game extends React.Component {
                 </li>
             );
         });
-        // to support sort toggle: no change to the history at all, only change the on-screen presentation of the history
         const sortedMoves = this.state.isSortOn ? historicalMoves.sort( (a, b) => {return (b.key - a.key)} ) : historicalMoves;
 
         // get data out of history keyed on the move number whether it's from playing game or clicking on history list
