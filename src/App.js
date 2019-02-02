@@ -81,7 +81,9 @@ function CustomInput(props) {
         <div>
             <label>{props.label}:</label>
             <input className="input_size" type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension} />
-            <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
+            <div style={{color: "red"}}>
+                {(props.input_error === null) ? props.wl_error : props.input_error}
+            </div>
         </div>
     );
 }
@@ -89,7 +91,6 @@ function CustomInput(props) {
 function PlayForMeInput(props) {
     return (
         <div>
-            <div style={{color: "red"}}>{(props.input_error === null) ? props.wl_error : props.input_error}</div>
             <input type="submit" value="Play For Me" />
         </div>
     );
@@ -333,9 +334,7 @@ class Game extends React.Component {
                 <div id="tiny"></div>
 
                 <form onSubmit={this.handlePlayForMe}>
-                    <PlayForMeInput
-                        input_error={this.state.wl_error}
-                    />
+                    <PlayForMeInput />
                 </form>
 
                 <div id="small"></div>
