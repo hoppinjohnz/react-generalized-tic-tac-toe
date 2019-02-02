@@ -73,17 +73,15 @@ class Board extends React.Component {
 }
 
 /**
- * The value of the child input is assigned to the this.dimension property of the parent via 'ref' attribute connected to the dimension prop, 
- * so the child's value is available to the parent.
+ * The value of the child input is assigned to this.dimension/winlength property of the parent via 'ref' attribute connected to the corresponding prop, 
+ * so the child's value is available to the parent's corresponding value.
  */
 function CustomInput(props) {
     return (
         <div>
             <label>{props.label}:</label>
-            <input className="input_size" type="text" placeholder={props.plchldr} ref={(props.dimension === null) ? props.winlength : props.dimension} />
-            <div style={{color: "red"}}>
-                {(props.input_error === null) ? props.wl_error : props.input_error}
-            </div>
+            <input className="input_size" type="text" placeholder={props.plchldr} ref={(props.dimension !== null) ? props.dimension : props.winlength} />
+            <div style={{color: "red"}}> {props.input_error} </div>
         </div>
     );
 }
@@ -158,7 +156,7 @@ class Game extends React.Component {
         let alrWon = false;
         if (w) {
             let j;
-            for (j = 1; j <= w.length; j++) clrs[w[j]] = 'lightblue';
+            for (j = 1; j <= w.length; j++) clrs[w[j]] = 'lightgreen';
             alrWon = true;
         }
 
@@ -240,7 +238,7 @@ class Game extends React.Component {
         return ((i >= ARRLEN) ? null : rndmMv);
     }
 
-    // return a move most likely to win
+    // TODO return a move most likely to win
     to_win_move(sqrs) {
         // const p = this.state.xIsTheMove ? XTOKEN : OTOKEN;
         // const d = this.state.dimension;
@@ -308,7 +306,8 @@ class Game extends React.Component {
             <div>
                 <h3> Tic-Tac-Toe (d, w) = ({this.state.dimension}, {this.state.winlngth}) </h3>
 
-                {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
+                {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. 
+                    Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
                 <form onSubmit={this.handleDimSubmit}>
                     <CustomInput
                         label={'Dimension'}
