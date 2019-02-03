@@ -54,7 +54,7 @@ class Board extends React.Component {
     *                                          \ 6  7  8 /
     */
     render() {
-        const twoDimBoard = form_board(this.props.dmnsn);
+        const twoDimBoard = make_board(this.props.dmnsn);
         return (
             <div>
                 {twoDimBoard.map((r) => this.boardRow(r))}
@@ -63,8 +63,8 @@ class Board extends React.Component {
     }
 }
 
-// form an array of arrays: for d = 3, retrun [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
-function form_board(d) {
+// a board made of an array of arrays: for d = 3, retrun [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+function make_board(d) {
     const brd = Array(d).fill(null);
     let i;
     for (i = 0; i < d; i++) { // cannot use map here: need to pass d in
