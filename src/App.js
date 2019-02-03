@@ -23,9 +23,9 @@ function Square(props) {
 }
 
 /**
- * board consists of sqrs numbered as / 1 2 3 \ for 3x3
- *                                    | 4 5 6 |
- *                                    \ 7 8 9 /
+ * board consists of sqrs numbered as / 0 1 2 \ for 3x3
+ *                                    | 3 4 5 |
+ *                                    \ 6 7 8 /
  */
 class Board extends React.Component {
     renderSquare(i) {
@@ -51,6 +51,8 @@ class Board extends React.Component {
 
     render() {
         const d = this.props.dmnsn;
+
+        // form an array of arrays: for d = 3, twoDimBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
         const twoDimBoard = Array(d).fill(null);
         let i;
         for (i = 0; i < d; i++) { // cannot use map here: need to pass d in
@@ -61,7 +63,11 @@ class Board extends React.Component {
             }
             twoDimBoard[i] = rowArr;
         }
-        // twoDimBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] for dim = 3;
+
+        /* to render a board of sqrs numbered like / 0  1  2 \
+         *                                         | 3  4  5 |
+         *                                         \ 6  7  8 /
+         */
         return (
             <div>
                 {twoDimBoard.map((r) => this.boardRow(r))}
