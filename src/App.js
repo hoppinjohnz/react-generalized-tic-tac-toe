@@ -347,14 +347,12 @@ class Game extends React.Component {
                         sqrnum={sNum}
                     />
 
-                    <div className="game-info">
-                        <div>{status}</div>
-                        <div id="big"></div>
-                        <button type="button" onClick={this.handleSortToggle}>
-                            {this.state.isSortOn ? 'Un Sort History' : 'Sort History'}
-                        </button>
-                        <ol>{sortedMoves}</ol>
-                    </div>
+                    <GameInfo
+                        status={status}
+                        onClick={this.handleSortToggle}
+                        isSortOn={this.state.isSortOn}
+                        sortedMoves={sortedMoves}
+                    />
                 </div>
 
                 <p> This is tic-tac-toe.  But, you can change the board dimension and win length.  Changing board dimension to 11 and win length to 5, you will have a challenging and enjoyable 5-in-a-row game. </p>
@@ -363,6 +361,19 @@ class Game extends React.Component {
             </div>
         );
     }
+}
+
+function GameInfo(props) {
+    return (
+        <div className="game-info">
+            <div>{props.status}</div>
+            <div id="big"></div>
+            <button type="button" onClick={props.onClick}>
+                {props.isSortOn ? 'Un Sort History' : 'Sort History'}
+            </button>
+            <ol>{props.sortedMoves}</ol>
+        </div>
+    );
 }
 
 export default Game;
