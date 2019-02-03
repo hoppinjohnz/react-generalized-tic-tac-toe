@@ -15,6 +15,7 @@ const OTOKEN = 'O';
 // A function component of React: only contains a return method and is stateless.  It's a plain js function which takes props as the argument and returns a React element.
 function Square(props) {
     return (
+        // When we modified the Square to be a function component, we also changed onClick={() => this.props.onClick()} to a shorter onClick={props.onClick} (note the lack of parentheses on both sides). In a class, we used an arrow function to access the correct 'this' value, but in a function component we don’t need to worry about this.
         <button className="square" onClick={props.onClick} style={{backgroundColor: props.bgc}} >
             <span className={props.currmv} > {props.value} </span>
         </button>
@@ -29,6 +30,7 @@ function Square(props) {
 class Board extends React.Component {
     renderSquare(i) {
         return (
+            // here, we need to use an arrow function to access the correct 'this' value
             <Square key={i}
                 value={this.props.squares[i]} 
                 onClick={() => this.props.onClick(i)}
@@ -47,7 +49,7 @@ class Board extends React.Component {
         );
     }
 
-    fullBoard() {
+    render() {
         const d = this.props.dmnsn;
         const twoDimBoard = Array(d).fill(null);
         let i;
@@ -65,10 +67,6 @@ class Board extends React.Component {
                 {twoDimBoard.map((r) => this.boardRow(r))}
             </div>
         );
-    }
-
-    render() {
-        return this.fullBoard();
     }
 }
 
