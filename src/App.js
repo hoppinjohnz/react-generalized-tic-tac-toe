@@ -78,28 +78,6 @@ function make_board(d) {
     return brd;
 }
 
-/**
- * The value of the child input is assigned to this.dimension/winlength property of the parent via 'ref' attribute connected to the corresponding prop, 
- * so the child's value is available to the parent's corresponding value.
- */
-function CustomInput(props) {
-    return (
-        <div>
-            <label>{props.label}:</label>
-            <input className="input_size" type="text" placeholder={props.plchldr} ref={(props.dimension !== null) ? props.dimension : props.winlength} />
-            <div style={{color: "red"}}> {props.input_error} </div>
-        </div>
-    );
-}
-
-function PlayForMeInput(props) {
-    return (
-        <div>
-            <input type="submit" value="Play For Me" />
-        </div>
-    );
-}
-
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -367,6 +345,28 @@ class Game extends React.Component {
             </div>
         );
     }
+}
+
+/**
+ * The value of the child input is assigned to this.dimension/winlength property of the parent via 'ref' attribute connected to the corresponding prop, 
+ * so the child's value is available to the parent's corresponding value.
+ */
+function CustomInput(props) {
+    return (
+        <div>
+            <label>{props.label}:</label>
+            <input className="input_size" type="text" placeholder={props.plchldr} ref={(props.dimension !== null) ? props.dimension : props.winlength} />
+            <div style={{color: "red"}}> {props.input_error} </div>
+        </div>
+    );
+}
+
+function PlayForMeInput(props) {
+    return (
+        <div>
+            <input type="submit" value="Play For Me" />
+        </div>
+    );
 }
 
 function GameInfo(props) {
