@@ -49,31 +49,33 @@ class Board extends React.Component {
         );
     }
 
+    /* to render a board of sqrs numbered like / 0  1  2 \
+    *                                          | 3  4  5 |
+    *                                          \ 6  7  8 /
+    */
     render() {
-        const d = this.props.dmnsn;
-
-        // form an array of arrays: for d = 3, twoDimBoard = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
-        const twoDimBoard = Array(d).fill(null);
-        let i;
-        for (i = 0; i < d; i++) { // cannot use map here: need to pass d in
-            const rowArr = Array(d).fill(null);
-            let j;
-            for (j = 0; j < d; j++) {
-                rowArr[j] = i * d + j;
-            }
-            twoDimBoard[i] = rowArr;
-        }
-
-        /* to render a board of sqrs numbered like / 0  1  2 \
-         *                                         | 3  4  5 |
-         *                                         \ 6  7  8 /
-         */
+        const twoDimBoard = form_board(this.props.dmnsn);
         return (
             <div>
                 {twoDimBoard.map((r) => this.boardRow(r))}
             </div>
         );
     }
+}
+
+// form an array of arrays: for d = 3, retrun [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+function form_board(d) {
+    const brd = Array(d).fill(null);
+    let i;
+    for (i = 0; i < d; i++) { // cannot use map here: need to pass d in
+        const rowArr = Array(d).fill(null);
+        let j;
+        for (j = 0; j < d; j++) {
+            rowArr[j] = i * d + j;
+        }
+        brd[i] = rowArr;
+    }
+    return brd;
 }
 
 /**
