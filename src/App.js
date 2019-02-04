@@ -114,6 +114,7 @@ class Game extends React.Component {
 
     handleClick(i) {
         const mvN = this.state.mvSequentialNum;
+        const mvIsX = this.state.xIsTheMove;
 
         // store the move number for the new move
         const newMvN = mvN + 1;
@@ -132,7 +133,7 @@ class Game extends React.Component {
         // process the new move after this point
 
         // add the new move in
-        sqrs[i] = this.state.xIsTheMove ? XTOKEN : OTOKEN;
+        sqrs[i] = mvIsX ? XTOKEN : OTOKEN;
 
         // highlight the winning line if the new move wins
         const w = winner_and_winning_line_or_draw(i, sqrs, this.state.dimension, this.state.winlngth);
@@ -153,7 +154,7 @@ class Game extends React.Component {
                 alreadyWon: alrWon,
             }]),
             mvSequentialNum: newMvN,
-            xIsTheMove: !this.state.xIsTheMove,
+            xIsTheMove: !mvIsX,
         });
     }
 
@@ -252,6 +253,8 @@ class Game extends React.Component {
     render() {
         // the single trigger data from which all other rendering data are derived: it comes from clicking either a square or history list
         const mvNum = this.state.mvSequentialNum;
+        const dmnson = this.state.dimension;
+        const wnlgth = this.state.winlngth;
 
         // we map history moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves
         // Array.map() syntax: array.map( function(currentValue, index, arr), thisValue )
@@ -262,7 +265,7 @@ class Game extends React.Component {
             // to mark the curr move in the history list
             const crrtMv = (index === mvNum) ? (<span className="current_move" >{dscrptn}</span>) : dscrptn;
             const msn = currValue.mvSqurNum;
-            const lctn = index ? (1 + row_number(msn, this.state.dimension)) + '-' + (1 + column_number(msn, this.state.dimension)) : null;
+            const lctn = index ? (1 + row_number(msn, dmnson)) + '-' + (1 + column_number(msn, dmnson)) : null;
             // In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential index of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
             return (
                 <li key={index}>
@@ -278,7 +281,7 @@ class Game extends React.Component {
         const sNum = this.state.history[mvNum].mvSqurNum;
 
         // set the status accordingly right before rendering
-        const w = winner_and_winning_line_or_draw(sNum, my_sqrs, this.state.dimension, this.state.winlngth);
+        const w = winner_and_winning_line_or_draw(sNum, my_sqrs, dmnson, wnlgth);
         let status;
         if (w === 'D') {
             status = 'It\'s a draw.';
@@ -288,7 +291,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h3> Tic-Tac-Toe (d, w) = ({this.state.dimension}, {this.state.winlngth}) </h3>
+                <h3> Tic-Tac-Toe (d, w) = ({dmnson}, {wnlgth}) </h3>
 
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. 
                     Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
@@ -327,7 +330,7 @@ class Game extends React.Component {
                         squares={my_sqrs}
                         onClick={(i) => this.handleClick(i)}
                         bgClrs={my_clrs}
-                        dmnsn={this.state.dimension}
+                        dmnsn={dmnson}
                         sqrnum={sNum}
                     />
 
