@@ -333,9 +333,9 @@ class Game extends React.Component {
 
                     <GameInfo
                         status={status}
-                        onClick={this.handleSortToggle}
-                        isSortOn={this.state.isSortOn}
                         sortedMoves={sortedMoves}
+                        isSortOn={this.state.isSortOn}
+                        sortToggle={this.handleSortToggle}
                     />
                 </div>
 
@@ -374,7 +374,7 @@ function GameInfo(props) {
         <div className="game-info">
             <div>{props.status}</div>
             <div id="big"></div>
-            <button type="button" onClick={props.onClick}>
+            <button type="button" onClick={props.sortToggle}>
                 {props.isSortOn ? 'Un Sort History' : 'Sort History'}
             </button>
             <ol>{props.sortedMoves}</ol>
