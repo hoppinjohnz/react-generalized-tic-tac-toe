@@ -15,6 +15,8 @@ In addition to implementing the six improvements suggested by the tutorial, it h
 
 4. It highlights all winning lines if there is more than one winning line.
 
+5. 'Play For Me' button will make one play for every click by the computer.
+
 
 ## Build & Run
 
