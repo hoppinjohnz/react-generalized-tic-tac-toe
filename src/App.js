@@ -81,7 +81,7 @@ function make_board(d) {
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.state = this.get_d_by_wl_State(DFLDIM, WINLEN);
+        this.state = this.set_init_state_d_by_wl(DFLDIM, WINLEN);
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleDimSubmit = this.handleDimSubmit.bind(this);
         this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this);
@@ -90,7 +90,7 @@ class Game extends React.Component {
         this.handleTicTacToe = this.handleTicTacToe.bind(this);
     }
     
-    get_d_by_wl_State(d, wl) {
+    set_init_state_d_by_wl(d, wl) {
         const initState = {
             history: [{
                 histSquares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
@@ -109,10 +109,6 @@ class Game extends React.Component {
         return initState;
     }
   
-    resetState() {
-        this.setState( this.get_d_by_wl_State(DFLDIM, WINLEN) );
-    }
-
     handleClick(i) {
         const mvN = this.state.mvSequentialNum;
         const mvIsX = this.state.xIsTheMove;
@@ -185,11 +181,7 @@ class Game extends React.Component {
             });
             return;
         }
-        this.resetState();
-        this.setState({
-            dimension: v,
-            winlngth: w,
-        });
+        this.setState( this.set_init_state_d_by_wl(v, w) );
     }
 
     handleWinLenSubmit(e) {
@@ -203,11 +195,7 @@ class Game extends React.Component {
             });
             return;
         }
-        this.resetState();
-        this.setState({
-            dimension: d,
-            winlngth: v,
-        });
+        this.setState( this.set_init_state_d_by_wl(d, v) );
     }
 
     random_move(sqrs) {
@@ -252,11 +240,11 @@ class Game extends React.Component {
     }
 
     handleAnchor() {
-        this.setState( this.get_d_by_wl_State(11, 5) );
+        this.setState( this.set_init_state_d_by_wl(11, 5) );
     }
 
     handleTicTacToe() {
-        this.setState( this.get_d_by_wl_State(3, 3) );
+        this.setState( this.set_init_state_d_by_wl(3, 3) );
     }
 
     render() {
