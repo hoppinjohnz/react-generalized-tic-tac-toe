@@ -86,6 +86,8 @@ class Game extends React.Component {
         this.handleDimSubmit = this.handleDimSubmit.bind(this);
         this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this);
         this.handlePlayForMe = this.handlePlayForMe.bind(this);
+        this.handleAnchor = this.handleAnchor.bind(this);
+        this.handleTicTacToe = this.handleTicTacToe.bind(this);
     }
     
     getInitialState() {
@@ -106,6 +108,25 @@ class Game extends React.Component {
             wl_error: null,
         };
         return initialState;
+    }
+  
+    get_d_by_wl_State(d, wl) {
+        const initState = {
+            history: [{
+                histSquares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
+                mvSqurNum: null, // the current move to display (r, c) - move location on history list
+                bgColors: Array(ARRLEN).fill('white'),
+                alreadyWon: false, // to support return without checking previous wins after clicking a square
+            }],
+            mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
+            xIsTheMove: true,
+            isSortOn: false,
+            dimension: d,
+            winlngth: wl,
+            dm_error: null,
+            wl_error: null,
+        };
+        return initState;
     }
   
     resetState() {
@@ -250,6 +271,14 @@ class Game extends React.Component {
         this.handleClick(cmv);
     }
 
+    handleAnchor() {
+        this.setState( this.get_d_by_wl_State(11, 5) );
+    }
+
+    handleTicTacToe() {
+        this.setState( this.get_d_by_wl_State(3, 3) );
+    }
+
     render() {
         // the single trigger data from which all other rendering data are derived: it comes from clicking either a square or history list
         const mvNum = this.state.mvSequentialNum;
@@ -291,7 +320,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <h3> Tic-Tac-Toe (d, w) = ({dmnson}, {wnlgth}) </h3>
+                <h3> <a href="#" onClick={this.handleTicTacToe}> Tic-Tac-Toe</a> (d, w) = ({dmnson}, {wnlgth}) </h3>
 
                 {/* Usually, the arrow function is on the input itself, but here it's being passed down as a prop. 
                     Since the arrow function resides in the parent, the 'this' of 'this.dimension' lives in the parent. */}
@@ -300,7 +329,7 @@ class Game extends React.Component {
                         label={'Dimension'}
                         dimension={v => this.dimension = v}
                         winlength={null}
-                        plchldr={DFLDIM}
+                        plchldr={this.state.dimension}
                         input_error={this.state.dm_error}
                     />
                 </form>
@@ -312,7 +341,7 @@ class Game extends React.Component {
                         label={'Win Length'}
                         dimension={null}
                         winlength={v => this.winlength = v}
-                        plchldr={WINLEN}
+                        plchldr={this.state.winlngth}
                         input_error={this.state.wl_error}
                     />
                 </form>
@@ -342,7 +371,7 @@ class Game extends React.Component {
                     />
                 </div>
 
-                <p> This is tic-tac-toe.  But, you can change the board dimension and win length.  Changing board dimension to 11 and win length to 5, you will have a challenging and enjoyable 5-in-a-row game. </p>
+                <p> This is tic-tac-toe.  But, you can change the board dimension and win length.  Changing board dimension to 11 and win length to 5, you will have a challenging and enjoyable <a href="#" onClick={this.handleAnchor}> 5-in-a-row game </a>.</p>
 
                 <p> The play history allows you to time-travel into history to re-play or do-it-over from any point in the past. </p>
             </div>
