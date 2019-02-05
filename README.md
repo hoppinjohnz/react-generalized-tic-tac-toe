@@ -9,9 +9,9 @@ In addition to implementing the six improvements suggested by the tutorial, it h
 
 1. Generalized to n dimension where n = 1, 2, ..., 25 controlled by the user.  The upper limit of 25 is arbitrary.
 
-2. User can enter the win length. For example, entering win length 5 and board dimension 11 will result in a five-in-a-roll game.
+2. User can enter the win length. For example, entering win length 5 and board dimension 11 will result in a 5-in-a-row game.
 
-3. The current play is bolded.
+3. The current play is bolded and colored.
 
 4. It highlights all winning lines if there is more than one winning line.
 
