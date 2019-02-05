@@ -81,7 +81,7 @@ function make_board(d) {
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.state = this.getInitialState();
+        this.state = this.get_d_by_wl_State(DFLDIM, WINLEN);
         this.handleSortToggle = this.handleSortToggle.bind(this);
         this.handleDimSubmit = this.handleDimSubmit.bind(this);
         this.handleWinLenSubmit = this.handleWinLenSubmit.bind(this);
@@ -90,26 +90,6 @@ class Game extends React.Component {
         this.handleTicTacToe = this.handleTicTacToe.bind(this);
     }
     
-    getInitialState() {
-        // make the initial state immutable to support state reset
-        const initialState = {
-            history: [{
-                histSquares: Array(ARRLEN).fill(null), // doesn't show which move is the current move
-                mvSqurNum: null, // the current move to display (r, c) - move location on history list
-                bgColors: Array(ARRLEN).fill('white'),
-                alreadyWon: false, // to support return without checking previous wins after clicking a square
-            }],
-            mvSequentialNum: 0, // the single trigger data from which all rendering data are derived
-            xIsTheMove: true,
-            isSortOn: false,
-            dimension: DFLDIM,
-            winlngth: WINLEN,
-            dm_error: null,
-            wl_error: null,
-        };
-        return initialState;
-    }
-  
     get_d_by_wl_State(d, wl) {
         const initState = {
             history: [{
@@ -130,7 +110,7 @@ class Game extends React.Component {
     }
   
     resetState() {
-       this.setState(this.getInitialState());
+        this.setState( this.get_d_by_wl_State(DFLDIM, WINLEN) );
     }
 
     handleClick(i) {
