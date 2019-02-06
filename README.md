@@ -1,6 +1,6 @@
 # react-generalized-tic-tac-toe
 
-Play this tic-tac-toe game [here](https://powerful-cove-23499.herokuapp.com/).  This game was built by following the [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html).
+Play this tic-tac-toe game [here](https://powerful-cove-23499.herokuapp.com/).  It was built by following the [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html).
 
 
 ## Features
@@ -15,7 +15,7 @@ In addition to implementing the six improvements suggested by the tutorial, it h
 
 4. It highlights all winning lines if there is more than one winning line.
 
-5. 'Play For Me' button will make one play for every click by the computer.
+5. Play by computer is available by clicking 'Play For Me' button, one play at a time.
 
 
 ## Build & Run
@@ -29,12 +29,12 @@ npm start
 Hit [localhost:3000](http://localhost:3000/) to play the game if your browser didn't open the game.
 
 
-## Five-In-A-Roll Game Demo
+## 5-In-A-Row Game
 
-<img src='five-in-a-roll.gif' title='Video Walkthrough' alt='Video Walkthrough' />
+<img src='5-in-a-row.gif' title='Video Walkthrough' alt='Video Walkthrough' />
 
 
-## Tic-Tac-Toe Demo
+## Tic-Tac-Toe
 
 <img src='demo.gif' title='Video Walkthrough' alt='Video Walkthrough' />
 
